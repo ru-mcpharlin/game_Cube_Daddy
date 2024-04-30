@@ -32,12 +32,9 @@ public class PlayerController : MonoBehaviour
         if (axis_vertical == 1 && !isMoving)
         {
             //rotation
-            Tween.LocalRotation(transform, Vector3.zero, new Vector3(0, 0, -90), 1, 0, cubeRotation, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
+            Tween.LocalRotation(transform, Vector3.zero, new Vector3(0, 0, -90), 1, 0, Tween.EaseBounce, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
             //horizontal movement
-            Tween.LocalPosition(transform, transform.position + (-Vector3.left / 2) + (Vector3.up * 0.25f), 0.5f, 0, cubePosition_1);
-            Tween.LocalPosition(transform, transform.position + (-Vector3.left), 0.5f, 0.5f, cubePosition_2);
-            /*//vertical movement
-            Tween.LocalPosition(transform, transform.position + Vector3.up, 1, 0, cubePosition_vertical);*/
+            Tween.LocalPosition(transform, transform.position + -Vector3.left, 0.5f, 0, cubePosition_1);
 
         }
 
