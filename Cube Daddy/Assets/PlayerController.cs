@@ -33,26 +33,28 @@ public class PlayerController : MonoBehaviour
         axis_horizontal = Input.GetAxis("Horizontal");
         axis_vertical = Input.GetAxis("Vertical");
 
+        if (isMoving) return;
+
         //forward
-        if (axis_vertical == 1 && !isMoving)
+        if (axis_vertical == 1)
         {
             StartCoroutine(Roll(Vector3.forward, 90f));
         }
 
         //back
-        if(axis_vertical == -1 && !isMoving)
+        if(axis_vertical == -1)
         {
             StartCoroutine(Roll(Vector3.back, 90f));
         }
 
         //right
-        if(axis_horizontal == 1 && !isMoving)
+        if(axis_horizontal == 1)
         {
             StartCoroutine(Roll(Vector3.right, 90f));
         }
 
         //left
-        if (axis_horizontal == -1 && !isMoving)
+        if (axis_horizontal == -1)
         {
             StartCoroutine(Roll(Vector3.left, 90f));
         }
@@ -63,14 +65,18 @@ public class PlayerController : MonoBehaviour
         isMoving = true;
 
         float remainingAngle = totalAngle;
+        float timer = 0;
         Vector3 rotationAnchor = transform.position + direction / 2 + Vector3.down / 2;
         Vector3 rotationAxis = Vector3.Cross(Vector3.up, direction);
 
         while(remainingAngle > 0)
         {
-            float rotationAngle = Mathf.Min(Time.deltaTime * rollSpeed, remainingAngle);
+
+            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
             transform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
+
             remainingAngle -= rotationAngle;
+            timer += Time.deltaTime;
             yield return null;
         }
 
