@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Pixelplacement;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,13 +9,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float axis_vertical;
     [Space]
     [SerializeField] bool isMoving;
-    [SerializeField] Vector3 targetVector3;
-    [Space]
-    [SerializeField] AnimationCurve cubeRotation;
-    [SerializeField] AnimationCurve cubePosition_1;
-    [SerializeField] AnimationCurve cubePosition_2;
+    [SerializeField] float scale;
+    [SerializeField] float rollSpeed;
 
-    [SerializeField] AnimationCurve cubePosition_vertical;
+    public AnimationCurve rollCurve;
+
+
+    private void Awake()
+    {
+        DOTween.Init();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,63 +29,51 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         axis_horizontal = Input.GetAxis("Horizontal");
         axis_vertical = Input.GetAxis("Vertical");
 
+        //forward
         if (axis_vertical == 1 && !isMoving)
         {
-            //rotation
-            Tween.LocalRotation(transform, Vector3.zero, new Vector3(0, 0, -90), 1, 0, Tween.EaseBounce, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
-            //horizontal movement
-            Tween.LocalPosition(transform, transform.position + -Vector3.left, 0.5f, 0, cubePosition_1);
-
+            StartCoroutine(Roll(Vector3.forward, 90f));
         }
 
+        //back
         if(axis_vertical == -1 && !isMoving)
         {
-            //rotation
-            Tween.LocalRotation(transform, Vector3.zero, new Vector3(0, 0, 90), 1, 0, cubeRotation, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
-            //horizontal movement
-            Tween.Position(transform, transform.position + (Vector3.left / 2) + (Vector3.up * 0.25f), 0.5f, 0, cubePosition_1);
-            Tween.Position(transform, transform.position + (Vector3.left), 0.5f, 0.5f, cubePosition_2);
-            /*//vertical movement
-            Tween.LocalPosition(transform, transform.position + Vector3.up, 1, 0, cubePosition_vertical);*/
+            StartCoroutine(Roll(Vector3.back, 90f));
         }
 
+        //right
         if(axis_horizontal == 1 && !isMoving)
         {
-            //rotation
-            Tween.LocalRotation(transform, Vector3.zero, new Vector3(-90, 0, 0), 1, 0, cubeRotation, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
-            //horizontal movement
-            Tween.LocalPosition(transform, transform.position + (-Vector3.forward / 2) + (Vector3.up * 0.25f), 0.5f, 0, cubePosition_1);
-            Tween.LocalPosition(transform, transform.position + (-Vector3.forward), 0.5f, 0.5f, cubePosition_2);
-            /*//vertical movement
-            Tween.LocalPosition(transform, transform.position + Vector3.up, 1, 0, cubePosition_vertical);*/
+            StartCoroutine(Roll(Vector3.right, 90f));
         }
 
+        //left
         if (axis_horizontal == -1 && !isMoving)
         {
-            //rotation
-            Tween.LocalRotation(transform, Vector3.zero, new Vector3(90, 0, 0), 1, 0, cubeRotation, Tween.LoopType.None, HandleTweenStart, HandleTweenFinish);
-            //horizontal movement
-            Tween.Position(transform, transform.position + (Vector3.forward / 2) + (Vector3.up * 0.25f), 0.5f, 0, cubePosition_1);
-            Tween.Position(transform, transform.position + (Vector3.forward), 0.5f, 0.5f, cubePosition_1);
-
-            /*//vertical movement
-            Tween.LocalPosition(transform, transform.position + Vector3.up, 1, 0, cubePosition_vertical);*/
+            StartCoroutine(Roll(Vector3.left, 90f));
         }
-
-
     }
 
-    void HandleTweenStart()
+    IEnumerator Roll(Vector3 direction, float totalAngle)
     {
         isMoving = true;
-    }
 
-    void HandleTweenFinish()
-    {
-        Debug.Log("Finish");
+        float remainingAngle = totalAngle;
+        Vector3 rotationAnchor = transform.position + direction / 2 + Vector3.down / 2;
+        Vector3 rotationAxis = Vector3.Cross(Vector3.up, direction);
+
+        while(remainingAngle > 0)
+        {
+            float rotationAngle = Mathf.Min(Time.deltaTime * rollSpeed, remainingAngle);
+            transform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
+            remainingAngle -= rotationAngle;
+            yield return null;
+        }
+
         isMoving = false;
     }
 }
