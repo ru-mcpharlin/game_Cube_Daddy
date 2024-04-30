@@ -11772,9 +11772,12 @@ MonoBehaviour:
   axis_horizontal: 0
   axis_vertical: 0
   isMoving: 0
+  rollType: 3
+  remainingAngle: 0
+  rotationAnchor: {x: 0, y: 0, z: 0}
+  rotationAxis: {x: 0, y: 0, z: 0}
   scale: 1
-  anchorPoint: {x: 0, y: 0, z: 0}
-  rollSpeed: 0
+  rollSpeed: 25
   rollCurve:
     serializedVersion: 2
     m_Curve:
