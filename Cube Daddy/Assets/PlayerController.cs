@@ -6,6 +6,8 @@ using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Variables
+
     [SerializeField] float axis_horizontal;
     [SerializeField] float axis_vertical;
     [Space]
@@ -29,9 +31,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
 
+    #endregion
 
 
-    
+
 
     public enum RollType
     {
@@ -175,9 +178,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             return Vector3.zero;
-        }
-
-       
+        }       
     }
 
     public Vector3 RoundToClosestCardinalDirection(Vector3 inputDirection)
@@ -195,10 +196,7 @@ public class PlayerController : MonoBehaviour
         {
             output.x = 0;
         }
-
-        Debug.Log(output);
         return output;
-
     }
 
     public void CameraFollow()
