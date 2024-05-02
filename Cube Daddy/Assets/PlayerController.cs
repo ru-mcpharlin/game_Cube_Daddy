@@ -30,6 +30,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera vc;
     [SerializeField] Transform cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
+
+    [Header("Larger Cubes")]
+    [SerializeField] int cubes_index;
+    [SerializeField] List<CubeData> cubeData;
+
     #endregion
 
     #region ENUM
@@ -131,31 +136,31 @@ public class PlayerController : MonoBehaviour
             //flat
             case RollType.flat:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction / 2 + Vector3.down / 2;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 break;
 
             //step up
             case RollType.step_Up:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction / 2 + Vector3.up / 2;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 break;
             
             //step down
             case RollType.step_Down:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction / 2 + Vector3.down / 2;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 break;
 
             //climb up
             case RollType.climb_Up:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction / 2 + Vector3.up / 2;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 break;
 
             //climb down
             case RollType.climb_Down:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + -direction / 2 + Vector3.down / 2;
+                rotationAnchor = cubeTransform.position + -direction * scale / 2 + Vector3.down * scale / 2;
                 break;
         }
         #endregion
@@ -173,7 +178,7 @@ public class PlayerController : MonoBehaviour
         {
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
-            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
+            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed / scale, remainingAngle);
 
             //rotation
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
@@ -191,12 +196,17 @@ public class PlayerController : MonoBehaviour
         //fix round errors
         #region Round Errors
         cubeTransform.rotation = Quaternion.Euler(Mathf.Round(cubeTransform.rotation.eulerAngles.x), Mathf.Round(cubeTransform.rotation.eulerAngles.y), Mathf.Round(cubeTransform.rotation.eulerAngles.z));
-        cubeTransform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
+
+        Vector3 positionVector = cubeTransform.position;
+        positionVector = new Vector3(positionVector.x * 10, positionVector.y * 10, positionVector.z * 10);
+        positionVector = new Vector3(Mathf.Round(positionVector.x), Mathf.Round(positionVector.y), Mathf.Round(positionVector.z));
+        positionVector = new Vector3(positionVector.x / 10, positionVector.y / 10, positionVector.z / 10);
+        cubeTransform.position = positionVector;
         #endregion
 
         #region fall
         //fall
-        if(!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
+        /*if(!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
             timer = 0;
 
@@ -204,13 +214,50 @@ public class PlayerController : MonoBehaviour
             {
                 cubeTransform.position += Vector3.down * scale;
             }
-        }
+        }*/
 
 
 
 
         #endregion
 
+
+        #region check completed cube
+        if(cubeTransform.position == cubeData[cubes_index].missingPosition.position)
+        {
+            //set current small cubes parent to be large cubes transform
+            cubeTransform.gameObject.SetActive(false);
+
+            //set cube transform to large cube transform
+            cubeTransform = cubeData[cubes_index].transform;
+
+            //set scale
+            scale = cubeData[cubes_index].scale;
+
+            //set active = false incomplete meshes
+            cubeData[cubes_index].incompleteMesh.SetActive(false);
+
+            //set active = true complete meshes
+            cubeData[cubes_index].completeMesh.SetActive(true);
+
+            //vc
+            Vector3 vc_followOffset = vc.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset;
+            vc_followOffset = new Vector3(0, 
+                                          vc_followOffset.y / 1.5f,
+                                          vc_followOffset.z * 2);
+            vc.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset = vc_followOffset;
+
+
+            //increment index
+            if (cubes_index < cubeData.Count-1)
+            {
+                cubes_index++;
+            }
+        }
+
+
+
+        #endregion
 
         //set isMoving to false
         isMoving = false;
@@ -220,29 +267,48 @@ public class PlayerController : MonoBehaviour
     private RollType CalculateRollType(Vector3 direction)
     {
         //step up
+        //if IS cube forwards 1
+        // &&
+        //if IS NOT cube forwards 1 + up 1
+        // &&
+        //if IS NOT cube up 1
         if (Physics.Raycast(cubeTransform.position, direction, scale) &&
             !Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
-            !Physics.Raycast(cubeTransform.position, Vector3.up * scale, scale))
+            !Physics.Raycast(cubeTransform.position, Vector3.up, scale))
         {
             return RollType.step_Up;
         }
+
         //step down
+        //if IS NOT cube forwards 1
+        // &&
+        //if IS NOT cube forwards 1 + down 1
         else if(!Physics.Raycast(cubeTransform.position, direction, scale) &&
-            !Physics.Raycast(cubeTransform.position + Vector3.down * scale, direction, scale))
+                !Physics.Raycast(cubeTransform.position + Vector3.forward * scale, Vector3.down, scale))
         {
             return RollType.step_Down;
         }
+
         //bonk
+        //if IS cube forward 1
+        // && 
+        //if IS NOT cube forward 1 + up 1
+        // OR
+        //if IS cube forward 1
+        // &&
+        //if IS cube up 1
         else if(Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) ||
-            Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position, Vector3.up * scale, scale))
+            Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position, Vector3.up, scale))
         {
             return RollType.bonk;
         }
+
         //head bonk
         else if(!Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale))
         {
             return RollType.head_bonk;
         }
+
         //flat
         else
         {
@@ -322,4 +388,5 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+
 }

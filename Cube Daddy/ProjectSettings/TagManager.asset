@@ -3,15 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - currentCube
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - playerCube0
   - Water
   - UI
-  - 
+  - playerCube1
   - 
   - 
   - 
