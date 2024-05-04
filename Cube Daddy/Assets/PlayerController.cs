@@ -189,6 +189,18 @@ public class PlayerController : MonoBehaviour
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 break;
 
+            //step left
+            case RollType.step_Left:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                break;
+
+            //step right
+            case RollType.step_Right:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                break;
+
             //climb up
             case RollType.climb_Up:
                 remainingAngle = 90f;
@@ -219,11 +231,11 @@ public class PlayerController : MonoBehaviour
         //////////////////////////////////////////////////////////////////////////////
 
         //find roll axis
-        if (rollType == RollType.climb_Left)
+        if (rollType == RollType.climb_Left || rollType == RollType.step_Left)
         {
             rotationAxis = Vector3.up;
         }
-        else if(rollType == RollType.climb_Right)
+        else if(rollType == RollType.climb_Right || rollType == RollType.step_Right)
         {
             rotationAxis = Vector3.down;
         }
@@ -460,8 +472,15 @@ public class PlayerController : MonoBehaviour
         /*Debug.DrawRay(cubeTransform.position, direction, Color.green, scale);
         Debug.DrawRay(cubeTransform.position + direction * scale, Vector3.down, Color.green, scale);*/
         //climb left
-        Debug.DrawRay(cubeTransform.position, -Vector3.Cross(direction, Vector3.up), Color.red, scale);
-        Debug.DrawRay(cubeTransform.position + direction * scale, -Vector3.Cross(direction, Vector3.up), Color.red, scale);
+        /* Debug.DrawRay(cubeTransform.position, -Vector3.Cross(direction, Vector3.up), Color.red, scale);
+         Debug.DrawRay(cubeTransform.position + direction * scale, -Vector3.Cross(direction, Vector3.up), Color.red, scale);*/
+
+
+        //step left
+        RaycastHit hit_stepLeft;
+
+        //step right
+        RaycastHit hit_stepRight;
 
         //climb up
         RaycastHit hit_climbUp;
@@ -480,9 +499,9 @@ public class PlayerController : MonoBehaviour
 
 
         ////////////// STEP UP //////////////
-        //if IS cube forwards 1
+        //if IS cube direction 1
         // &&
-        //if IS NOT cube forwards 1 + up 1 
+        //if IS NOT cube direction 1 + up 1 
         // &&
         //if IS NOT cube up 1
         if (Physics.Raycast(cubeTransform.position, direction, scale) &&
@@ -496,11 +515,11 @@ public class PlayerController : MonoBehaviour
         ////////////// STEP DOWN //////////////
         //if IS NOT cube up 1
         // &&
-        //if IS NOT cube forwards 1 + up 1
+        //if IS NOT cube direction 1 + up 1
         // &&
-        //if IS NOT cube forwards 1
+        //if IS NOT cube direction 1
         // &&
-        //if IS NOT cube forwards 1 + down 1
+        //if IS NOT cube direction 1 + down 1
         // &&
         //if IS cube down 1
         else if (!Physics.Raycast(cubeTransform.position, Vector3.up, scale) &&
@@ -512,13 +531,51 @@ public class PlayerController : MonoBehaviour
             return RollType.step_Down;
         }
 
-        ////////////// CLIMB UP //////////////
-        //if IS cube forward 1 && IS magnetic
+        ////////////// STEP LEFT //////////////
+        //if IS cube 'forward' 1 && IS magnetic
         // &&
-        //if IS cube forward 1 + up 1
+        //if IS NOT cube direction 1
+        // &&
+        //if IS NOT cube direction 1 && forward 1
+        // &&
+        //if IS NOT cube down 1
+        else if (Physics.Raycast(cubeTransform.position, -Vector3.Cross(direction, Vector3.up), out hit_stepLeft, scale) &&
+                hit_stepLeft.collider.gameObject.tag == tag_MagenticEnvironment &&
+                !Physics.Raycast(cubeTransform.position, direction, scale) &&
+                !Physics.Raycast(cubeTransform.position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale)) /*&&
+                !Physics.Raycast(cubeTransform.position, Vector3.down, scale))*/
+        {
+            return RollType.step_Left;
+        }
+
+        ////////////// STEP RIGHT //////////////
+        //if IS cube 'forward' 1 && IS magnetic
+        // &&
+        //if IS NOT cube direction 1
+        // &&
+        //if IS NOT cube direction 1 && forward 1
+        // &&
+        //if IS NOT cube down 1
+        else if (Physics.Raycast(cubeTransform.position, Vector3.Cross(direction, Vector3.up), out hit_stepRight, scale) &&
+                hit_stepRight.collider.gameObject.tag == tag_MagenticEnvironment &&
+                !Physics.Raycast(cubeTransform.position, direction, scale) &&
+                !Physics.Raycast(cubeTransform.position + direction * scale, Vector3.Cross(direction, Vector3.up), scale)) /*&&
+                !Physics.Raycast(cubeTransform.position, Vector3.down, scale))*/
+        {
+            return RollType.step_Right;
+        }
+
+
+        ////////////// CLIMB UP //////////////
+        //if IS cube direction 1 && IS magnetic
+        // &&
+        //if IS cube direction 1 + up 1
+        // &&
+        //if IS NOT cube up 1
         else if (Physics.Raycast(cubeTransform.position, direction, out hit_climbUp, scale) &&
                  hit_climbUp.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale))
+                 Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
+                 !Physics.Raycast(cubeTransform.position, Vector3.up, scale))
         {
             return RollType.climb_Up;
         }
@@ -535,42 +592,48 @@ public class PlayerController : MonoBehaviour
         }
 
         ////////////// CLIMB LEFT //////////////
-        //if IS cube forward 1 && is magnetic
+        //if IS cube 'forward' 1 && is magnetic
         // &&
-        //if IS cube left 1 && forward 
+        //if IS cube left 1 && 'forward' 1
         // &&
-        //if IS NOT cube down 1      
+        //if IS NOT cube down 1
+        // &&
+        //if IS NOT cube direction 1
         else if (Physics.Raycast(cubeTransform.position, -Vector3.Cross(direction, Vector3.up), out hit_climbLeft, scale) &&
                  hit_climbLeft.collider.gameObject.tag == tag_MagenticEnvironment &&
                  Physics.Raycast(cubeTransform.position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale) &&
-                 !Physics.Raycast(cubeTransform.position, Vector3.down, scale)) 
+                 !Physics.Raycast(cubeTransform.position, Vector3.down, scale) &&
+                 !Physics.Raycast(cubeTransform.position, direction, scale)) 
         {
             return RollType.climb_Left;
         }
 
         ////////////// CLIMB RIGHT //////////////
-        //if IS cube forward 1 && is magnetic
+        //if IS cube 'forward' 1 && is magnetic
         // &&
-        //if IS cube right 1 && forward
+        //if IS cube right 1 && 'forward' 1
         // &&
         //if IS NOT cube down 1      
-        else if (Physics.Raycast(cubeTransform.position, Vector3.Cross(direction, Vector3.up), out hit_climbRight, scale) &&
+        // &&
+        //if IS NOT cube direction 1
+        if (Physics.Raycast(cubeTransform.position, Vector3.Cross(direction, Vector3.up), out hit_climbRight, scale) &&
                  hit_climbRight.collider.gameObject.tag == tag_MagenticEnvironment &&
                  Physics.Raycast(cubeTransform.position + direction * scale, Vector3.Cross(direction, Vector3.up), scale) &&
-                 !Physics.Raycast(cubeTransform.position, Vector3.down, scale))
+                 !Physics.Raycast(cubeTransform.position, Vector3.down, scale) &&
+                 !Physics.Raycast(cubeTransform.position, direction, scale))
         {
             return RollType.climb_Right;
         }
 
         ////////////// BONK //////////////
-        //if IS cube forward 1
+        //if IS cube direction 1
         // &&
         //if IS cube up 1
         // OR
-        //if IS cube forward 1 && IS NOT magnetic
+        //if IS cube direction 1 && IS NOT magnetic
         // && 
-        //if IS cube forward 1 + up 1
-                else if (Physics.Raycast(cubeTransform.position, direction, out hit_bonk, scale) &&
+        //if IS cube direction 1 + up 1
+        else if (Physics.Raycast(cubeTransform.position, direction, out hit_bonk, scale) &&
                  Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
                  hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment)
         {
