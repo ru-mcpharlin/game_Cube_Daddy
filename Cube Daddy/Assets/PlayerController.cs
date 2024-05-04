@@ -2,43 +2,69 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using Pixelplacement;
 
 public class PlayerController : MonoBehaviour
 {
+    //**********************************************************************************************************//
     #region Variables
     [Header("Player Input")]
     [SerializeField] float axis_horizontal;
     [SerializeField] float axis_vertical;
 
+    [Space]
+    [Space]
+    [Header("Tags")]
+    [SerializeField] string tag_Environment;
+    [SerializeField] string tag_MagenticEnvironment;
+    [SerializeField] string tag_player;
+
+    [Space]
+    [Space]
     [Header("Movement")]
     [SerializeField] bool isMoving;
     [SerializeField] bool isFalling;
-    [SerializeField] RollType rollType;
     [Space]
+    [SerializeField] bool isMagnetic;
+    [SerializeField] bool onMagneticCube;
+    [Space]
+    [SerializeField] RollType rollType;
+    [Header("Rotation")]
     [SerializeField] float remainingAngle;
     [SerializeField] Vector3 rotationAnchor;
     [SerializeField] Vector3 rotationAxis;
     [Space]
+    [Header("Cube variables")]
     [SerializeField] float scale;
     [SerializeField] float rollSpeed;
     [SerializeField] AnimationCurve rollCurve;
+    [Header("Fall")]
+    [SerializeField] float fallDistance;
+    [SerializeField] float fallJourneyLength;
+    [SerializeField] AnimationCurve fallCurve;
+    [SerializeField] RaycastHit hit;
 
+    [Space]
+    [Space]
     [Header("Cube")]
     [SerializeField] Transform cubeTransform;
-    [SerializeField] Rigidbody rb;
 
+    [Space]
+    [Space]
+    [Header("Larger Cubes")]
+    [SerializeField] int cubes_index;
+    [SerializeField] List<CubeData> cubeData;
+
+    [Space]
+    [Space]
     [Header("Camera")]
     [SerializeField] Transform vc_transform;
     [SerializeField] CinemachineVirtualCamera[] virtualCameras;
     [SerializeField] CameraFollow cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
-
-    [Header("Larger Cubes")]
-    [SerializeField] int cubes_index;
-    [SerializeField] List<CubeData> cubeData;
-
     #endregion
 
+    //**********************************************************************************************************//
     #region ENUM
     public enum RollType
     {
@@ -47,11 +73,16 @@ public class PlayerController : MonoBehaviour
         flat,
         step_Up,
         step_Down,
+        step_Left,
+        step_Right,
         climb_Up,
         climb_Down,
+        climb_Left,
+        climb_Right
     }
     #endregion
 
+    //**********************************************************************************************************//
     #region Start
     // Start is called before the first frame update
     void Start()
@@ -60,15 +91,15 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    //**********************************************************************************************************//
     #region Update
     // Update is called once per frame
     void Update()
     {
-        #region Player and Camera Position
         //update player game object position
         transform.position = cubeTransform.position;
-        #endregion
 
+        //get player input
         #region Player Input
         //get player input
         axis_horizontal = Input.GetAxis("Horizontal");
@@ -76,15 +107,9 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-        #region Falling
-        if (isFalling)
-        {
-            CheckForFallEnd();
-        }
-
-        #endregion
-
+        //control movement
         #region Movement
+        //if current moving or falling do nothing
         if (isMoving) return;
         if (isFalling) return;
 
@@ -109,30 +134,18 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Roll(Vector3.left));
         }
 
-        #endregion
-
-        
+        #endregion        
     }
     #endregion
 
-
-    public void CheckForFallEnd()
-    {
-        Debug.Log(rb.velocity);
-        if(rb.velocity == Vector3.zero)
-        {
-            isFalling = false;
-            rb.isKinematic = true;
-            FixFloatingPointErrors();
-        }
-    }
-
+    //**********************************************************************************************************//
     #region Roll Coroutine
     //coroutine
     IEnumerator Roll(Vector3 direction)
     {
         //is moving = true
         isMoving = true;
+        onMagneticCube = false;
 
         //translate relative direction;
         direction = TranslateRelativeDirection(direction);
@@ -224,72 +237,191 @@ public class PlayerController : MonoBehaviour
         //falling behaviour
         #region Fall
         //fall
-        Debug.DrawRay(cubeTransform.position, Vector3.down, Color.blue, scale);
+        //if there is nothing below at the end of a move
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
-            rb.isKinematic = false;
-            isFalling = true;
-            yield return new WaitForSeconds(0.1f);
+            //check not on a magnetic tile
+            CheckIfOnMagneticCube();
+
+            if (!onMagneticCube)
+            {
+                //draw a debug ray down
+                Debug.DrawRay(cubeTransform.position, Vector3.down, Color.white, Mathf.Infinity);
+
+                //raycast straight down
+                Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
+
+                //get distance
+                fallDistance = hit.distance;
+
+                //move cube down 
+                Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+
+                //set falling to true
+                isFalling = true;
+            }
         }
         #endregion
 
-        //check that cube hasnt been completed
-        #region check completed cube
-        if (cubeTransform.position == cubeData[cubes_index].missingPosition.position)
+        //final checks to end movement
+        #region end movement
+        //if is falling do nothing
+        if (isFalling)
         {
-            //set current small cubes parent to be large cubes transform
-            cubeTransform.gameObject.SetActive(false);
+            yield return new WaitForEndOfFrame();
+        }
+        else
+        {
+            //check if on magnetic cube
+            CheckIfOnMagneticCube();
 
-            //set cube transform to large cube transform
-            cubeTransform = cubeData[cubes_index].transform;
-
-            //update camera follow transform
-            cameraFollow.currentCubeTransform = cubeData[cubes_index].transform;
-
-            //set scale
-            scale = cubeData[cubes_index].scale;
-
-            //set active = false incomplete meshes
-            cubeData[cubes_index].incompleteMesh.SetActive(false);
-
-            //set active = true complete meshes
-            cubeData[cubes_index].completeMesh.SetActive(true);
-
-            //increment index
-            if (cubes_index < cubeData.Count - 1)
+            //check that cube hasnt been completed
+            #region check completed cube
+            if (cubeTransform.position == cubeData[cubes_index].missingPosition.position)
             {
-                cubes_index++;
+                //set current small cubes parent to be large cubes transform
+                cubeTransform.gameObject.SetActive(false);
+
+                //set cube transform to large cube transform
+                cubeTransform = cubeData[cubes_index].transform;
+
+                //update camera follow transform
+                cameraFollow.currentCubeTransform = cubeData[cubes_index].transform;
+
+                //set scale
+                scale = cubeData[cubes_index].scale;
+
+                //set active = false incomplete meshes
+                cubeData[cubes_index].incompleteMesh.SetActive(false);
+
+                //set active = true complete meshes
+                cubeData[cubes_index].completeMesh.SetActive(true);
+
+                //increment index
+                if (cubes_index < cubeData.Count - 1)
+                {
+                    cubes_index++;
+                }
+
+                //vc
+                foreach (CinemachineVirtualCamera vc in virtualCameras)
+                {
+                    vc.Priority = 0;
+                }
+                //set 
+                virtualCameras[cubes_index].Priority = 1;
+                vc_transform = virtualCameras[cubes_index].transform;
             }
 
-            //vc
-            foreach (CinemachineVirtualCamera vc in virtualCameras)
-            {
-                vc.Priority = 0;
-            }
-            //set 
-            virtualCameras[cubes_index].Priority = 1;
-            vc_transform = virtualCameras[cubes_index].transform;
+
+
+            #endregion
+
+            //set isMoving to false
+            isMoving = false;
         }
 
-
-
         #endregion
-
-        //set isMoving to false
-        isMoving = false;
     }
 
+    //**********************************************************************************************************//
+    //methods that assist the roll coroutine
+    #region Roll Helper Methods
+
+    //**********************************************************************************************************//
+    //methods that help with magnetic cube calculations
+    #region Magnetic Methods
+    private void CheckIfOnMagneticCube()
+    {
+        #region Debug
+        Debug.DrawRay(cubeTransform.position, Vector3.forward, Color.black, scale);
+        Debug.Log("Forward" + Physics.Raycast(cubeTransform.position, Vector3.forward, scale));
+        Debug.DrawRay(cubeTransform.position, Vector3.back, Color.black, scale);
+        Debug.Log("back" + Physics.Raycast(cubeTransform.position, Vector3.back, scale));
+        Debug.DrawRay(cubeTransform.position, Vector3.left, Color.black, scale);
+        Debug.Log("left" + Physics.Raycast(cubeTransform.position, Vector3.left, scale));
+        Debug.DrawRay(cubeTransform.position, Vector3.right, Color.black, scale);
+        Debug.Log("right" + Physics.Raycast(cubeTransform.position, Vector3.right, scale));
+        #endregion
+
+        //forward
+        RaycastHit hitForward;
+        if (Physics.Raycast(cubeTransform.position, Vector3.forward, out hitForward, scale))
+        {
+            if (hitForward.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+
+        //back
+        RaycastHit hitBackward;
+        if (Physics.Raycast(cubeTransform.position, Vector3.back, out hitBackward, scale))
+        {
+            if (hitBackward.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+
+        //left
+        RaycastHit hitLeft;
+        if (Physics.Raycast(cubeTransform.position, Vector3.left, out hitLeft, scale))
+        {
+            if (hitLeft.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+
+        //right
+        RaycastHit hitRight;
+        if (Physics.Raycast(cubeTransform.position, Vector3.right, out hitRight, scale))
+        {
+            if (hitRight.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+    }
+    #endregion
+
+    //**********************************************************************************************************//
+    //methods that control what happens at the start and end of the fall tween
+    #region Fall Tween Handlers
+    public void HandleStartFallTween()
+    {
+
+    }
+
+
+    public void HandleEndFallTween()
+    {
+        isFalling = false;
+        isMoving = false;
+    }
+    #endregion
+
+    //**********************************************************************************************************//
+    //fix floating point errors made by the computer
+    #region Precision
     private void FixFloatingPointErrors()
     {
+        //rotation ~ ROUND TO NEAREST INTEGER
         cubeTransform.rotation = Quaternion.Euler(Mathf.Round(cubeTransform.rotation.eulerAngles.x), Mathf.Round(cubeTransform.rotation.eulerAngles.y), Mathf.Round(cubeTransform.rotation.eulerAngles.z));
 
+        //position ~ ROUND TO NEAREST TENTH
         Vector3 positionVector = cubeTransform.position;
         positionVector = new Vector3(positionVector.x * 10, positionVector.y * 10, positionVector.z * 10);
         positionVector = new Vector3(Mathf.Round(positionVector.x), Mathf.Round(positionVector.y), Mathf.Round(positionVector.z));
         positionVector = new Vector3(positionVector.x / 10, positionVector.y / 10, positionVector.z / 10);
         cubeTransform.position = positionVector;
     }
+    #endregion
 
+    //**********************************************************************************************************//
+    //get the corrent roll type
+    #region Roll Type Calculation
     //calculate roll type
     private RollType CalculateRollType(Vector3 direction)
     {
@@ -301,10 +433,17 @@ public class PlayerController : MonoBehaviour
         /*Debug.DrawRay(cubeTransform.position, direction, Color.green, scale);
         Debug.DrawRay(cubeTransform.position + direction * scale, Vector3.down, Color.green, scale);*/
 
-        //step up
+        //climb up
+        RaycastHit hit_climbUp;
+
+        //bonk
+        RaycastHit hit_bonk;
+
+
+        ////////////// STEP UP //////////////
         //if IS cube forwards 1
         // &&
-        //if IS NOT cube forwards 1 + up 1
+        //if IS NOT cube forwards 1 + up 1 
         // &&
         //if IS NOT cube up 1
         if (Physics.Raycast(cubeTransform.position, direction, scale) &&
@@ -315,38 +454,73 @@ public class PlayerController : MonoBehaviour
             return RollType.step_Up;
         }
 
-        //step down
+        ////////////// STEP DOWN //////////////
+        //if IS NOT cube up 1
+        // &&
+        //if IS NOT cube forwards 1 + up 1
+        // &&
         //if IS NOT cube forwards 1
         // &&
         //if IS NOT cube forwards 1 + down 1
-        else if(!Physics.Raycast(cubeTransform.position, direction, scale) &&
-                !Physics.Raycast(cubeTransform.position + direction * scale, Vector3.down, scale))
+        // &&
+        // IS NOT on magnetic 
+        else if (!Physics.Raycast(cubeTransform.position, Vector3.up, scale) &&
+                !Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
+                !Physics.Raycast(cubeTransform.position, direction, scale) &&
+                !Physics.Raycast(cubeTransform.position + direction * scale, Vector3.down, scale) &&
+                !onMagneticCube)
         {
-            
             return RollType.step_Down;
         }
 
-        //bonk
-        //if IS cube forward 1
-        // && 
-        //if IS NOT cube forward 1 + up 1
-        // OR
+        ////////////// CLIMB UP //////////////
+        //if IS cube forward 1 && IS magnetic
+        // &&
+        //if IS cube forward 1 + up 1
+        else if (Physics.Raycast(cubeTransform.position, direction, out hit_climbUp, scale) &&
+                 hit_climbUp.collider.gameObject.tag == tag_MagenticEnvironment &&
+                 Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale))
+        {
+            return RollType.climb_Up;
+        }
+
+        ////////////// CLIMB DOWN //////////////
+        //if IS NOT cube down 1
+        // &&
+        //on magnetic wall
+        else if (Physics.Raycast(cubeTransform.position, Vector3.down, scale) &&
+                 onMagneticCube)
+        {
+            return RollType.climb_Down;
+        }
+
+
+        ////////////// BONK //////////////
         //if IS cube forward 1
         // &&
         //if IS cube up 1
-        else if(Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) ||
-            Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position, Vector3.up, scale))
+        // OR
+        //if IS cube forward 1 && IS NOT magnetic
+        // && 
+        //if IS cube forward 1 + up 1
+        else if (Physics.Raycast(cubeTransform.position, direction, out hit_bonk, scale) &&
+                 Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
+                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment)
+        {
+            return RollType.bonk;
+        }
+        else if(Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position, Vector3.up, scale))
         {
             return RollType.bonk;
         }
 
-        //head bonk
-        else if(!Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale))
+        ////////////// HEAD BONK //////////////
+        else if (!Physics.Raycast(cubeTransform.position, direction, scale) && Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale))
         {
             return RollType.head_bonk;
         }
 
-        //flat
+        ////////////// FLAT //////////////
         else
         {
             return RollType.flat;
@@ -407,6 +581,10 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(output);
         return output;
     }
+    #endregion
+
+    #endregion
+
     #endregion
 
     #endregion

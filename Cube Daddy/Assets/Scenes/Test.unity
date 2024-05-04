@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 14639731}
   m_Layer: 0
   m_Name: Cube (221)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 65012248}
   m_Layer: 0
   m_Name: Cube (223)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 90765658}
   m_Layer: 0
   m_Name: Cube (219)
-  m_TagString: Untagged
+  m_TagString: Magnetic Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -632,7 +632,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cb3f07514ff2cf47938a19500aa811b, type: 2}
+  - {fileID: 2100000, guid: 0bd6470b011f87840ba70e37cdf9f7ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -676,7 +676,7 @@ GameObject:
   - component: {fileID: 102480705}
   m_Layer: 0
   m_Name: Cube (220)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -773,7 +773,7 @@ GameObject:
   - component: {fileID: 111331246}
   m_Layer: 0
   m_Name: Cube (218)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1827,7 +1827,7 @@ GameObject:
   - component: {fileID: 530834323}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1861,8 +1861,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   axis_horizontal: 0
   axis_vertical: 0
+  tag_Environment: Environment
+  tag_MagenticEnvironment: Magnetic Environment
+  tag_player: Player
   isMoving: 0
   isFalling: 0
+  isMagnetic: 0
+  onMagneticCube: 0
   rollType: 0
   remainingAngle: 0
   rotationAnchor: {x: 0, y: 0, z: 0}
@@ -1893,8 +1898,41 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  fallDistance: 0
+  fallJourneyLength: 0.5
+  fallCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   cubeTransform: {fileID: 1144930073}
-  rb: {fileID: 1242903416}
+  cubes_index: 0
+  cubeData:
+  - {fileID: 492823941}
+  - {fileID: 289014065}
+  - {fileID: 1459779971}
+  - {fileID: 1612135039}
+  - {fileID: 401983240}
+  - {fileID: 223498580}
   vc_transform: {fileID: 1568097097}
   virtualCameras:
   - {fileID: 1568097096}
@@ -1906,14 +1944,6 @@ MonoBehaviour:
   - {fileID: 472947412}
   cameraFollow: {fileID: 329935396}
   cameraTrackingSpeed: 1
-  cubes_index: 0
-  cubeData:
-  - {fileID: 492823941}
-  - {fileID: 289014065}
-  - {fileID: 1459779971}
-  - {fileID: 1612135039}
-  - {fileID: 401983240}
-  - {fileID: 223498580}
 --- !u!1 &542342105
 GameObject:
   m_ObjectHideFlags: 3
@@ -2055,7 +2085,7 @@ GameObject:
   - component: {fileID: 594810816}
   m_Layer: 0
   m_Name: Cube (222)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2285,7 +2315,7 @@ GameObject:
   - component: {fileID: 638349119}
   m_Layer: 0
   m_Name: Cube (216)
-  m_TagString: Untagged
+  m_TagString: Magnetic Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2338,7 +2368,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cb3f07514ff2cf47938a19500aa811b, type: 2}
+  - {fileID: 2100000, guid: 0bd6470b011f87840ba70e37cdf9f7ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2382,7 +2412,7 @@ GameObject:
   - component: {fileID: 648784287}
   m_Layer: 0
   m_Name: Cube (146)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2606,7 +2636,7 @@ GameObject:
   - component: {fileID: 723369125}
   m_Layer: 0
   m_Name: Cube (226)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2619,7 +2649,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 723369123}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: -1, y: -1, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3025,7 +3055,7 @@ GameObject:
   - component: {fileID: 918726986}
   m_Layer: 0
   m_Name: Cube (225)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3124,7 +3154,7 @@ GameObject:
   - component: {fileID: 933670664}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4070,28 +4100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1242903415 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5002832804815216046, guid: aec917cd9c90aea49b0227b3c258f5d3,
-    type: 3}
-  m_PrefabInstance: {fileID: 5002832805954101942}
-  m_PrefabAsset: {fileID: 0}
---- !u!54 &1242903416
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242903415}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 122
-  m_CollisionDetection: 2
 --- !u!1 &1248551006
 GameObject:
   m_ObjectHideFlags: 0
@@ -4103,7 +4111,7 @@ GameObject:
   - component: {fileID: 1248551007}
   m_Layer: 0
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4243,6 +4251,11 @@ PrefabInstance:
       propertyPath: m_VersionIndex
       value: 242
       objectReference: {fileID: 0}
+    - target: {fileID: 7134689386977239594, guid: d7c0fdc76e77b9d4a9baec869cbe729e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b3f0de7176b2acc42878c695b120b350, type: 2}
     - target: {fileID: 7134689386977239595, guid: d7c0fdc76e77b9d4a9baec869cbe729e,
         type: 3}
       propertyPath: m_Mesh
@@ -4729,7 +4742,7 @@ GameObject:
   - component: {fileID: 1684861087}
   m_Layer: 0
   m_Name: Cube (148)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4826,7 +4839,7 @@ GameObject:
   - component: {fileID: 1704754144}
   m_Layer: 0
   m_Name: Cube (224)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5109,7 +5122,7 @@ GameObject:
   - component: {fileID: 1952699421}
   m_Layer: 0
   m_Name: Cube (147)
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5292,7 +5305,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975195499}
-  m_LocalRotation: {x: 0.178362, y: 0.000000029324442, z: -0.0000000053156017, w: 0.983965}
+  m_LocalRotation: {x: 0.17836201, y: -3.4387778e-15, z: 8.232491e-16, w: 0.983965}
   m_LocalPosition: {x: 0, y: 37.61, z: -98}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5315,7 +5328,7 @@ GameObject:
   - component: {fileID: 2098590181}
   m_Layer: 0
   m_Name: Cube (217)
-  m_TagString: Untagged
+  m_TagString: Magnetic Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5368,7 +5381,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cb3f07514ff2cf47938a19500aa811b, type: 2}
+  - {fileID: 2100000, guid: 0bd6470b011f87840ba70e37cdf9f7ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5422,7 +5435,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108620462}
-  m_LocalRotation: {x: 0.23703614, y: 0.000000016716015, z: -0.000000004078535, w: 0.9715009}
+  m_LocalRotation: {x: 0.23703614, y: -0.000000016716015, z: 0.000000004078535, w: 0.9715009}
   m_LocalPosition: {x: 0, y: 5.05, z: -6.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5780,7 +5793,7 @@ PrefabInstance:
     - target: {fileID: 5002832804815216047, guid: aec917cd9c90aea49b0227b3c258f5d3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 5002832804815216047, guid: aec917cd9c90aea49b0227b3c258f5d3,
         type: 3}
@@ -5832,6 +5845,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 971327140}
+    - target: {fileID: 5002832806596420690, guid: aec917cd9c90aea49b0227b3c258f5d3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b3f0de7176b2acc42878c695b120b350, type: 2}
     - target: {fileID: 5002832806596420692, guid: aec917cd9c90aea49b0227b3c258f5d3,
         type: 3}
       propertyPath: m_Mesh
