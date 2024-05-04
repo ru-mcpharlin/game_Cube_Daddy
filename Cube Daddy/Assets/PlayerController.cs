@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] bool isMoving;
+    [SerializeField] bool isFalling;
     [SerializeField] RollType rollType;
     [Space]
     [SerializeField] float remainingAngle;
@@ -22,13 +23,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float rollSpeed;
     [SerializeField] AnimationCurve rollCurve;
 
-    [Header("Mesh")]
+    [Header("Cube")]
     [SerializeField] Transform cubeTransform;
+    [SerializeField] Rigidbody rb;
 
     [Header("Camera")]
     [SerializeField] Transform vc_transform;
-    [SerializeField] CinemachineVirtualCamera vc;
-    [SerializeField] Transform cameraFollow;
+    [SerializeField] CinemachineVirtualCamera[] virtualCameras;
+    [SerializeField] CameraFollow cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
 
     [Header("Larger Cubes")]
@@ -65,19 +67,26 @@ public class PlayerController : MonoBehaviour
         #region Player and Camera Position
         //update player game object position
         transform.position = cubeTransform.position;
-
-        //camera position
-        CameraFollow();
         #endregion
 
         #region Player Input
         //get player input
         axis_horizontal = Input.GetAxis("Horizontal");
         axis_vertical = Input.GetAxis("Vertical");
+
+        #endregion
+
+        #region Falling
+        if (isFalling)
+        {
+            CheckForFallEnd();
+        }
+
         #endregion
 
         #region Movement
         if (isMoving) return;
+        if (isFalling) return;
 
         //forward
         if (axis_vertical == 1)
@@ -101,8 +110,22 @@ public class PlayerController : MonoBehaviour
         }
 
         #endregion
+
+        
     }
     #endregion
+
+
+    public void CheckForFallEnd()
+    {
+        Debug.Log(rb.velocity);
+        if(rb.velocity == Vector3.zero)
+        {
+            isFalling = false;
+            rb.isKinematic = true;
+            FixFloatingPointErrors();
+        }
+    }
 
     #region Roll Coroutine
     //coroutine
@@ -144,7 +167,7 @@ public class PlayerController : MonoBehaviour
                 remainingAngle = 180f;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 break;
-            
+
             //step down
             case RollType.step_Down:
                 remainingAngle = 180f;
@@ -172,9 +195,9 @@ public class PlayerController : MonoBehaviour
         rotationAxis = Vector3.Cross(Vector3.up, direction);
         //reset timer
         float timer = 0;
-        
+
         //while there is still angle to go
-        while(remainingAngle > 0)
+        while (remainingAngle > 0)
         {
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
@@ -195,41 +218,33 @@ public class PlayerController : MonoBehaviour
 
         //fix round errors
         #region Round Errors
-        cubeTransform.rotation = Quaternion.Euler(Mathf.Round(cubeTransform.rotation.eulerAngles.x), Mathf.Round(cubeTransform.rotation.eulerAngles.y), Mathf.Round(cubeTransform.rotation.eulerAngles.z));
-
-        Vector3 positionVector = cubeTransform.position;
-        positionVector = new Vector3(positionVector.x * 10, positionVector.y * 10, positionVector.z * 10);
-        positionVector = new Vector3(Mathf.Round(positionVector.x), Mathf.Round(positionVector.y), Mathf.Round(positionVector.z));
-        positionVector = new Vector3(positionVector.x / 10, positionVector.y / 10, positionVector.z / 10);
-        cubeTransform.position = positionVector;
+        FixFloatingPointErrors();
         #endregion
 
-        #region fall
+        //falling behaviour
+        #region Fall
         //fall
-        /*if(!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
+        Debug.DrawRay(cubeTransform.position, Vector3.down, Color.blue, scale);
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
-            timer = 0;
-
-            while(!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
-            {
-                cubeTransform.position += Vector3.down * scale;
-            }
-        }*/
-
-
-
-
+            rb.isKinematic = false;
+            isFalling = true;
+            yield return new WaitForSeconds(0.1f);
+        }
         #endregion
 
-
+        //check that cube hasnt been completed
         #region check completed cube
-        if(cubeTransform.position == cubeData[cubes_index].missingPosition.position)
+        if (cubeTransform.position == cubeData[cubes_index].missingPosition.position)
         {
             //set current small cubes parent to be large cubes transform
             cubeTransform.gameObject.SetActive(false);
 
             //set cube transform to large cube transform
             cubeTransform = cubeData[cubes_index].transform;
+
+            //update camera follow transform
+            cameraFollow.currentCubeTransform = cubeData[cubes_index].transform;
 
             //set scale
             scale = cubeData[cubes_index].scale;
@@ -240,19 +255,20 @@ public class PlayerController : MonoBehaviour
             //set active = true complete meshes
             cubeData[cubes_index].completeMesh.SetActive(true);
 
-            //vc
-            Vector3 vc_followOffset = vc.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset;
-            vc_followOffset = new Vector3(0, 
-                                          vc_followOffset.y / 1.5f,
-                                          vc_followOffset.z * 2);
-            vc.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset = vc_followOffset;
-
-
             //increment index
-            if (cubes_index < cubeData.Count-1)
+            if (cubes_index < cubeData.Count - 1)
             {
                 cubes_index++;
             }
+
+            //vc
+            foreach (CinemachineVirtualCamera vc in virtualCameras)
+            {
+                vc.Priority = 0;
+            }
+            //set 
+            virtualCameras[cubes_index].Priority = 1;
+            vc_transform = virtualCameras[cubes_index].transform;
         }
 
 
@@ -263,9 +279,28 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
     }
 
+    private void FixFloatingPointErrors()
+    {
+        cubeTransform.rotation = Quaternion.Euler(Mathf.Round(cubeTransform.rotation.eulerAngles.x), Mathf.Round(cubeTransform.rotation.eulerAngles.y), Mathf.Round(cubeTransform.rotation.eulerAngles.z));
+
+        Vector3 positionVector = cubeTransform.position;
+        positionVector = new Vector3(positionVector.x * 10, positionVector.y * 10, positionVector.z * 10);
+        positionVector = new Vector3(Mathf.Round(positionVector.x), Mathf.Round(positionVector.y), Mathf.Round(positionVector.z));
+        positionVector = new Vector3(positionVector.x / 10, positionVector.y / 10, positionVector.z / 10);
+        cubeTransform.position = positionVector;
+    }
+
     //calculate roll type
     private RollType CalculateRollType(Vector3 direction)
     {
+        //step up
+        /*Debug.DrawRay(cubeTransform.position, direction, Color.red, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, direction, Color.red, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.up, Color.red, scale);*/
+        //step down
+        /*Debug.DrawRay(cubeTransform.position, direction, Color.green, scale);
+        Debug.DrawRay(cubeTransform.position + direction * scale, Vector3.down, Color.green, scale);*/
+
         //step up
         //if IS cube forwards 1
         // &&
@@ -276,6 +311,7 @@ public class PlayerController : MonoBehaviour
             !Physics.Raycast(cubeTransform.position + Vector3.up * scale, direction, scale) &&
             !Physics.Raycast(cubeTransform.position, Vector3.up, scale))
         {
+            
             return RollType.step_Up;
         }
 
@@ -284,8 +320,9 @@ public class PlayerController : MonoBehaviour
         // &&
         //if IS NOT cube forwards 1 + down 1
         else if(!Physics.Raycast(cubeTransform.position, direction, scale) &&
-                !Physics.Raycast(cubeTransform.position + Vector3.forward * scale, Vector3.down, scale))
+                !Physics.Raycast(cubeTransform.position + direction * scale, Vector3.down, scale))
         {
+            
             return RollType.step_Down;
         }
 
@@ -373,20 +410,4 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #endregion
-
-    //camera methods
-    #region Camera
-    public void CameraFollow()
-    {
-        if(Mathf.Abs(cameraFollow.position.y) - Mathf.Abs(cubeTransform.position.y) >= 1f)
-        {
-            cameraFollow.position = Vector3.MoveTowards(cameraFollow.position, cubeTransform.position, Time.deltaTime * cameraTrackingSpeed);
-        }
-        else
-        {
-            cameraFollow.position = new Vector3(cubeTransform.position.x, cameraFollow.position.y, cubeTransform.position.z);
-        }
-    }
-    #endregion
-
 }
