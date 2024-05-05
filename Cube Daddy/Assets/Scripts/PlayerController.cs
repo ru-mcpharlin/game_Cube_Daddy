@@ -62,6 +62,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera[] virtualCameras;
     [SerializeField] CameraFollow cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
+
+    [Space]
+    [Space]
+    [Header("Pressure Plates")]
+    [SerializeField] PressurePlate[] pressurePlates;
     #endregion
 
     //**********************************************************************************************************//
@@ -87,7 +92,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        pressurePlates = FindObjectsOfType<PressurePlate>();
     }
     #endregion
 
@@ -309,6 +314,10 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            //pressure plates
+            CheckAllPressurePlates();
+
+
             //check if on magnetic cube
             CheckIfOnMagneticCube();
 
@@ -421,6 +430,20 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    //**********************************************************************************************************//
+    //pressure plate methods
+    #region Pressure Plates
+    public void CheckAllPressurePlates()
+    {
+        foreach(PressurePlate pressurePlate in pressurePlates)
+        {
+            pressurePlate.CheckIfTriggered(cubeTransform.position, scale);
+        }
+    }
+
+
     #endregion
 
     //**********************************************************************************************************//
