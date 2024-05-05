@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     [Header("Cube variables")]
     [SerializeField] float scale;
     [SerializeField] float rollSpeed;
+    [SerializeField] float rollSpeed_fast;
+    [SerializeField] float rollSpeed_slow;
     [SerializeField] AnimationCurve rollCurve;
     [Header("Fall")]
     [SerializeField] float fallDistance;
@@ -254,9 +256,19 @@ public class PlayerController : MonoBehaviour
         //while there is still angle to go
         while (remainingAngle > 0)
         {
+
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
-            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed / scale, remainingAngle);
+            float rotationAngle;
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                 rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed_slow, remainingAngle);
+            }
+            else
+            {
+                rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed_fast, remainingAngle);
+            }
+            
 
             //rotation
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
@@ -317,7 +329,6 @@ public class PlayerController : MonoBehaviour
             //pressure plates
             CheckAllPressurePlates();
 
-
             //check if on magnetic cube
             CheckIfOnMagneticCube();
 
@@ -343,20 +354,20 @@ public class PlayerController : MonoBehaviour
                 //set active = true complete meshes
                 cubeData[cubes_index].completeMesh.SetActive(true);
 
-                //increment index
-                if (cubes_index < cubeData.Count - 1)
-                {
-                    cubes_index++;
-                }
-
                 //vc
                 foreach (CinemachineVirtualCamera vc in virtualCameras)
                 {
                     vc.Priority = 0;
                 }
                 //set 
-                virtualCameras[cubes_index].Priority = 1;
-                vc_transform = virtualCameras[cubes_index].transform;
+                virtualCameras[cubes_index+1].Priority = 1;
+                vc_transform = virtualCameras[cubes_index+1].transform;
+
+                //increment index
+                if (cubes_index < cubeData.Count - 1)
+                {
+                    cubes_index++;
+                }
             }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CubeData : MonoBehaviour
 {
-    [SerializeField] public int scale;
+    [SerializeField] public float scale;
     [SerializeField] public Transform missingPosition;
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
