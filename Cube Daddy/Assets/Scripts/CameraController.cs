@@ -23,6 +23,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera camera2_camera;
     [SerializeField] List<CinemachineVirtualCamera> camera3_cameras;
     [SerializeField] CinemachineVirtualCamera camera4_camera;
+    [SerializeField] CinemachineVirtualCamera camera5_camera;
 
     [Header("Camera 3")]
     [SerializeField] public float camera3_mouseThreshold;
@@ -46,7 +47,8 @@ public class CameraController : MonoBehaviour
         camera1_StaticIsometric,
         camera2_DynamicIsometric_Locked,
         camera3_DynamicIsometric_Unlocked,
-        camera4_DynamicPerspective
+        camera4_PerspectiveMatchCut,
+        camera5_DynamicPerspective
     }
 
     public void SetCameraState(CameraState inputState)
@@ -80,8 +82,12 @@ public class CameraController : MonoBehaviour
                     camera3_cameras.Add(vc);
                     break;
 
-                case CameraState.camera4_DynamicPerspective:
+                case CameraState.camera4_PerspectiveMatchCut:
                     camera4_camera = vc;
+                    break;
+
+                case CameraState.camera5_DynamicPerspective:
+                    camera5_camera = vc;
                     break;
             }
         }
@@ -108,7 +114,11 @@ public class CameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            TurnCamera4On();
+            StartCoroutine(TurnCamera4On());
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            StartCoroutine(TurnCamera5On());
         }
 
 
@@ -230,14 +240,30 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void TurnCamera4On()
+    IEnumerator TurnCamera5On()
     {
         TurnOffAllCameras();
-        SetCameraState(CameraState.camera4_DynamicPerspective);
+        SetCameraState(CameraState.camera5_DynamicPerspective);
+
+        yield return null;
+    }
+
+
+    IEnumerator TurnCamera4On()
+    {
+        TurnOffAllCameras();
+        SetCameraState(CameraState.camera4_PerspectiveMatchCut);
+
+        camera4_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset =
+            camera3_cameras[camera3_index].GetCinemachineComponent<CinemachineFramingTransposer>().m_TrackedObjectOffset / 2;
+
+        yield return new WaitForSeconds(1);
+
         camera4_camera.Priority = CAMERA_ON;
         mainCamera.orthographic = false;
         player.vc_transform = camera4_camera.transform;
 
+        yield return new WaitForEndOfFrame();
     }
 
     private void TurnCamera3On()
