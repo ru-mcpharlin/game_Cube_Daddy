@@ -13,7 +13,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -21,6 +21,26 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _SampleTexture2D_5e9bb5248cac450bbd0549819d43606a_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f55248bf63ba90f46ba08d03ed8d8a0b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_7171a9f78b154bb2bf6b6d7ce56fbf16_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 2c6e011f15d545748874cc34cfdae2dc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ed3656b4a827473e9f73b9a34188aeca_Texture_1:
+        m_Texture: {fileID: 2800000, guid: b79fa3e8e797b4b4caa474b96202e74b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _inkNormal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _splatTexture:
+        m_Texture: {fileID: 2800000, guid: f55248bf63ba90f46ba08d03ed8d8a0b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -39,6 +59,9 @@ Material:
     - _DecalMeshDepthBias: 0
     - _DecalMeshViewBias: 0
     - _DrawOrder: 0
+    - _UVDistortion: 0.167
+    - _offset: -0.5
+    - _splatSize: 0.5
     m_Colors:
     - _inkColor1: {r: 0.103543766, g: 0, b: 1, a: 0}
   m_BuildTextureStacks: []
