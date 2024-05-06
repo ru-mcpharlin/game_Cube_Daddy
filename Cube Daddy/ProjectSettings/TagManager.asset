@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - currentCube
   - Environment
   - Magnetic Environment
+  - Current Cube
   layers:
   - Default
   - TransparentFX

@@ -3,14 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Pixelplacement;
+using System;
+using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
     //**********************************************************************************************************//
     #region Variables
     [Header("Player Input")]
-    [SerializeField] float axis_horizontal;
-    [SerializeField] float axis_vertical;
+    [SerializeField] InputActionAsset inputActions;
+    private InputAction move;
+    private InputAction camera_Mouse;
+    private InputAction camera_Gamepad;
+    [Space]
+    [SerializeField] Vector2 inputVector;
+    [SerializeField] Vector2 cameraVector_Mouse;
+    [SerializeField] Vector2 cameraVector_Gamepad;
 
     [Space]
     [Space]
@@ -18,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] string tag_Environment;
     [SerializeField] string tag_MagenticEnvironment;
     [SerializeField] string tag_player;
+    [SerializeField] string tag_currentPlayer;
 
     [Space]
     [Space]
@@ -37,8 +47,6 @@ public class PlayerController : MonoBehaviour
     [Header("Cube variables")]
     [SerializeField] float scale;
     [SerializeField] float rollSpeed;
-    [SerializeField] float rollSpeed_fast;
-    [SerializeField] float rollSpeed_slow;
     [SerializeField] AnimationCurve rollCurve;
     [Header("Fall")]
     [SerializeField] float fallDistance;
@@ -55,13 +63,13 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Larger Cubes")]
     [SerializeField] int cubes_index;
-    [SerializeField] List<CubeData> cubeData;
+    [SerializeField] CubeData[] cubeDatas;
 
     [Space]
     [Space]
     [Header("Camera")]
-    [SerializeField] Transform vc_transform;
-    [SerializeField] CinemachineVirtualCamera[] virtualCameras;
+    [SerializeField] CameraController cameraController;
+    [SerializeField] public Transform vc_transform;
     [SerializeField] CameraFollow cameraFollow;
     [SerializeField] float cameraTrackingSpeed;
 
@@ -94,9 +102,37 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //pressure plates
         pressurePlates = FindObjectsOfType<PressurePlate>();
+
+        //cube transform
+        cubeTransform = GameObject.FindGameObjectWithTag(tag_currentPlayer).transform;
+
+        //camera controller
+        cameraController = FindObjectOfType<CameraController>();
+
+        //camera follow
+        cameraFollow = FindObjectOfType<CameraFollow>();
+        cameraFollow.currentCubeTransform = cubeTransform;
+
+        //cubes
+        cubeDatas = FindObjectsOfType<CubeData>();
+        Array.Reverse(cubeDatas);
+
+        //input
+        inputActions.Enable();
+        move = inputActions.FindAction("move");
+        move.Enable();
+
+        camera_Mouse = inputActions.FindAction("camera Mouse");
+        camera_Mouse.Enable();
+
+        camera_Gamepad = inputActions.FindAction("camera Gamepad");
+        camera_Gamepad.Enable();
     }
+
     #endregion
+
 
     //**********************************************************************************************************//
     #region Update
@@ -109,10 +145,43 @@ public class PlayerController : MonoBehaviour
         //get player input
         #region Player Input
         //get player input
-        axis_horizontal = Input.GetAxis("Horizontal");
-        axis_vertical = Input.GetAxis("Vertical");
+        inputVector = move.ReadValue<Vector2>();
+        inputVector.x = Mathf.Round(inputVector.x);
+        inputVector.y = Mathf.Round(inputVector.y);
 
+        cameraVector_Mouse = camera_Mouse.ReadValue<Vector2>();
+        cameraVector_Gamepad = camera_Gamepad.ReadValue<Vector2>();
         #endregion
+
+        
+        //camera control
+        if (cameraController.cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
+        {
+            if (Mathf.Abs(cameraVector_Gamepad.x) >= cameraController.camera3_gamepadThreshold)
+            {
+                if(cameraVector_Gamepad.x > 0)
+                {
+                    cameraController.DecreaseCamera3Index();
+                }
+                else
+                {
+                    cameraController.IncreaseCamera3Index();
+                }
+            }
+            else if(Mathf.Abs(cameraVector_Mouse.x) >= cameraController.camera3_mouseThreshold)
+            {
+                if (cameraVector_Mouse.x > 0)
+                {
+                    cameraController.DecreaseCamera3Index();
+                }
+                else
+                {
+                    cameraController.IncreaseCamera3Index();
+                }
+            }
+        }
+
+
 
         //control movement
         #region Movement
@@ -121,22 +190,22 @@ public class PlayerController : MonoBehaviour
         if (isFalling) return;
 
         //forward
-        if (axis_vertical == 1)
+        if (inputVector.y == 1)
         {
             StartCoroutine(Roll(Vector3.forward));
         }
         //back
-        else if(axis_vertical == -1)
+        else if(inputVector.y == -1)
         {
             StartCoroutine(Roll(Vector3.back));
         }
         //right
-        else if(axis_horizontal == 1)
+        else if(inputVector.x == 1)
         {
             StartCoroutine(Roll(Vector3.right));
         }
         //left
-        else if (axis_horizontal == -1)
+        else if (inputVector.x == -1)
         {
             StartCoroutine(Roll(Vector3.left));
         }
@@ -256,19 +325,9 @@ public class PlayerController : MonoBehaviour
         //while there is still angle to go
         while (remainingAngle > 0)
         {
-
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
-            float rotationAngle;
-            if (Input.GetKey(KeyCode.LeftControl))
-            {
-                 rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed_slow, remainingAngle);
-            }
-            else
-            {
-                rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed_fast, remainingAngle);
-            }
-            
+            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
 
             //rotation
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
@@ -334,43 +393,32 @@ public class PlayerController : MonoBehaviour
 
             //check that cube hasnt been completed
             #region check completed cube
-            if (cubeTransform.position == cubeData[cubes_index].missingPosition.position)
+            if (cubeTransform.position == cubeDatas[cubes_index].missingPosition.position)
             {
                 //set current small cubes parent to be large cubes transform
                 cubeTransform.gameObject.SetActive(false);
 
                 //set cube transform to large cube transform
-                cubeTransform = cubeData[cubes_index].transform;
+                cubeTransform = cubeDatas[cubes_index].transform;
 
                 //update camera follow transform
-                cameraFollow.currentCubeTransform = cubeData[cubes_index].transform;
+                cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
 
                 //set scale
-                scale = cubeData[cubes_index].scale;
+                scale = cubeDatas[cubes_index].scale;
 
                 //set active = false incomplete meshes
-                cubeData[cubes_index].incompleteMesh.SetActive(false);
+                cubeDatas[cubes_index].incompleteMesh.SetActive(false);
 
                 //set active = true complete meshes
-                cubeData[cubes_index].completeMesh.SetActive(true);
-
-                //vc
-                foreach (CinemachineVirtualCamera vc in virtualCameras)
-                {
-                    vc.Priority = 0;
-                }
-                //set 
-                virtualCameras[cubes_index+1].Priority = 1;
-                vc_transform = virtualCameras[cubes_index+1].transform;
+                cubeDatas[cubes_index].completeMesh.SetActive(true);
 
                 //increment index
-                if (cubes_index < cubeData.Count - 1)
+                if (cubes_index < cubeDatas.Length - 1)
                 {
                     cubes_index++;
                 }
             }
-
-
 
             #endregion
 
@@ -750,6 +798,14 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #endregion
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region Camera Controls
+
+
+
 
     #endregion
 }

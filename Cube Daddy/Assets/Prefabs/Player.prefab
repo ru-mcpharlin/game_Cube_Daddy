@@ -44,11 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4555a57cdf981914ebed7bb4f96f819b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axis_horizontal: 0
-  axis_vertical: 0
+  inputActions: {fileID: -944628639613478452, guid: 40d8f8fb3e1728e4bb98e9c60d419829,
+    type: 3}
+  inputVector: {x: 0, y: 0}
+  cameraVector: {x: 0, y: 0}
   tag_Environment: Environment
   tag_MagenticEnvironment: Magnetic Environment
   tag_player: Player
+  tag_currentPlayer: Current Cube
   isMoving: 0
   isFalling: 0
   isMagnetic: 0
@@ -58,7 +61,7 @@ MonoBehaviour:
   rotationAnchor: {x: 0, y: 0, z: 0}
   rotationAxis: {x: 0, y: 0, z: 0}
   scale: 1
-  rollSpeed: 25
+  rollSpeed: 15
   rollCurve:
     serializedVersion: 2
     m_Curve:
@@ -111,22 +114,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   cubeTransform: {fileID: 0}
   cubes_index: 0
-  cubeData:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  cubeDatas: []
   vc_transform: {fileID: 0}
-  virtualCameras:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  virtualCameras: []
   cameraFollow: {fileID: 0}
   cameraTrackingSpeed: 1
   pressurePlates: []
