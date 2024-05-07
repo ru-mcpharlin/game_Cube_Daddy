@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour
 
     #endregion
 
-    #region
+    #region Enum
     public enum CameraState
     {
         camera1_StaticIsometric,
@@ -240,6 +240,18 @@ public class CameraController : MonoBehaviour
 
     }
     #endregion
+
+    #region Camera 1
+
+    public void SetCamera1Index(int inputIndex)
+    {
+        camera1_index = inputIndex;
+        TurnCamera1On();
+    }
+
+
+    #endregion
+
 
     #region Camera 3
     public void IncreaseCamera3Index()

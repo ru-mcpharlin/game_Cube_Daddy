@@ -6,6 +6,7 @@ using Pixelplacement;
 using System;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -77,6 +78,11 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Pressure Plates")]
     [SerializeField] PressurePlate[] pressurePlates;
+
+    [Space]
+    [Space]
+    [Header("Enemies")]
+    [SerializeField] EnemyController[] enemies;
     #endregion
 
     //**********************************************************************************************************//
@@ -104,6 +110,9 @@ public class PlayerController : MonoBehaviour
     {
         //pressure plates
         pressurePlates = FindObjectsOfType<PressurePlate>();
+
+        //eneies
+        enemies = FindObjectsOfType<EnemyController>();
 
         //cube transform
         cubeTransform = GameObject.FindGameObjectWithTag(tag_currentPlayer).transform;
@@ -153,7 +162,8 @@ public class PlayerController : MonoBehaviour
         cameraVector_Gamepad = camera_Gamepad.ReadValue<Vector2>();
         #endregion
 
-        
+        //camera 3 debugging
+        #region camera debug
         //camera control
         if (cameraController.cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
         {
@@ -181,7 +191,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
+        #endregion
 
         //control movement
         #region Movement
@@ -219,8 +229,6 @@ public class PlayerController : MonoBehaviour
     //coroutine
     IEnumerator Roll(Vector3 direction)
     {
-        
-
         //translate relative direction;
         direction = TranslateRelativeDirection(direction);
 
@@ -391,32 +399,38 @@ public class PlayerController : MonoBehaviour
             //check if on magnetic cube
             CheckIfOnMagneticCube();
 
+            //enemy moves
+            CheckEnemyMovement();
+
             //check that cube hasnt been completed
             #region check completed cube
-            if (cubeTransform.position == cubeDatas[cubes_index].missingPosition.position)
+            if (cubeDatas.Count() > 0)
             {
-                //set current small cubes parent to be large cubes transform
-                cubeTransform.gameObject.SetActive(false);
-
-                //set cube transform to large cube transform
-                cubeTransform = cubeDatas[cubes_index].transform;
-
-                //update camera follow transform
-                cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
-
-                //set scale
-                scale = cubeDatas[cubes_index].scale;
-
-                //set active = false incomplete meshes
-                cubeDatas[cubes_index].incompleteMesh.SetActive(false);
-
-                //set active = true complete meshes
-                cubeDatas[cubes_index].completeMesh.SetActive(true);
-
-                //increment index
-                if (cubes_index < cubeDatas.Length - 1)
+                if (cubeTransform.position == cubeDatas[cubes_index].missingPosition.position)
                 {
-                    cubes_index++;
+                    //set current small cubes parent to be large cubes transform
+                    cubeTransform.gameObject.SetActive(false);
+
+                    //set cube transform to large cube transform
+                    cubeTransform = cubeDatas[cubes_index].transform;
+
+                    //update camera follow transform
+                    cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+
+                    //set scale
+                    scale = cubeDatas[cubes_index].scale;
+
+                    //set active = false incomplete meshes
+                    cubeDatas[cubes_index].incompleteMesh.SetActive(false);
+
+                    //set active = true complete meshes
+                    cubeDatas[cubes_index].completeMesh.SetActive(true);
+
+                    //increment index
+                    if (cubes_index < cubeDatas.Length - 1)
+                    {
+                        cubes_index++;
+                    }
                 }
             }
 
@@ -438,15 +452,16 @@ public class PlayerController : MonoBehaviour
     #region Magnetic Methods
     private void CheckIfOnMagneticCube()
     {
+
         #region Debug
-        Debug.DrawRay(cubeTransform.position, Vector3.forward, Color.black, scale);
+        /*Debug.DrawRay(cubeTransform.position, Vector3.forward, Color.black, scale);
         Debug.Log("Forward" + Physics.Raycast(cubeTransform.position, Vector3.forward, scale));
         Debug.DrawRay(cubeTransform.position, Vector3.back, Color.black, scale);
         Debug.Log("back" + Physics.Raycast(cubeTransform.position, Vector3.back, scale));
         Debug.DrawRay(cubeTransform.position, Vector3.left, Color.black, scale);
         Debug.Log("left" + Physics.Raycast(cubeTransform.position, Vector3.left, scale));
         Debug.DrawRay(cubeTransform.position, Vector3.right, Color.black, scale);
-        Debug.Log("right" + Physics.Raycast(cubeTransform.position, Vector3.right, scale));
+        Debug.Log("right" + Physics.Raycast(cubeTransform.position, Vector3.right, scale));*/
         #endregion
 
         //forward
@@ -489,6 +504,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     #endregion
 
     //**********************************************************************************************************//
@@ -502,6 +518,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    #endregion
+
+    //**********************************************************************************************************//
+    //enemy
+    #region Enemy Handlers
+
+    public void CheckEnemyMovement()
+    {
+        foreach(EnemyController enemy in enemies)
+        {
+            enemy.EnemyBehaviour();
+        }
+    }
 
     #endregion
 
@@ -798,14 +828,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #endregion
-
-    #endregion
-
-    //**********************************************************************************************************//
-    #region Camera Controls
-
-
-
 
     #endregion
 }
