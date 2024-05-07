@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    //**********************************************************************************************************//
     //Variables
     #region Variables
     private PlayerController player;
@@ -16,11 +17,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float wakeUpRadius;
 
 
-    
+
 
 
     #endregion
 
+    //**********************************************************************************************************//
     //enum
     #region enum
     public enum EnemyState
@@ -37,6 +39,7 @@ public class EnemyController : MonoBehaviour
 
     #endregion
 
+    //**********************************************************************************************************//
     //start
     #region Start
 
@@ -47,6 +50,7 @@ public class EnemyController : MonoBehaviour
     }
     #endregion
 
+    //**********************************************************************************************************//
     //update
     #region Update
     // Update is called once per frame
@@ -57,6 +61,7 @@ public class EnemyController : MonoBehaviour
 
     #endregion
 
+    //**********************************************************************************************************//
     //move
     #region Move
 
@@ -76,9 +81,10 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    //**********************************************************************************************************//
+
     public void Sleep()
     {
-        Debug.Log(Vector3.Distance(transform.position, player.transform.position));
         if(wakeUpRadius > Vector3.Distance(transform.position, player.transform.position))
         {
             SetEnemyState(EnemyState.chase);
