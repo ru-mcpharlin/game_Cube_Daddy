@@ -19,6 +19,8 @@ public class PressurePlate : MonoBehaviour
             scale == transform.localScale.x &&
             !hasBeenTriggered)
         {
+            Debug.Log("Test");
+            hasBeenTriggered = true;
             unityEvent.Invoke();
             button.transform.position = triggeredButtonPosition.position;
         }
