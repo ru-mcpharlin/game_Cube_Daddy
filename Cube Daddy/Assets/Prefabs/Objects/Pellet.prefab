@@ -508,3 +508,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  collectVFX: {fileID: 1408685256953024745, guid: ff0df45af9935a4478853ebe985863b2,
+    type: 3}
