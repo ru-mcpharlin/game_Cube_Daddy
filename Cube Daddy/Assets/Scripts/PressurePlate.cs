@@ -10,19 +10,54 @@ public class PressurePlate : MonoBehaviour
     [SerializeField] bool hasBeenTriggered;
     [SerializeField] Transform targetPosition;
     [Space]
+    [SerializeField] bool needToHaveCollectedPellets;
+    [SerializeField] bool hasCollectedPellets;
+    [SerializeField] List<GameObject> pellets;
+    [Space]
     [SerializeField] GameObject button;
     [SerializeField] Transform triggeredButtonPosition;
 
     public void CheckIfTriggered(Vector3 playerPosition, float scale)
     {
+        foreach(GameObject pellet in pellets)
+        {
+            if(pellet == null)
+            {
+                pellets.Remove(pellet);
+            }
+        }
+
+        if(pellets.Count == 0)
+        {
+            hasCollectedPellets = true;
+        }
+
+
+
         if (playerPosition == targetPosition.position && 
             scale == transform.localScale.x &&
             !hasBeenTriggered)
         {
-            Debug.Log("Test");
-            hasBeenTriggered = true;
-            unityEvent.Invoke();
-            button.transform.position = triggeredButtonPosition.position;
+            if (needToHaveCollectedPellets)
+            {
+                if (hasCollectedPellets)
+                {
+                    TriggerPressurePad();
+                }
+            }
+            else
+            {
+                TriggerPressurePad();
+            }
+
+            
         }
+    }
+
+    private void TriggerPressurePad()
+    {
+        hasBeenTriggered = true;
+        unityEvent.Invoke();
+        button.transform.position = triggeredButtonPosition.position;
     }
 }
