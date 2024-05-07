@@ -17,9 +17,9 @@ public class PlayerController : MonoBehaviour
     private InputAction camera_Mouse;
     private InputAction camera_Gamepad;
     [Space]
-    [SerializeField] Vector2 inputVector;
-    [SerializeField] Vector2 cameraVector_Mouse;
-    [SerializeField] Vector2 cameraVector_Gamepad;
+    [SerializeField] public Vector2 inputVector;
+    [SerializeField] public Vector2 cameraVector_Mouse;
+    [SerializeField] public Vector2 cameraVector_Gamepad;
 
     [Space]
     [Space]

@@ -31,6 +31,16 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float coolDownTimerMax;
     [SerializeField] public float coolDownTimer;
 
+    [Header("Camera 5")]
+    [SerializeField] public CinemachineOrbitalTransposer _5orbitalTransposer;
+    [SerializeField] public Vector2 inputDelta;
+    [Space]
+    [SerializeField] public float gamepadSpeed;
+    [SerializeField] public float mouseSpeed;
+    [Space]
+    [SerializeField] public float yValue;
+    [Space]
+
     [Header("Index")]
     [SerializeField] int camera1_index;
     [SerializeField] int camera3_index;
@@ -57,10 +67,10 @@ public class CameraController : MonoBehaviour
     }
     #endregion
 
+    #region Start
     // Start is called before the first frame update
     void Start()
     {
-
         player = FindObjectOfType<PlayerController>();
         brain = GetComponentInChildren<CinemachineBrain>();
         cameras = GetComponentsInChildren<CinemachineVirtualCamera>();
@@ -88,13 +98,16 @@ public class CameraController : MonoBehaviour
 
                 case CameraState.camera5_DynamicPerspective:
                     camera5_camera = vc;
+                    _5orbitalTransposer = camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
                     break;
             }
         }
 
         TurnCamera1On();
     }
+    #endregion
 
+    #region Update
     // Update is called once per frame
     void Update()
     {
@@ -185,7 +198,8 @@ public class CameraController : MonoBehaviour
         }
         #endregion
 
-        if(brain.ActiveBlend != null)
+        #region isBlending && Timer
+        if (brain.ActiveBlend != null)
         {
             isBlending = true;
         }
@@ -198,10 +212,36 @@ public class CameraController : MonoBehaviour
         {
             coolDownTimer -= Time.deltaTime;
         }
+        #endregion
 
-        
+        #region Camera 5 Control
+        if (cameraState == CameraState.camera5_DynamicPerspective)
+        {
+            //mouse 
+            if(player.cameraVector_Mouse.magnitude > player.cameraVector_Gamepad.magnitude)
+            {
+                _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime;
+                yValue += player.cameraVector_Mouse.y * Time.deltaTime;
+                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(yValue, 3, 10);
+            }
+            //gamepad
+            else
+            {
+                _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
+                yValue += player.cameraVector_Gamepad.y * Time.deltaTime;
+                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(yValue, 3, 10);
+            }
+
+            
+
+        }
+
+        #endregion
+
     }
+    #endregion
 
+    #region Camera 3
     public void IncreaseCamera3Index()
     {
         if (coolDownTimer <= 0)
@@ -239,11 +279,15 @@ public class CameraController : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Turn Cameras On
     IEnumerator TurnCamera5On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera5_DynamicPerspective);
+        camera5_camera.Priority = CAMERA_ON;
+        player.vc_transform = camera5_camera.transform;
 
         yield return null;
     }
@@ -263,7 +307,9 @@ public class CameraController : MonoBehaviour
         mainCamera.orthographic = false;
         player.vc_transform = camera4_camera.transform;
 
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(1);
+
+        StartCoroutine(TurnCamera5On());
     }
 
     private void TurnCamera3On()
@@ -298,4 +344,5 @@ public class CameraController : MonoBehaviour
             vc.Priority = CAMERA_OFF;
         }
     }
+    #endregion
 }
