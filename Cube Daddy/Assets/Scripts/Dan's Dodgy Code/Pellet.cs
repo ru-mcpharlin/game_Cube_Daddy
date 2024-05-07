@@ -37,6 +37,6 @@ public class Pellet : MonoBehaviour
     private void CollectPellet()
     {
         Instantiate(collectVFX, transform.position, Quaternion.Euler(-90, 0, 0));
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 }
