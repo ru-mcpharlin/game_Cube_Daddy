@@ -50,6 +50,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float scale;
     [SerializeField] float rollSpeed;
     [SerializeField] AnimationCurve rollCurve;
+    [Space]
+    [SerializeField] float bonkAngle;
+    [SerializeField] AnimationCurve bonkCurve;
+    [SerializeField] float headBonkAngle;
+    [SerializeField] AnimationCurve headBonkCurve;
     [Header("Fall")]
     [SerializeField] float fallDistance;
     [SerializeField] float fallJourneyLength;
@@ -232,7 +237,6 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Roll(Vector3.left));
         }
-
         #endregion
 
         //quit
@@ -268,14 +272,14 @@ public class PlayerController : MonoBehaviour
         {
             //bonk
             case RollType.bonk:
-                isMoving = false;
-                yield break;
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position - direction * scale / 2 + Vector3.down * scale / 2;
+                break;
 
             //head bonk
             case RollType.head_bonk:
                 isMoving = false;
                 yield break;
-
 
             //flat
             case RollType.flat:
@@ -355,9 +359,18 @@ public class PlayerController : MonoBehaviour
         //while there is still angle to go
         while (remainingAngle > 0)
         {
+            float rotationAngle;
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
-            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
+            if(rollType == RollType.bonk)
+            {
+                rotationAngle = Mathf.Min(bonkCurve.Evaluate(timer) * rollSpeed, remainingAngle);
+            }
+            else
+            {
+                rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
+            }
+            
 
             //rotation
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
@@ -371,6 +384,13 @@ public class PlayerController : MonoBehaviour
         }
         ///////////////////////////////////////////////////////////////////////////////
         #endregion
+
+        //fix bonk errors
+        if(rollType == RollType.bonk)
+        {
+            cubeTransform.rotation = Quaternion.identity;
+        }
+
 
         //fix round errors
         #region Round Errors
@@ -845,6 +865,21 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #endregion
+
+    //**********************************************************************************************************//
+    //rock back helpers
+    public bool CheckCanDoRockBack(Vector3 direction)
+    {
+        //if there is not a cube behind
+        if(!Physics.Raycast(cubeTransform.position, -direction, scale))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     #endregion
 
