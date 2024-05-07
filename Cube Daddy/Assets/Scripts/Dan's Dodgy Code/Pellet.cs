@@ -8,11 +8,10 @@ public class Pellet : MonoBehaviour
 {
     public int orderInGroup;
     public AnimationCurve positionCurve, rotationCurve, scaleCurve;
+    public GameObject collectVFX;
     private float delay = 0.2f;
     private float animDuration = 0.75f;
     private float animRepeatDelay = 1.75f;
-    
-    private Animator animator;
 
     private void Start()
     {
@@ -37,6 +36,7 @@ public class Pellet : MonoBehaviour
 
     private void CollectPellet()
     {
+        Instantiate(collectVFX, transform.position, Quaternion.Euler(-90, 0, 0));
         Destroy(gameObject);
     }
 }
