@@ -816,6 +816,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &335652556 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3116906282441467340, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1555760768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &345479921
 GameObject:
   m_ObjectHideFlags: 0
@@ -33289,6 +33295,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &659094627 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3116906282441467340, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 2086996326}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &675755779
 Mesh:
   m_ObjectHideFlags: 0
@@ -35955,6 +35967,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1112613216 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3116906282441467340, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 504577035}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1126794202
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36410,6 +36428,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1347078634 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6916661275037652096, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 504577035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1415984053 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3116906282441467340, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1531939462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1443594917
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -36522,6 +36552,46 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1050827480}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[0]
+      value: 
+      objectReference: {fileID: 1347078634}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[1]
+      value: 
+      objectReference: {fileID: 335652556}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[2]
+      value: 
+      objectReference: {fileID: 1415984053}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[3]
+      value: 
+      objectReference: {fileID: 659094627}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[4]
+      value: 
+      objectReference: {fileID: 1784286081}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: pellets.Array.data[5]
+      value: 
+      objectReference: {fileID: 1112613216}
+    - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
+        type: 3}
+      propertyPath: needToHaveCollectedPellets
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5895325685719154340, guid: 82bc6c1416c0e2240b84bab842c2427f,
         type: 3}
       propertyPath: unityEvent.m_PersistentCalls.m_Calls.Array.size
@@ -37802,6 +37872,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1784286081 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3116906282441467340, guid: c3dcee58625bf7648a7a1e9c6951ffd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 693757329}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1895763136
 Mesh:
   m_ObjectHideFlags: 0
@@ -39657,8 +39733,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4945828866510624276}
-  m_LocalRotation: {x: -0.05412272, y: 0.9181111, z: -0.36876166, w: -0.13475011}
-  m_LocalPosition: {x: 14.815145, y: 15.617144, z: 21.897144}
+  m_LocalRotation: {x: -0.05412273, y: 0.9181111, z: -0.36876166, w: -0.13475013}
+  m_LocalPosition: {x: 14.815145, y: 15.617144, z: 21.897146}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

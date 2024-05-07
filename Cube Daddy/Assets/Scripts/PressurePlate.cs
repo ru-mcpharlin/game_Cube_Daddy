@@ -19,15 +19,16 @@ public class PressurePlate : MonoBehaviour
 
     public void CheckIfTriggered(Vector3 playerPosition, float scale)
     {
+        int index = 0;
         foreach(GameObject pellet in pellets)
         {
-            if(pellet == null)
+            if(pellet != null)
             {
-                pellets.Remove(pellet);
+                index++;
             }
-        }
+        }    
 
-        if(pellets.Count == 0)
+        if(index == 0)
         {
             hasCollectedPellets = true;
         }
