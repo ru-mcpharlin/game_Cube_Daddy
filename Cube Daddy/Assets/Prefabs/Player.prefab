@@ -96,17 +96,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0.65129304
-      outSlope: -0.65129304
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.1097561
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -140,9 +140,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  stepUp1BonkAngle: 1
-  stepUp1BonkSpeed: 3000
-  stepUp1BonkCurve:
+  step1BonkAngle: 1
+  step1BonkSpeed: 3000
+  step1BonkCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -166,9 +166,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  stepUp2BonkAngle: 1
-  stepUp2BonkSpeed: 1700
-  stepUp2BonkCurve:
+  step2BonkAngle: 1
+  step2BonkSpeed: 1700
+  step2BonkCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -192,9 +192,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  stepUp3BonkAngle: 1
-  stepUp3BonkSpeed: 1700
-  stepUp3BonkCurve:
+  step3BonkAngle: 1
+  step3BonkSpeed: 1700
+  step3BonkCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
