@@ -51,11 +51,11 @@ Material:
     - _Opacity: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Size: 1
+    - _Size: 0
     - _Smoothnes: 0.5
     m_Colors:
     - _Color: {r: 1, g: 0.5896226, b: 0.5896226, a: 0}
     - _Distance_Color: {r: 0.23300104, g: 0.6415094, b: 0.23432855, a: 0}
     - _Distance_Range: {r: 0, g: 0, b: 0, a: 0}
-    - _Position: {r: 0.69395983, g: 0.28268635, b: 25.079372, a: 0}
+    - _Position: {r: 0.57273495, g: 0.56294143, b: 25.11396, a: 0}
   m_BuildTextureStacks: []
