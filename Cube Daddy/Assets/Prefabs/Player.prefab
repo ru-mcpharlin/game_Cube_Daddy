@@ -47,7 +47,8 @@ MonoBehaviour:
   inputActions: {fileID: -944628639613478452, guid: 40d8f8fb3e1728e4bb98e9c60d419829,
     type: 3}
   inputVector: {x: 0, y: 0}
-  cameraVector: {x: 0, y: 0}
+  cameraVector_Mouse: {x: 0, y: 0}
+  cameraVector_Gamepad: {x: 0, y: 0}
   tag_Environment: Environment
   tag_MagenticEnvironment: Magnetic Environment
   tag_player: Player
@@ -59,7 +60,7 @@ MonoBehaviour:
   rollType: 0
   remainingAngle: 0
   rotationAnchor: {x: 0, y: 0, z: 0}
-  rotationAxis: {x: 0, y: 0, z: 0}
+  rotationAxis: {x: 0, y: -0, z: 0}
   scale: 1
   rollSpeed: 15
   rollCurve:
@@ -79,6 +80,57 @@ MonoBehaviour:
       value: 1
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bonkAngle: 1
+  bonkCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0.65129304
+      outSlope: -0.65129304
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.1097561
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  headBonkAngle: 1
+  headBonkSpeed: 5
+  headBonkCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0.45354885
+      outSlope: -0.45354885
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.2
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -115,8 +167,9 @@ MonoBehaviour:
   cubeTransform: {fileID: 0}
   cubes_index: 0
   cubeDatas: []
+  cameraController: {fileID: 0}
   vc_transform: {fileID: 0}
-  virtualCameras: []
   cameraFollow: {fileID: 0}
   cameraTrackingSpeed: 1
   pressurePlates: []
+  enemies: []

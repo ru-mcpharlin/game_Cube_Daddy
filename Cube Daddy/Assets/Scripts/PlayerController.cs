@@ -50,6 +50,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float scale;
     [SerializeField] float rollSpeed;
     [SerializeField] AnimationCurve rollCurve;
+    [Space]
+    [SerializeField] float bonkAngle;
+    [SerializeField] float bonkSpeed;
+    [SerializeField] AnimationCurve bonkCurve;
+    [Space]
+    [SerializeField] float headBonkAngle;
+    [SerializeField] float headBonkSpeed;
+    [SerializeField] AnimationCurve headBonkCurve;
+    [Space]
+    [SerializeField] float stepUp1BonkAngle;
+    [SerializeField] float stepUp1BonkSpeed;
+    [SerializeField] AnimationCurve stepUp1BonkCurve;
+    [Space]
+    [SerializeField] float stepUp2BonkAngle;
+    [SerializeField] float stepUp2BonkSpeed;
+    [SerializeField] AnimationCurve stepUp2BonkCurve;
+    [Space]
+    [SerializeField] float stepUp3BonkAngle;
+    [SerializeField] float stepUp3BonkSpeed;
+    [SerializeField] AnimationCurve stepUp3BonkCurve;
+    [Space]
+    
     [Header("Fall")]
     [SerializeField] float fallDistance;
     [SerializeField] float fallJourneyLength;
@@ -90,8 +112,15 @@ public class PlayerController : MonoBehaviour
     #region ENUM
     public enum RollType
     {
-        bonk,
-        head_bonk,
+        stuck,
+        bonk_flat,
+        bonk_head,
+        bonk_stepUp1,
+        bonk_stepUp2,
+        bonk_stepUp3,
+        bonk_stepDown1,
+        bonk_stepDown2,
+        bonk_stepDown3,
         flat,
         step_Up,
         step_Down,
@@ -154,7 +183,6 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
-
 
     //**********************************************************************************************************//
     #region Update
@@ -232,7 +260,6 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Roll(Vector3.left));
         }
-
         #endregion
 
         //quit
@@ -266,16 +293,23 @@ public class PlayerController : MonoBehaviour
         //get roll information
         switch (rollType)
         {
-            //bonk
-            case RollType.bonk:
+            //stuck
+            case RollType.stuck:
                 isMoving = false;
                 yield break;
+
+            //bonk
+            case RollType.bonk_flat:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position - direction * scale / 2 + Vector3.down * scale / 2;
+                break;
 
             //head bonk
-            case RollType.head_bonk:
-                isMoving = false;
-                yield break;
-
+            case RollType.bonk_head:
+                remainingAngle = headBonkAngle;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                direction = -direction;
+                break;
 
             //flat
             case RollType.flat:
@@ -287,6 +321,27 @@ public class PlayerController : MonoBehaviour
             case RollType.step_Up:
                 remainingAngle = 180f;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                break;
+
+            //step up bonk 1
+            case RollType.bonk_stepUp1:
+                remainingAngle = headBonkAngle;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                direction = -direction;
+                break;
+
+            //step up bonk 2
+            case RollType.bonk_stepUp2:
+                remainingAngle = stepUp2BonkAngle;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                direction = -direction;
+                break;
+
+            //step up bonk 3
+            case RollType.bonk_stepUp3:
+                remainingAngle = stepUp3BonkAngle;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                direction = -direction;
                 break;
 
             //step down
@@ -355,10 +410,34 @@ public class PlayerController : MonoBehaviour
         //while there is still angle to go
         while (remainingAngle > 0)
         {
+            float rotationAngle;
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
-            float rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed, remainingAngle);
-
+            if(rollType == RollType.bonk_flat)
+            {
+                rotationAngle = Mathf.Min(bonkCurve.Evaluate(timer) * bonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            else if(rollType == RollType.bonk_head)
+            {
+                rotationAngle = Mathf.Min(headBonkCurve.Evaluate(timer) * headBonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            else if (rollType == RollType.bonk_stepUp1)
+            {
+                rotationAngle = Mathf.Min(stepUp1BonkCurve.Evaluate(timer) * stepUp1BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            else if (rollType == RollType.bonk_stepUp2)
+            {
+                rotationAngle = Mathf.Min(stepUp2BonkCurve.Evaluate(timer) * stepUp2BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            else if (rollType == RollType.bonk_stepUp3)
+            {
+                rotationAngle = Mathf.Min(stepUp3BonkCurve.Evaluate(timer) * stepUp3BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            else
+            {
+                rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed * Time.deltaTime, remainingAngle);
+            }
+            
             //rotation
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
 
@@ -369,6 +448,29 @@ public class PlayerController : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        if (rollType == RollType.bonk_flat)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+        else if (rollType == RollType.bonk_head)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -headBonkAngle);
+        }
+        else if(rollType == RollType.bonk_stepUp1)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -stepUp1BonkAngle);
+        }
+        else if (rollType == RollType.bonk_stepUp2)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -stepUp2BonkAngle);
+        }
+        else if (rollType == RollType.bonk_stepUp3)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -stepUp3BonkAngle);
+        }
+
+
         ///////////////////////////////////////////////////////////////////////////////
         #endregion
 
@@ -474,7 +576,6 @@ public class PlayerController : MonoBehaviour
     #region Magnetic Methods
     private void CheckIfOnMagneticCube()
     {
-
         #region Debug
         /*Debug.DrawRay(cubeTransform.position, Vector3.forward, Color.black, scale);
         Debug.Log("Forward" + Physics.Raycast(cubeTransform.position, Vector3.forward, scale));
@@ -521,6 +622,26 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(cubeTransform.position, Vector3.right, out hitRight, scale))
         {
             if (hitRight.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+
+        //down
+        RaycastHit hitDown;
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out hitDown, scale))
+        {
+            if (hitDown.collider.gameObject.tag == tag_MagenticEnvironment)
+            {
+                onMagneticCube = true;
+            }
+        }
+
+        //up
+        RaycastHit hitUp;
+        if (Physics.Raycast(cubeTransform.position, Vector3.up, out hitUp, scale))
+        {
+            if (hitUp.collider.gameObject.tag == tag_MagenticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -632,18 +753,103 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit_bonk;
 
 
+        //**********************************************************************************************************//
+        // STEP
+        #region
         ////////////// STEP UP //////////////
-        //if IS cube direction 1
+        // IS cube direction 1
         // &&
-        //if IS NOT cube direction 1 + up 1 
+        // IS NOT cube direction 1 + up 1 
         // &&
-        //if IS NOT cube up 1
+        // IS NOT cube up 1
+        // &&
+        // IS NOT cube direction -1
+        // &&
+        // IS NOT cube direction -1 + up 1
+        // &&
+        // IS NOT cube up + 2
+        // &&
+        // IS NOT cube direction 1 + up + 2
         if (Physics.Raycast(position, direction, scale) &&
             !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
-            !Physics.Raycast(position, Vector3.up, scale))
+            !Physics.Raycast(position, Vector3.up, scale) &&
+            !Physics.Raycast(position, -direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, -direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale * 2, direction, scale))
         {
 
             return RollType.step_Up;
+        }
+
+        ////////////// STEP UP 1 BONK //////////////
+        // IS cube direction 1
+        // &&
+        // IS NOT cube direction 1 + up 1 
+        // &&
+        // IS NOT cube up 1
+        // &&
+        // IS NOT cube direction -1
+        // &&
+        // IS cube direction -1 + up 1
+        if (Physics.Raycast(position, direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+            !Physics.Raycast(position, Vector3.up, scale) &&
+            !Physics.Raycast(position, -direction, scale) &&
+            Physics.Raycast(position + Vector3.up * scale, -direction, scale))
+        {
+
+            return RollType.bonk_stepUp1;
+        }
+
+        ////////////// STEP UP 2 BONK //////////////
+        // IS cube direction 1
+        // &&
+        // IS NOT cube direction 1 + up 1 
+        // &&
+        // IS NOT cube up 1
+        // &&
+        // IS NOT cube direction -1
+        // &&
+        // IS NOT cube direction -1 + up 1
+        // &&
+        // IS cube up + 2
+
+        if (Physics.Raycast(position, direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+            !Physics.Raycast(position, Vector3.up, scale) &&
+            !Physics.Raycast(position, -direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, -direction, scale) &&
+            Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale))
+        {
+
+            return RollType.bonk_stepUp2;
+        }
+
+        ////////////// STEP UP 3 BONK //////////////
+        // IS cube direction 1
+        // &&
+        // IS NOT cube direction 1 + up 1 
+        // &&
+        // IS NOT cube up 1
+        // &&
+        // IS NOT cube direction -1
+        // &&
+        // IS NOT cube direction -1 + up 1
+        // &&
+        // IS NOT cube up + 2
+        // &&
+        // IS cube direction 1 + up + 2
+        if (Physics.Raycast(position, direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+            !Physics.Raycast(position, Vector3.up, scale) &&
+            !Physics.Raycast(position, -direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, -direction, scale) &&
+            !Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale) &&
+            Physics.Raycast(position + Vector3.up * scale * 2, direction, scale))
+        {
+
+            return RollType.bonk_stepUp3;
         }
 
         ////////////// STEP DOWN //////////////
@@ -657,10 +863,10 @@ public class PlayerController : MonoBehaviour
         // &&
         //if IS cube down 1
         else if (!Physics.Raycast(position, Vector3.up, scale) &&
-                !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
-                !Physics.Raycast(position, direction, scale) &&
-                !Physics.Raycast(position + direction * scale, Vector3.down, scale) &&
-                Physics.Raycast(position, Vector3.down, scale))
+                 !Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+                 !Physics.Raycast(position, direction, scale) &&
+                 !Physics.Raycast(position + direction * scale, Vector3.down, scale) &&
+                 Physics.Raycast(position, Vector3.down, scale))
         {
             return RollType.step_Down;
         }
@@ -698,6 +904,8 @@ public class PlayerController : MonoBehaviour
         {
             return RollType.step_Right;
         }
+
+        #endregion
 
 
         ////////////// CLIMB UP //////////////
@@ -760,35 +968,91 @@ public class PlayerController : MonoBehaviour
         }
 
         ////////////// BONK //////////////
-        //if IS cube direction 1
-        // &&
-        //if IS cube up 1
-        // OR
-        //if IS cube direction 1 && IS NOT magnetic
+        // IS cube direction 1 && IS NOT magnetic
         // && 
-        //if IS cube direction 1 + up 1
+        // IS cube direction 1 + up 1
+        // &&
+        // IS NOT cube direction -1
+        //
+        // OR
+        //
+        // IS cube direction 1
+        // &&
+        // IS cube up 1
+        // &&
+        // IS NOT cube direction -1
         else if (Physics.Raycast(position, direction, out hit_bonk, scale) &&
                  Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
-                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment)
+                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment &&
+                 !Physics.Raycast(position, -direction, scale))
         {
-            return RollType.bonk;
+            return RollType.bonk_flat;
         }
-        else if(Physics.Raycast(position, direction, scale) && Physics.Raycast(position, Vector3.up, scale))
+        else if(Physics.Raycast(position, direction, scale) && 
+                Physics.Raycast(position, Vector3.up, scale) &&
+                !Physics.Raycast(position, -direction, scale))
         {
-            return RollType.bonk;
+            return RollType.bonk_flat;
         }
 
         ////////////// HEAD BONK //////////////
-        else if (!Physics.Raycast(position, direction, scale) && Physics.Raycast(position + Vector3.up * scale, direction, scale))
+        // IS NOT cube direction 1
+        // &&
+        // IS cube direction 1 + up 1
+        // &&
+        // IS NOT cube dirction -1
+        // &&
+        // IS NOT cube up 1
+        else if (!Physics.Raycast(position, direction, scale) && 
+                 Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+                 !Physics.Raycast(position, -direction, scale) &&
+                 !Physics.Raycast(position, Vector3.up, scale))
         {
-            return RollType.head_bonk;
+            return RollType.bonk_head;
+        }
+
+        ////////////// STUCK //////////////
+        //if cant bonk or head bonk because of cubes around it
+        //bonk 1
+        //bonk 2
+        //headbonk 1
+        else if (Physics.Raycast(position, direction, out hit_bonk, scale) &&
+                 Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment &&
+                 Physics.Raycast(position, -direction, scale)
+                 ||
+                 Physics.Raycast(position, direction, scale) &&
+                 Physics.Raycast(position, Vector3.up, scale) &&
+                 Physics.Raycast(position, -direction, scale)
+                 ||
+                 !Physics.Raycast(position, direction, scale) &&
+                 Physics.Raycast(position + Vector3.up * scale, direction, scale) &&
+                 Physics.Raycast(position, -direction, scale) &&
+                 Physics.Raycast(position, Vector3.up, scale))
+        {
+            return RollType.stuck;
         }
 
         ////////////// FLAT //////////////
-        else
+        //IS NOT cube direction 1
+        // &&
+        //IS NOT cube up 1
+        // &&
+        //IS NOT cube direction 1 + up 1
+        // &&
+        //IS cube direction 1 + down 1
+        else if(!Physics.Raycast(position, direction, scale) &&
+                !Physics.Raycast(position, Vector3.up, scale) &&
+                !Physics.Raycast(position + direction * scale, Vector3.up, scale) &&
+                Physics.Raycast(position + direction * scale, Vector3.down, scale))
         {
             return RollType.flat;
-        }        
+        }
+        else
+        {
+            return RollType.stuck;
+        }
+        
     }
 
     //calcualate the direction vector based on the camera
