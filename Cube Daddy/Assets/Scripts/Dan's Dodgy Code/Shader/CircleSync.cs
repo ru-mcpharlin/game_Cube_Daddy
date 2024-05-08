@@ -7,13 +7,14 @@ public class CircleSync : MonoBehaviour
 {
     public static int PosID = Shader.PropertyToID("_Position");
     public static int SizeID = Shader.PropertyToID("_Size");
-
     public float cutoutSize;
     public Material[] wallMaterials;
-    public Camera cam;
     public LayerMask mask;
+    public Camera cam;
 
     private float size;
+
+
 
     // Update is called once per frame
     void Update()
