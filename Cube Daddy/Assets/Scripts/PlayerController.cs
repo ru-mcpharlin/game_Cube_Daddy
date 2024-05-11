@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Tags")]
     [SerializeField] string tag_Environment;
-    [SerializeField] string tag_MagenticEnvironment;
+    [SerializeField] string tag_MagneticEnvironment;
     [SerializeField] string tag_player;
     [SerializeField] string tag_currentPlayer;
 
@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isMagnetic;
     [SerializeField] bool onMagneticCube;
     [Space]
+    [SerializeField] CalculateRollTypeScript calculateRollTypeScript;
+    [SerializeField] bool debugMovement;
     [SerializeField] RollType rollType;
     [Header("Rotation")]
     [SerializeField] float remainingAngle;
@@ -181,6 +183,9 @@ public class PlayerController : MonoBehaviour
 
         camera_Gamepad = inputActions.FindAction("camera Gamepad");
         camera_Gamepad.Enable();
+
+        //calculate roll type
+        calculateRollTypeScript = GetComponent<CalculateRollTypeScript>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -295,7 +300,8 @@ public class PlayerController : MonoBehaviour
         direction = TranslateRelativeDirection(direction);
 
         //figure out roll type
-        rollType = CalculateRollType(direction, cubeTransform.position, scale);
+        rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, scale);
+        if(debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, scale);
 
         //is moving = true
         isMoving = true;
@@ -654,6 +660,7 @@ public class PlayerController : MonoBehaviour
         ///////////////////////////////////////////////////////////////////////////////
         #endregion
 
+
         //fix round errors
         #region Round Errors
         FixFloatingPointErrors();
@@ -663,7 +670,7 @@ public class PlayerController : MonoBehaviour
         #region Fall
         //fall
         //if there is nothing below at the end of a move
-        if (!isBlock_down1)
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
             //check not on a magnetic tile
             CheckIfOnMagneticCube();
@@ -771,7 +778,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitForward;
         if (Physics.Raycast(cubeTransform.position, Vector3.forward, out hitForward, scale))
         {
-            if (hitForward.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitForward.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -781,7 +788,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitBackward;
         if (Physics.Raycast(cubeTransform.position, Vector3.back, out hitBackward, scale))
         {
-            if (hitBackward.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitBackward.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -791,7 +798,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitLeft;
         if (Physics.Raycast(cubeTransform.position, Vector3.left, out hitLeft, scale))
         {
-            if (hitLeft.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitLeft.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -801,7 +808,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitRight;
         if (Physics.Raycast(cubeTransform.position, Vector3.right, out hitRight, scale))
         {
-            if (hitRight.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitRight.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -811,7 +818,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitDown;
         if (Physics.Raycast(cubeTransform.position, Vector3.down, out hitDown, scale))
         {
-            if (hitDown.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitDown.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -821,7 +828,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hitUp;
         if (Physics.Raycast(cubeTransform.position, Vector3.up, out hitUp, scale))
         {
-            if (hitUp.collider.gameObject.tag == tag_MagenticEnvironment)
+            if (hitUp.collider.gameObject.tag == tag_MagneticEnvironment)
             {
                 onMagneticCube = true;
             }
@@ -891,869 +898,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    //**********************************************************************************************************//
-    //get the corrent roll type
-    #region Roll Type Calculation
-    //calculate roll type
-    private RollType CalculateRollType(Vector3 direction, Vector3 position, float scale)
-    {
-        #region Debug
 
-        #endregion
-
-        ////////////////////////////////////////////////
-        RaycastHit hit_leftForward1;
-        RaycastHit hit_rightForward1;
-
-        //////////////// IS BLOCK ///////////
-        //direction 1
-        bool isBlock_direction1 = Physics.Raycast(position, direction, scale);
-        bool isBlock_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, scale);
-        bool isBlock_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, scale);
-        bool isBlock_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale);
-
-        //direction 2
-        bool isBlock_direction2 = Physics.Raycast(position + direction * scale, direction, scale);
-        bool isBlock_direction2down1 = Physics.Raycast(position + direction * scale * 2, Vector3.down, scale);
-
-        //block 1
-        bool isBlock_up1 = Physics.Raycast(position, Vector3.up, scale);
-
-        //block 2
-        bool isBlock_up2 = Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale);
-
-        //direction minus 1
-        bool isBlock_directionMinus1 = Physics.Raycast(position, -direction, scale);
-        bool isBlock_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale);
-
-        //down 1
-        bool isBlock_down1 = Physics.Raycast(position, Vector3.down, scale);
-
-        //left forward 1
-        bool isBlock_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out hit_leftForward1, scale);
-        bool isBlock_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale);
-
-        //left forward 2
-        bool isBlock_leftForward2direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
-
-        //left back 1
-        bool isBlock_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale);
-        bool isBlock_leftBack1direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
-
-        //right forward 1
-        bool isBlock_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out hit_rightForward1, scale);
-        bool isBlock_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), scale);
-
-        //right back 1
-        bool isBlock_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale);
-        bool isBlock_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
-
-        //right forward 2
-        bool isBlock_rightForward2direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
-        ////////////////////// IS MAGNETIC ///////////////////
-        //left forward 1
-        bool isMagnetic_leftForward1 = hit_leftForward1.collider.gameObject.tag == tag_MagenticEnvironment;
-
-        //right forward 1
-        bool isMagnetic_rightForward1 = hit_rightForward1.collider.gameObject.tag == tag_MagenticEnvironment;
-
-
-        //**********************************************************************************************************//
-        // STEP
-        #region STEP
-
-        // STEP UP
-        #region STEP UP
-        ////////////// STEP UP //////////////
-        // IS cube direction 1
-        // &&
-        // IS NOT cube direction 1 + up 1 
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + up 1
-        // &&
-        // IS NOT cube up + 2
-        // &&
-        // IS NOT cube direction 1 + up + 2
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            !isBlock_up2 &&
-            !isBlock_direction1up2)
-        {
-
-            return RollType.step_Up;
-        }
-
-        ////////////// STEP UP 1 BONK //////////////
-        // IS cube direction 1
-        // &&
-        // IS NOT cube direction 1 + up 1 
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS cube direction -1 + up 1
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            isBlock_directionMinus1up1)
-        {
-
-            return RollType.bonk_stepUp1;
-        }
-
-        ////////////// STEP UP 2 BONK //////////////
-        // IS cube direction 1
-        // &&
-        // IS NOT cube direction 1 + up 1 
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + up 1
-        // &&
-        // IS cube up + 2
-
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            isBlock_up2)
-        {
-
-            return RollType.bonk_stepUp2;
-        }
-
-        ////////////// STEP UP 3 BONK //////////////
-        // IS cube direction 1
-        // &&
-        // IS NOT cube direction 1 + up 1 
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + up 1
-        // &&
-        // IS NOT cube up + 2
-        // &&
-        // IS cube direction 1 + up + 2
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            !isBlock_up2 &&
-            isBlock_direction1up2)
-        {
-
-            return RollType.bonk_stepUp3;
-        }
-
-        #endregion
-
-        // STEP DOWN
-        #region STEP DOWN
-        ////////////// STEP DOWN //////////////
-        // IS cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 + down 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction 1 + up 1
-        // &&
-        // IS NOT cube in direction 2
-        // &&
-        // IS NOT cube in direction 2 + down 1
-        else if (isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_direction1down1 &&
-                 !isBlock_up1 &&
-                 !isBlock_direction1up1 &&
-                 !isBlock_direction2 &&
-                 !isBlock_direction2down1)
-        {
-            return RollType.step_Down;
-        }
-
-        ////////////// STEP DOWN BONK 1 //////////////
-        // IS cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 + down 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS cube direction 1 + up 1
-        else if (isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_direction1down1 &&
-                 !isBlock_up1 &&
-                 isBlock_direction1up1)
-        {
-            return RollType.bonk_stepDown1;
-        }
-
-        ////////////// STEP DOWN BONK 2 //////////////
-        // IS cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 + down 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction 1 + up 1
-        // &&
-        // IS cube in direction 2
-        else if (isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_direction1down1 &&
-                 !isBlock_up1 &&
-                 !isBlock_direction1up1 &&
-                 isBlock_direction2)
-        {
-            return RollType.flat;
-        }
-
-        ////////////// STEP DOWN BONK 3 //////////////
-        // IS cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 + down 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction 1 + up 1
-        // &&
-        // IS NOT cube in direction 2
-        // &&
-        // IS cube in direction 2 + down 1
-        else if (isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_direction1down1 &&
-                 !isBlock_up1 &&
-                 !isBlock_direction1up1 &&
-                 !isBlock_direction2 &&
-                 isBlock_direction2down1)
-        {
-            return RollType.flat;
-        }
-
-        #endregion
-
-        //STEP LEFT
-        #region Step Left
-        ////////////// STEP LEFT //////////////
-        // IS cube 'forward' 1 && IS magnetic
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS NOT cube direction 2
-        // &&
-        // IS NOT cube 'forward' 2 + direction 1
-        else if (isBlock_leftForward1 &&
-                 isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                !isBlock_direction2 &&
-                !isBlock_leftForward2direction1)
-
-        {
-            return RollType.step_Left;
-        }
-
-        ////////////// STEP LEFT BONK 1 //////////////
-        // IS cube 'forward' 1 && IS magnetic
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS cube 'forward' -1 + direction 1
-        else if (isBlock_leftForward1 &&
-                 isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                 isBlock_leftBack1direction1)
-
-        {
-            return RollType.bonk_stepLeft1;
-        }
-
-        ////////////// STEP LEFT BONK 2//////////////
-        // IS cube 'forward' 1 && IS magnetic
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS cube direction 2
-        else if (isBlock_leftForward1 &&
-                 isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                 isBlock_direction2)
-
-        {
-            return RollType.bonk_stepLeft2;
-        }
-
-        ////////////// STEP LEFT BONK 3 //////////////
-        // IS cube 'forward' 1 && IS magnetic
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS NOT cube direction 2
-        // &&
-        // IS cube 'forward' 1 + direction 2
-        else if (isBlock_leftForward1 &&
-                 isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                !isBlock_direction2 &&
-                 isBlock_leftForward2direction1)
-
-        {
-            return RollType.bonk_stepLeft3;
-        }
-
-
-
-        #endregion
-
-        //step right
-        #region Step Right
-        ////////////// STEP RIGHT //////////////
-        //if IS cube 'forward' 1 && IS magnetic
-        // &&
-        //if IS NOT cube direction 1
-        // &&
-        //if IS NOT cube direction 1 && forward 1
-        // &&
-        //if IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS NOT cube direction 2
-        // &&
-        // IS NOT cube 'forward' 1 + direction 2
-        else if (isBlock_rightForward1 &&
-                isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                !isBlock_direction2 &&
-                !isBlock_rightForward2direction1)
-        {
-            return RollType.step_Right;
-        }
-
-        ////////////// STEP RIGHT BONK 0 //////////////
-        //if IS cube 'forward' 1 && IS magnetic
-        // &&
-        //if IS NOT cube direction 1
-        // &&
-        //if IS NOT cube direction 1 && forward 1
-        // &&
-        //if IS NOT cube down 1
-        // &&
-        // IS cube 'forward' -1 
-        else if (isBlock_rightForward1 &&
-                isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                isBlock_rightBack1)
-        {
-            return RollType.stuck;
-        }
-
-        ////////////// STEP RIGHT BONK 1 //////////////
-        //if IS cube 'forward' 1 && IS magnetic
-        // &&
-        //if IS NOT cube direction 1
-        // &&
-        //if IS NOT cube direction 1 && forward 1
-        // &&
-        //if IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS cube 'forward' -1 + direction 1
-        else if (isBlock_rightForward1 &&
-                isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                isBlock_rightBack1direction1)
-        {
-            return RollType.bonk_stepRight1;
-        }
-
-        ////////////// STEP RIGHT BONK 2 //////////////
-        //if IS cube 'forward' 1 && IS magnetic
-        // &&
-        //if IS NOT cube direction 1
-        // &&
-        //if IS NOT cube direction 1 && forward 1
-        // &&
-        //if IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS cube direction 2
-        else if (isBlock_rightForward1 &&
-                isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                isBlock_direction2)
-        {
-            return RollType.bonk_stepRight2;
-        }
-
-        ////////////// STEP RIGHT BONK 3 //////////////
-        //if IS cube 'forward' 1 && IS magnetic
-        // &&
-        //if IS NOT cube direction 1
-        // &&
-        //if IS NOT cube direction 1 && forward 1
-        // &&
-        //if IS NOT cube down 1
-        // &&
-        // IS NOT cube 'forward' -1 
-        // && 
-        // IS NOT cube 'forward' -1 + direction 1
-        // &&
-        // IS NOT cube direction 2
-        // &&
-        // IS cube 'forward' 1 + direction 2
-        else if (isBlock_rightForward1 &&
-                isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                !isBlock_direction2 &&
-                isBlock_rightForward2direction1)
-        {
-            return RollType.bonk_stepRight3;
-        }
-
-        #endregion
-
-        #endregion
-
-        //**********************************************************************************************************//
-        //CLIMB
-        #region CLIMB
-
-        #region Climb Up
-        ////////////// CLIMB UP //////////////
-        // IS cube direction 1 && IS magnetic
-        // &&
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + up 1
-        else if (Physics.Raycast(position, direction, out hit_climbUp, scale) &&
-                 hit_climbUp.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_direction1up1 &&
-                 !isBlock_up1 &&
-                 !isBlock_directionMinus1 &&
-                 !isBlock_directionMinus1up1)
-        {
-            return RollType.climb_Up;
-        }
-
-        ////////////// CLIMB UP FLAT BONK //////////////
-        // IS cube direction 1 && IS magnetic
-        // &&
-        // IS cube direction 1 + up 1
-        // &&
-        // IS cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + up 1
-        else if (Physics.Raycast(position, direction, out hit_climbUp, scale) &&
-                 hit_climbUp.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_direction1up1 &&
-                 Physics.Raycast(position, Vector3.up, out hit_climbUp_flat, scale) &&
-                 hit_climbUp_flat.collider.gameObject.tag != tag_MagenticEnvironment &&
-                 !isBlock_directionMinus1)
-        {
-            return RollType.bonk_climbUp_flat;
-        }
-
-        ////////////// CLIMB UP HEAD BONK //////////////
-        // IS cube direction 1 && IS magnetic
-        // &&
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube up 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS cube direction -1 + up 1 && IS NOT magnetic
-        else if (Physics.Raycast(position, direction, out hit_climbUp, scale) &&
-                 hit_climbUp.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_direction1up1 &&
-                 !isBlock_up1 &&
-                 !isBlock_directionMinus1 &&
-                 isBlock_directionMinus1up1)
-        {
-            return RollType.bonk_climbUp_head;
-        }
-
-        #endregion
-
-        #region climb down
-        ////////////// CLIMB DOWN //////////////
-        // IS cube back 1 && IS magnetic
-        // &&
-        // IS cube direction 1 + down 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS NOT cube direction -1 + down 1
-        else if (Physics.Raycast(position, -direction, out hit_climbDown, scale) &&
-                 hit_climbDown.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(position + Vector3.down * scale, -direction, scale) &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !Physics.Raycast(position + Vector3.down * scale, direction, scale))
-        {
-            return RollType.climb_Down;
-        }
-
-        ////////////// CLIMB DOWN BONK //////////////
-        // IS cube back 1 && IS magnetic
-        // &&
-        // IS cube direction 1 + down 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction -1
-        // &&
-        // IS cube direction -1 + down 1
-        else if (Physics.Raycast(position, -direction, out hit_climbDown, scale) &&
-                 hit_climbDown.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(position + Vector3.down * scale, -direction, scale) &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 Physics.Raycast(position + Vector3.down * scale, direction, scale))
-        {
-            return RollType.flat;
-        }
-        #endregion
-
-        #region Climb left
-        ////////////// CLIMB LEFT //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube 'forward' -1
-        // &&
-        // IS NOT cube 'forward' -1 + direction 1
-
-        else if (Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out hit_climbLeft, scale) &&
-                 hit_climbLeft.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale) &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale) &&
-                 !isBlock_rightForward1direction1)
-        {
-            return RollType.climb_Left;
-        }
-
-        ////////////// CLIMB LEFT BONK FLAT //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS cube direction 1
-        // &&
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube 'forward' -1
-        else if (Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out hit_climbLeft, scale) &&
-                 hit_climbLeft.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale) &&
-                 !isBlock_down1 &&
-                 isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                 !Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale))
-        {
-            return RollType.bonk_climbLeft_flat;
-        }
-
-        ////////////// CLIMB LEFT BONK HEAD //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube 'forward' -1
-        // &&
-        // IS cube 'forward' -1 + direction 1
-        else if (Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out hit_climbLeft, scale) &&
-                 hit_climbLeft.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale) &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale) &&
-                 isBlock_rightForward1direction1)
-        {
-            return RollType.bonk_climbLeft_head;
-        }
-
-        #endregion
-
-
-
-        ////////////// CLIMB RIGHT //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube 'forward' -1
-        // &&
-        // IS NOT cube 'forward' -1 + direction 1
-        else if (Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out hit_climbRight, scale) &&
-                 hit_climbRight.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_rightForward1direction1 &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_rightBack1 &&
-                 !Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale))
-        {
-            return RollType.climb_Right;
-        }
-
-        ////////////// CLIMB RIGHT BONK FLAT //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS cube direction 1
-        // &&  
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube 'forward' -1
-        else if (Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out hit_climbRight, scale) &&
-                 hit_climbRight.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_rightForward1direction1 &&
-                 !Physics.Raycast(position, -Vector3.down, scale) &&
-                 isBlock_direction1 &&
-                 Physics.Raycast(position + -Vector3.up * scale, direction, scale) &&
-                 !isBlock_rightBack1)
-        {
-            return RollType.bonk_climbRight_flat;
-        }
-
-        ////////////// CLIMB RIGHT BONK HEAD //////////////
-        // IS cube 'forward' 1 && is magnetic
-        // &&
-        // IS cube direction 1 && 'forward' 1
-        // &&
-        // IS NOT cube down 1
-        // &&
-        // IS NOT cube direction 1
-        // &&
-        // IS NOT cube 'forward' -1
-        // &&
-        // IS cube 'forward' -1 + direction 1
-        else if (Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out hit_climbRight, scale) &&
-                 hit_climbRight.collider.gameObject.tag == tag_MagenticEnvironment &&
-                 isBlock_rightForward1direction1 &&
-                 !isBlock_down1 &&
-                 !isBlock_direction1 &&
-                 !isBlock_rightBack1 &&
-                 Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale))
-        {
-            return RollType.bonk_climbRight_head;
-        }
-
-        #endregion
-
-        //**********************************************************************************************************//
-        //FLAT
-        #region
-        ////////////// BONK //////////////
-        // IS cube direction 1 && IS NOT magnetic
-        // && 
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube direction -1
-        //
-        // OR
-        //
-        // IS cube direction 1
-        // &&
-        // IS cube up 1
-        // &&
-        // IS NOT cube direction -1
-        else if (Physics.Raycast(position, direction, out hit_bonk, scale) &&
-                 isBlock_direction1up1 &&
-                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment &&
-                 !isBlock_directionMinus1)
-        {
-            return RollType.bonk_flat;
-        }
-        else if (isBlock_direction1 &&
-                isBlock_up1 &&
-                !isBlock_directionMinus1)
-        {
-            return RollType.bonk_flat;
-        }
-
-        ////////////// HEAD BONK //////////////
-        // IS NOT cube direction 1
-        // &&
-        // IS cube direction 1 + up 1
-        // &&
-        // IS NOT cube dirction -1
-        // &&
-        // IS NOT cube up 1
-        else if (!isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                 !isBlock_directionMinus1 &&
-                 !isBlock_up1)
-        {
-            return RollType.bonk_head;
-        }
-
-        ////////////// STUCK //////////////
-        //if cant bonk or head bonk because of cubes around it
-        //bonk 1
-        //bonk 2
-        //headbonk 1
-        else if (Physics.Raycast(position, direction, out hit_bonk, scale) &&
-                 isBlock_direction1up1 &&
-                 hit_bonk.collider.gameObject.tag != tag_MagenticEnvironment &&
-                 isBlock_directionMinus1
-                 ||
-                 isBlock_direction1 &&
-                 isBlock_up1 &&
-                 isBlock_directionMinus1
-                 ||
-                 !isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                 isBlock_directionMinus1 &&
-                 isBlock_up1)
-        {
-            return RollType.stuck;
-        }
-
-        ////////////// FLAT //////////////
-        //IS NOT cube direction 1
-        // &&
-        //IS NOT cube up 1
-        // &&
-        //IS NOT cube direction 1 + up 1
-        // &&
-        //IS cube direction 1 + down 1
-        else if (!isBlock_direction1 &&
-                !isBlock_up1 &&
-                !Physics.Raycast(position + direction * scale, Vector3.up, scale) &&
-                isBlock_direction1down1)
-        {
-            return RollType.flat;
-        }
-        else
-        {
-            return RollType.stuck;
-        }
-
-        #endregion
-
-    }
 
     //calcualate the direction vector based on the camera
     #region Camera Relative Direction
@@ -1806,8 +951,6 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(output);
         return output;
     }
-    #endregion
-
     #endregion
 
     #endregion

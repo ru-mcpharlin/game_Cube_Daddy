@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1841606953749839823}
   - component: {fileID: 1841606953749839822}
   - component: {fileID: 6850472812865385636}
+  - component: {fileID: 4460003246279132946}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -51,13 +52,14 @@ MonoBehaviour:
   cameraVector_Mouse: {x: 0, y: 0}
   cameraVector_Gamepad: {x: 0, y: 0}
   tag_Environment: Environment
-  tag_MagenticEnvironment: Magnetic Environment
+  tag_MagneticEnvironment: Magnetic Environment
   tag_player: Player
   tag_currentPlayer: Current Cube
   isMoving: 0
   isFalling: 0
   isMagnetic: 0
   onMagneticCube: 0
+  calculateRollTypeScript: {fileID: 0}
   rollType: 0
   remainingAngle: 0
   rotationAnchor: {x: 0, y: 0, z: 0}
@@ -272,3 +274,24 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &4460003246279132946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841606953749839820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d59d4ac76134c428dcf67fcb7ed5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  tag_MagneticEnvironment: Magnetic Environment
+  debug: 0
+  debugRollType: 23
+  debugBonkFlat1: 1
+  debugBonkFlat2: 0
+  debugStuck1: 1
+  debugStuck2: 0
+  debugStuck3: 0
