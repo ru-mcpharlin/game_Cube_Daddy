@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1756068, g: 0.21973452, b: 0.30206, a: 1}
+  m_IndirectSpecularColor: {r: 0.17560628, g: 0.21973376, b: 0.30205923, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -41945,6 +41945,51 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: bonkSpeed
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: rollSpeed
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: headBonkSpeed
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp1BonkAngle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp1BonkSpeed
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp2BonkAngle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp2BonkSpeed
+      value: 1700
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp3BonkAngle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841606953749839822, guid: e855f08bd7c14364e91667da4ef34624,
+        type: 3}
+      propertyPath: stepUp3BonkSpeed
+      value: 1700
+      objectReference: {fileID: 0}
     - target: {fileID: 1841606953749839823, guid: e855f08bd7c14364e91667da4ef34624,
         type: 3}
       propertyPath: m_RootOrder
@@ -50143,8 +50188,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1420291619}
-  m_LocalRotation: {x: -0.054122742, y: 0.91811115, z: -0.36876163, w: -0.13475016}
-  m_LocalPosition: {x: 25.81515, y: 15.617146, z: 34.367153}
+  m_LocalRotation: {x: -0.054122742, y: 0.91811115, z: -0.3687616, w: -0.13475017}
+  m_LocalPosition: {x: 25.81515, y: 15.617144, z: 34.36715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -55123,8 +55168,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1770753467}
-  m_LocalRotation: {x: -0.054122817, y: 0.9181111, z: -0.3687616, w: -0.13475038}
-  m_LocalPosition: {x: 30.815155, y: 15.617144, z: 21.367146}
+  m_LocalRotation: {x: -0.054122835, y: 0.9181111, z: -0.3687616, w: -0.1347504}
+  m_LocalPosition: {x: 30.815155, y: 15.617144, z: 21.367147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -60539,8 +60584,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6909332862579260325}
-  m_LocalRotation: {x: -0.05412272, y: 0.9181111, z: -0.3687617, w: -0.1347501}
-  m_LocalPosition: {x: 4.5751433, y: 16.917145, z: 23.917147}
+  m_LocalRotation: {x: -0.05412272, y: 0.9181111, z: -0.36876172, w: -0.1347501}
+  m_LocalPosition: {x: 4.575144, y: 16.917147, z: 23.917149}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -62343,8 +62388,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481426359301596124}
-  m_LocalRotation: {x: -0.054122742, y: 0.91811115, z: -0.36876163, w: -0.13475016}
-  m_LocalPosition: {x: 25.81515, y: 15.617146, z: 34.367153}
+  m_LocalRotation: {x: -0.054122742, y: 0.91811115, z: -0.3687616, w: -0.13475017}
+  m_LocalPosition: {x: 25.81515, y: 15.617144, z: 34.36715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
