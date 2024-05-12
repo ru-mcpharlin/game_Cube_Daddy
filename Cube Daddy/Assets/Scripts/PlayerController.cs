@@ -678,7 +678,7 @@ public class PlayerController : MonoBehaviour
             if (!onMagneticCube)
             {
                 //draw a debug ray down
-                Debug.DrawRay(cubeTransform.position, Vector3.down, Color.white, Mathf.Infinity);
+                Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
                 //raycast straight down
                 Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
@@ -763,17 +763,6 @@ public class PlayerController : MonoBehaviour
     #region Magnetic Methods
     private void CheckIfOnMagneticCube()
     {
-        #region Debug
-        /*Debug.DrawRay(cubeTransform.position, Vector3.forward, Color.black, scale);
-        Debug.Log("Forward" + Physics.Raycast(cubeTransform.position, Vector3.forward, scale));
-        Debug.DrawRay(cubeTransform.position, Vector3.back, Color.black, scale);
-        Debug.Log("back" + Physics.Raycast(cubeTransform.position, Vector3.back, scale));
-        Debug.DrawRay(cubeTransform.position, Vector3.left, Color.black, scale);
-        Debug.Log("left" + Physics.Raycast(cubeTransform.position, Vector3.left, scale));
-        Debug.DrawRay(cubeTransform.position, Vector3.right, Color.black, scale);
-        Debug.Log("right" + Physics.Raycast(cubeTransform.position, Vector3.right, scale));*/
-        #endregion
-
         //forward
         RaycastHit hitForward;
         if (Physics.Raycast(cubeTransform.position, Vector3.forward, out hitForward, scale))

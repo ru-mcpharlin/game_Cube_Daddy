@@ -12,8 +12,15 @@ public class CalculateRollTypeScript : MonoBehaviour
 
     [Space]
     [Space]
-    [SerializeField] bool debugBonkFlat1;
-    [SerializeField] bool debugBonkFlat2;
+    [SerializeField] Color color_isCube = Color.green;
+    [SerializeField] Color color_noCube = Color.red;
+    [SerializeField] Color color_isMagneticCube = Color.blue;
+    [SerializeField] Color color_noMagneticCube = Color.black;
+
+    [Space]
+    [Space]
+    [SerializeField] bool debugClimbDown1;
+    [SerializeField] bool debugClimbDown2;
 
     [Space]
     [Space]
@@ -45,89 +52,92 @@ public class CalculateRollTypeScript : MonoBehaviour
         #region bools
 
         //////////// IS BLOCK //////////
-        #region is Block
+        #region is Cube
         //direction 1
-        bool isBlock_direction1 = Physics.Raycast(position, direction, out RaycastHit hit_direction1, scale);
-        bool isBlock_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, scale);
-        bool isBlock_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, scale);
-        bool isBlock_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale);
+        bool isCube_direction1 = Physics.Raycast(position, direction, out RaycastHit hit_direction1, scale);
+        bool isCube_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, scale);
+        bool isCube_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, scale);
+        bool isCube_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale);
 
         //direction 2
-        bool isBlock_direction2 = Physics.Raycast(position + direction * scale, direction, scale);
-        bool isBlock_direction2down1 = Physics.Raycast(position + direction * scale * 2, Vector3.down, scale);
+        bool isCube_direction2 = Physics.Raycast(position + direction * scale, direction, scale);
+        bool isCube_direction2down1 = Physics.Raycast(position + direction * scale * 2, Vector3.down, scale);
 
         //block 1
-        bool isBlock_up1 = Physics.Raycast(position, Vector3.up, out RaycastHit hit_up1, scale);
+        bool isCube_up1 = Physics.Raycast(position, Vector3.up, out RaycastHit hit_up1, scale);
 
         //block 2
-        bool isBlock_up2 = Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale);
+        bool isCube_up2 = Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale);
 
         //direction minus 1
-        bool isBlock_directionMinus1 = Physics.Raycast(position, -direction, out RaycastHit hit_directionMinus1, scale);
-        bool isBlock_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale);
-        bool isBlock_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, scale);
+        bool isCube_directionMinus1 = Physics.Raycast(position, -direction, out RaycastHit hit_directionMinus1, scale);
+        bool isCube_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale);
+        bool isCube_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, scale);
 
         //down 1
-        bool isBlock_down1 = Physics.Raycast(position, Vector3.down, out RaycastHit hit_down1, scale);
+        bool isCube_down1 = Physics.Raycast(position, Vector3.down, out RaycastHit hit_down1, scale);
+
+        //down 2
+        bool isCube_down2 = Physics.Raycast(position + Vector3.down * scale, Vector3.down, scale);
 
         //left forward 1
-        bool isBlock_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1, scale);
-        bool isBlock_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1, scale);
+        bool isCube_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale);
 
         //left forward 2
-        bool isBlock_leftForward2direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
+        bool isCube_leftForward2direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
 
         //left back 1
-        bool isBlock_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale);
-        bool isBlock_leftBack1direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
+        bool isCube_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_leftBack1direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
 
         //right forward 1
-        bool isBlock_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1, scale);
-        bool isBlock_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1, scale);
+        bool isCube_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), scale);
 
         //right back 1
-        bool isBlock_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale);
-        bool isBlock_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
+        bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
 
         //right forward 2
-        bool isBlock_rightForward2direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
+        bool isCube_rightForward2direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale * 2, direction, scale);
 
         #endregion
 
         //////////////// IS MAGNETIC ////////////
         #region is Magnetic
         bool isMagnetic_direction1 = false;
-        if (isBlock_direction1)
+        if (isCube_direction1)
         {
             isMagnetic_direction1 = hit_direction1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
         bool isMagnetic_directionMinus1 = false;
-        if(isBlock_directionMinus1)
+        if(isCube_directionMinus1)
         {
             isMagnetic_directionMinus1 = hit_directionMinus1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
         bool isMagnetic_up1 = false;
-        if (isBlock_up1)
+        if (isCube_up1)
         {
             isMagnetic_up1 = hit_up1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
         bool isMagnetic_down1 = false;
-        if (isBlock_down1)
+        if (isCube_down1)
         {
             isMagnetic_down1 = hit_down1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
         bool isMagnetic_leftForward1 = false;
-        if (isBlock_leftForward1)
+        if (isCube_leftForward1)
         {
             isMagnetic_leftForward1 = hit_leftForward1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
         bool isMagnetic_rightForward1 = false;
-        if (isBlock_rightForward1)
+        if (isCube_rightForward1)
         {
             isMagnetic_rightForward1 = hit_rightForward1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
@@ -156,13 +166,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube up + 2
         // &&
         // IS NOT cube direction 1 + up + 2
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            !isBlock_up2 &&
-            !isBlock_direction1up2)
+        if (isCube_direction1 &&
+            !isCube_direction1up1 &&
+            !isCube_up1 &&
+            !isCube_directionMinus1 &&
+            !isCube_directionMinus1up1 &&
+            !isCube_up2 &&
+            !isCube_direction1up2)
         {
 
             return PlayerController.RollType.step_Up;
@@ -178,11 +188,11 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction -1
         // &&
         // IS cube direction -1 + up 1
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            isBlock_directionMinus1up1)
+        if (isCube_direction1 &&
+            !isCube_direction1up1 &&
+            !isCube_up1 &&
+            !isCube_directionMinus1 &&
+            isCube_directionMinus1up1)
         {
 
             return PlayerController.RollType.bonk_stepUp1;
@@ -201,12 +211,12 @@ public class CalculateRollTypeScript : MonoBehaviour
         // &&
         // IS cube up + 2
 
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            isBlock_up2)
+        if (isCube_direction1 &&
+            !isCube_direction1up1 &&
+            !isCube_up1 &&
+            !isCube_directionMinus1 &&
+            !isCube_directionMinus1up1 &&
+            isCube_up2)
         {
 
             return PlayerController.RollType.bonk_stepUp2;
@@ -226,13 +236,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube up + 2
         // &&
         // IS cube direction 1 + up + 2
-        if (isBlock_direction1 &&
-            !isBlock_direction1up1 &&
-            !isBlock_up1 &&
-            !isBlock_directionMinus1 &&
-            !isBlock_directionMinus1up1 &&
-            !isBlock_up2 &&
-            isBlock_direction1up2)
+        if (isCube_direction1 &&
+            !isCube_direction1up1 &&
+            !isCube_up1 &&
+            !isCube_directionMinus1 &&
+            !isCube_directionMinus1up1 &&
+            !isCube_up2 &&
+            isCube_direction1up2)
         {
 
             return PlayerController.RollType.bonk_stepUp3;
@@ -256,13 +266,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube in direction 2
         // &&
         // IS NOT cube in direction 2 + down 1
-        else if (isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_direction1down1 &&
-                !isBlock_up1 &&
-                !isBlock_direction1up1 &&
-                !isBlock_direction2 &&
-                !isBlock_direction2down1)
+        else if (isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                !isCube_up1 &&
+                !isCube_direction1up1 &&
+                !isCube_direction2 &&
+                !isCube_direction2down1)
         {
             return PlayerController.RollType.step_Down;
         }
@@ -277,11 +287,11 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube up 1
         // &&
         // IS cube direction 1 + up 1
-        else if (isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_direction1down1 &&
-                !isBlock_up1 &&
-                 isBlock_direction1up1)
+        else if (isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                !isCube_up1 &&
+                 isCube_direction1up1)
         {
             return PlayerController.RollType.bonk_stepDown1;
         }
@@ -298,12 +308,12 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 1 + up 1
         // &&
         // IS cube in direction 2
-        else if (isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_direction1down1 &&
-                !isBlock_up1 &&
-                !isBlock_direction1up1 &&
-                 isBlock_direction2)
+        else if (isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                !isCube_up1 &&
+                !isCube_direction1up1 &&
+                 isCube_direction2)
         {
             return PlayerController.RollType.flat;
         }
@@ -322,13 +332,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube in direction 2
         // &&
         // IS cube in direction 2 + down 1
-        else if (isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_direction1down1 &&
-                !isBlock_up1 &&
-                !isBlock_direction1up1 &&
-                !isBlock_direction2 &&
-                 isBlock_direction2down1)
+        else if (isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                !isCube_up1 &&
+                !isCube_direction1up1 &&
+                !isCube_direction2 &&
+                 isCube_direction2down1)
         {
             return PlayerController.RollType.flat;
         }
@@ -353,15 +363,15 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 2
         // &&
         // IS NOT cube 'forward' 2 + direction 1
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                !isBlock_direction2 &&
-                !isBlock_leftForward2direction1)
+                !isCube_direction1 &&
+                !isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_leftBack1 &&
+                !isCube_leftBack1direction1 &&
+                !isCube_direction2 &&
+                !isCube_leftForward2direction1)
 
         {
             return PlayerController.RollType.step_Left;
@@ -379,13 +389,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1 
         // && 
         // IS cube 'forward' -1 + direction 1
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                 isBlock_leftBack1direction1)
+                !isCube_direction1 &&
+                !isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_leftBack1 &&
+                 isCube_leftBack1direction1)
 
         {
             return PlayerController.RollType.bonk_stepLeft1;
@@ -405,14 +415,14 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1 + direction 1
         // &&
         // IS cube direction 2
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                 isBlock_direction2)
+                !isCube_direction1 &&
+                !isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_leftBack1 &&
+                !isCube_leftBack1direction1 &&
+                 isCube_direction2)
 
         {
             return PlayerController.RollType.bonk_stepLeft2;
@@ -434,15 +444,15 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 2
         // &&
         // IS cube 'forward' 1 + direction 2
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_leftBack1direction1 &&
-                !isBlock_direction2 &&
-                 isBlock_leftForward2direction1)
+                !isCube_direction1 &&
+                !isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_leftBack1 &&
+                !isCube_leftBack1direction1 &&
+                !isCube_direction2 &&
+                 isCube_leftForward2direction1)
 
         {
             return PlayerController.RollType.bonk_stepLeft3;
@@ -470,20 +480,20 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 2
         // &&
         // IS NOT cube 'forward' 1 + direction 2
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                !isBlock_direction2 &&
-                !isBlock_rightForward2direction1)
+                !isCube_direction1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_rightBack1 &&
+                !isCube_rightBack1direction1 &&
+                !isCube_direction2 &&
+                !isCube_rightForward2direction1)
         {
             return PlayerController.RollType.step_Right;
         }
 
-        ////////////// STEP RIGHT BONK 0 //////////////
+        /*////////////// STEP RIGHT BONK 0 //////////////
         // IS cube 'forward' 1 && IS magnetic
         // &&
         // IS NOT cube direction 1
@@ -493,15 +503,15 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube down 1
         // &&
         // IS cube 'forward' -1 
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                isBlock_rightBack1)
+                !isCube_direction1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                isCube_rightBack1)
         {
             return PlayerController.RollType.stuck;
-        }
+        }*/
 
         ////////////// STEP RIGHT BONK 1 //////////////
         // IS cube 'forward' 1 && IS magnetic
@@ -515,13 +525,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1 
         // && 
         // IS cube 'forward' -1 + direction 1
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                isBlock_rightBack1direction1)
+                !isCube_direction1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_rightBack1 &&
+                isCube_rightBack1direction1)
         {
             return PlayerController.RollType.bonk_stepRight1;
         }
@@ -540,14 +550,14 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1 + direction 1
         // &&
         // IS cube direction 2
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                isBlock_direction2)
+                !isCube_direction1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_rightBack1 &&
+                !isCube_rightBack1direction1 &&
+                isCube_direction2)
         {
             return PlayerController.RollType.bonk_stepRight2;
         }
@@ -568,15 +578,15 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 2
         // &&
         // IS cube 'forward' 1 + direction 2
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_rightBack1direction1 &&
-                !isBlock_direction2 &&
-                isBlock_rightForward2direction1)
+                !isCube_direction1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_rightBack1 &&
+                !isCube_rightBack1direction1 &&
+                !isCube_direction2 &&
+                isCube_rightForward2direction1)
         {
             return PlayerController.RollType.bonk_stepRight3;
         }
@@ -600,12 +610,12 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction -1
         // &&
         // IS NOT cube direction -1 + up 1
-        else if (isBlock_direction1 &&
+        else if (isCube_direction1 &&
                  isMagnetic_direction1 &&
-                 isBlock_direction1up1 &&
-                 !isBlock_up1 &&
-                 !isBlock_directionMinus1 &&
-                 !isBlock_directionMinus1up1)
+                 isCube_direction1up1 &&
+                 !isCube_up1 &&
+                 !isCube_directionMinus1 &&
+                 !isCube_directionMinus1up1)
         {
             return PlayerController.RollType.climb_Up;
         }
@@ -620,12 +630,12 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction -1
         // &&
         // IS NOT cube direction -1 + up 1
-        else if (isBlock_direction1 &&
+        else if (isCube_direction1 &&
                  isMagnetic_direction1 &&
-                 isBlock_direction1up1 &&
-                 isBlock_up1 &&
+                 isCube_direction1up1 &&
+                 isCube_up1 &&
                  isMagnetic_up1 &&
-                 !isBlock_directionMinus1)
+                 !isCube_directionMinus1)
         {
             return PlayerController.RollType.bonk_climbUp_flat;
         }
@@ -640,12 +650,12 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction -1
         // &&
         // IS cube direction -1 + up 1 && IS NOT magnetic
-        else if (isBlock_direction1 &&
+        else if (isCube_direction1 &&
                  isMagnetic_direction1 &&
-                 isBlock_direction1up1 &&
-                 !isBlock_up1 &&
-                 !isBlock_directionMinus1 &&
-                 isBlock_directionMinus1up1)
+                 isCube_direction1up1 &&
+                 !isCube_up1 &&
+                 !isCube_directionMinus1 &&
+                 isCube_directionMinus1up1)
         {
             return PlayerController.RollType.bonk_climbUp_head;
         }
@@ -663,21 +673,28 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube direction 1
         // &&
         // IS NOT cube direction 1 down 1
-        else if (isBlock_directionMinus1 &&
+        else if (isCube_directionMinus1 &&
                  isMagnetic_directionMinus1 &&
-                 isBlock_directionMinus1down1 &&
-                !isBlock_direction1 &&
-                !isBlock_direction1down1)
+                 isCube_directionMinus1down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 
+                 ||
+                 isCube_directionMinus1 &&
+                 isMagnetic_directionMinus1 &&
+                !isCube_directionMinus1down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                 isCube_down2)
         {
             return PlayerController.RollType.climb_Down;
         }
 
         ////////////// CLIMB DOWN BONK //////////////
         
-        else if (false)
+        /*else if (false)
         {
             return PlayerController.RollType.flat;
-        }
+        }*/
         #endregion
 
         #region Climb left
@@ -694,13 +711,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // &&
         // IS NOT cube 'forward' -1 + direction 1
 
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                 isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftBack1 &&
-                !isBlock_rightForward1direction1)
+                 isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_leftBack1 &&
+                !isCube_leftBack1direction1)
         {
             return PlayerController.RollType.climb_Left;
         }
@@ -717,13 +734,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS cube direction 1 + up 1
         // &&
         // IS NOT cube 'forward' -1
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                 isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                 isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                !isBlock_leftBack1)
+                 isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                 isCube_direction1 &&
+                 isCube_direction1up1 &&
+                !isCube_leftBack1)
         {
             return PlayerController.RollType.bonk_climbLeft_flat;
         }
@@ -740,13 +757,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1
         // &&
         // IS cube 'forward' -1 + direction 1
-        else if (isBlock_leftForward1 &&
+        else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
-                 isBlock_leftForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_leftBack1 &&
-                 isBlock_rightForward1direction1)
+                 isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_leftBack1 &&
+                 isCube_leftBack1direction1)
         {
             return PlayerController.RollType.bonk_climbLeft_head;
         }
@@ -766,13 +783,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1
         // &&
         // IS NOT cube 'forward' -1 + direction 1
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                 isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightBack1 &&
-                !isBlock_leftForward1direction1)
+                 isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_rightBack1 &&
+                !isCube_rightBack1direction1)
         {
             return PlayerController.RollType.climb_Right;
         }
@@ -789,13 +806,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS cube direction 1 + up 1
         // &&
         // IS NOT cube 'forward' -1
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                 isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                 isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                !isBlock_rightBack1)
+                 isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                 isCube_direction1 &&
+                 isCube_direction1up1 &&
+                !isCube_rightBack1)
         {
             return PlayerController.RollType.bonk_climbRight_flat;
         }
@@ -812,13 +829,13 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube 'forward' -1
         // &&
         // IS cube 'forward' -1 + direction 1
-        else if (isBlock_rightForward1 &&
+        else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
-                 isBlock_rightForward1direction1 &&
-                !isBlock_down1 &&
-                !isBlock_direction1 &&
-                !isBlock_rightBack1 &&
-                 isBlock_leftForward1direction1)
+                 isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_rightBack1 &&
+                 isCube_rightBack1direction1)
         {
             return PlayerController.RollType.bonk_climbRight_head;
         }
@@ -844,16 +861,11 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS cube up 1
         // &&
         // IS NOT cube direction -1
-        else if (isBlock_direction1 &&
+        else if (isCube_direction1 &&
                 !isMagnetic_direction1 &&
-                 isBlock_direction1up1 &&
-                !isBlock_directionMinus1)
-        {
-            return PlayerController.RollType.bonk_flat;
-        }
-        else if (isBlock_direction1 &&
-                 isBlock_up1 &&
-                !isBlock_directionMinus1)
+                 isCube_direction1up1 &&
+                !isCube_directionMinus1 &&
+                !isCube_directionMinus1up1)
         {
             return PlayerController.RollType.bonk_flat;
         }
@@ -866,10 +878,9 @@ public class CalculateRollTypeScript : MonoBehaviour
         // IS NOT cube dirction -1
         // &&
         // IS NOT cube up 1
-        else if (!isBlock_direction1 &&
-                  isBlock_direction1up1 &&
-                 !isBlock_directionMinus1 &&
-                 !isBlock_up1)
+        else if (!isCube_direction1 &&
+                  isCube_direction1up1 &&
+                 !isCube_up1)
         {
             return PlayerController.RollType.bonk_head;
         }
@@ -879,19 +890,19 @@ public class CalculateRollTypeScript : MonoBehaviour
         //bonk 1
         //bonk 2
         //headbonk 1
-        else if (isBlock_direction1 &&
+        else if (isCube_direction1 &&
                  isMagnetic_direction1 &&
-                 isBlock_direction1up1 &&
-                 isBlock_directionMinus1
+                 isCube_direction1up1 &&
+                 isCube_directionMinus1
                  ||
-                 isBlock_direction1 &&
-                 isBlock_up1 &&
-                 isBlock_directionMinus1
+                 isCube_direction1 &&
+                 isCube_up1 &&
+                 isCube_directionMinus1
                  ||
-                !isBlock_direction1 &&
-                 isBlock_direction1up1 &&
-                 isBlock_directionMinus1 &&
-                 isBlock_up1)
+                !isCube_direction1 &&
+                 isCube_direction1up1 &&
+                 isCube_directionMinus1 &&
+                 isCube_up1)
         {
             return PlayerController.RollType.stuck;
         }
@@ -904,10 +915,10 @@ public class CalculateRollTypeScript : MonoBehaviour
         //IS NOT cube direction 1 + up 1
         // &&
         //IS cube direction 1 + down 1
-        else if (!isBlock_direction1 &&
-                 !isBlock_up1 &&
-                 !isBlock_direction1up1 &&
-                  isBlock_direction1down1)
+        else if (!isCube_direction1 &&
+                 !isCube_up1 &&
+                 !isCube_direction1up1 &&
+                  isCube_direction1down1)
         {
             return PlayerController.RollType.flat;
         }
@@ -926,47 +937,46 @@ public class CalculateRollTypeScript : MonoBehaviour
 
         switch (inputRollType)
         {
-            //Debug.DrawRay( );
             //////////////////////////////////////////
             #region Step
-
+            
             //////////////////////////////////////////
             #region Step Up
             case PlayerController.RollType.step_Up:
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale + direction * scale, Vector3.up, Color.red, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                DebugRay_up2(color_noCube, position, direction, scale);
+                DebugRay_direction1up2(color_noCube, position, direction, scale);
                 break;
             
             case PlayerController.RollType.bonk_stepUp1:
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.green, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1up1(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepUp2:
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, Vector3.up, Color.green, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                DebugRay_up2(color_isCube, position, direction, scale);
                 break;
             
             case PlayerController.RollType.bonk_stepUp3:
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale + direction * scale, Vector3.up, Color.green, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                DebugRay_up2(color_noCube, position, direction, scale);
+                DebugRay_direction1up2(color_isCube, position, direction, scale);
                 break;
 
             #endregion
@@ -974,40 +984,40 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Step Down
             case PlayerController.RollType.step_Down:
-                Debug.DrawRay(position, Vector3.down, Color.green, scale);
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale * 2, Vector3.down, Color.red, scale);
+                DebugRay_down1(color_isCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1down1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_direction2down1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepDown1:
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1down1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepDown2:
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, direction, Color.green, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1down1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepDown3:
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale * 2, Vector3.down, Color.green, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1down1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_direction2down1(color_isCube, position, direction, scale);;
                 break;
 
             #endregion
@@ -1015,45 +1025,44 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Step Left
             case PlayerController.RollType.step_Left:
-
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_leftForward2direction1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepLeft1:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepLeft2:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.green, scale);
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepLeft3:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_leftForward2direction1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1061,44 +1070,44 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Step Right
             case PlayerController.RollType.step_Right:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_rightForward2direction1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepRight1:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepRight2:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.green, scale);
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_isCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_stepRight3:
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-
-
-                Debug.DrawRay(position + direction * scale, direction, Color.red, scale);
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_direction2(color_noCube, position, direction, scale);
+                DebugRay_rightForward2direction1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1111,26 +1120,26 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Climb Up
             case PlayerController.RollType.climb_Up:
-                Debug.DrawRay(position, direction, Color.blue, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.red, scale);
+                DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_climbUp_flat:
-                Debug.DrawRay(position, direction, Color.blue, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                Debug.DrawRay(position, Vector3.up, Color.blue, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
+                DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_up1(color_isMagneticCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
                 break;
 
             case PlayerController.RollType.bonk_climbUp_head:
-                Debug.DrawRay(position, direction, Color.blue, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.up * scale, -direction, Color.red, scale);
+                DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1138,54 +1147,63 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Climb Down
             case PlayerController.RollType.climb_Down:
-                Debug.DrawRay(position, -direction, Color.blue, scale);
-                Debug.DrawRay(position + Vector3.down * scale, -direction, Color.green, scale);
-                Debug.DrawRay(position, Vector3.down, Color.red, scale);
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + Vector3.down, direction, Color.red, scale);
+                if (debugClimbDown1)
+                {
+                    DebugRay_directionMinus1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_directionMinus1down1(color_isCube, position, direction, scale);
+                    DebugRay_down1(color_noCube, position, direction, scale);
+                    DebugRay_direction1(color_noCube, position, direction, scale);
+                    DebugRay_direction1down1(color_noCube, position, direction, scale);
+                }
+                else if(debugClimbDown2)
+                {
+                    DebugRay_directionMinus1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_directionMinus1down1(color_noCube, position, direction, scale);
+                    DebugRay_down1(color_noCube, position, direction, scale);
+                    DebugRay_direction1(color_noCube, position, direction, scale);
+                    DebugRay_direction1down1(color_noCube, position, direction, scale);
+                    DebugRay_down2(color_isCube, position, direction, scale);
+                }
                 break;
 
-            case PlayerController.RollType.bonk_climbDown:
+            /*case PlayerController.RollType.bonk_climbDown:
 
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.green, scale);
+                Debug.DrawRay(position + direction * scale, Vector3.down, color_isCube, scale);
 
 
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.green, scale);
-                break;
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                Debug.DrawRay(position + direction * scale, Vector3.down, color_isCube, scale);
+                break;*/
 
             #endregion
 
             //////////////////////////////////////////
             #region Climb Left
             case PlayerController.RollType.climb_Left:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_climbLeft_flat:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_climbLeft_head:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-
+                DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1193,33 +1211,33 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Climb Right
             case PlayerController.RollType.climb_Right:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_climbRight_flat:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.green, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_isCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_climbRight_head:
-
-
-
-
-                Debug.DrawRay(position, direction, Color.red, scale);
-
-
+                DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_isCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1229,61 +1247,220 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region flat
             case PlayerController.RollType.bonk_flat:
-                if (debugBonkFlat1)
-                {
-                    Debug.DrawRay(position, direction, Color.black, scale);
-                    Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-
-                    Debug.DrawRay(position, -direction, Color.red, scale);
-                }
-                else if (debugBonkFlat2)
-                {
-                    Debug.DrawRay(position, direction, Color.green, scale);
-                    Debug.DrawRay(position, Vector3.up, Color.green, scale);
-                    Debug.DrawRay(position, -direction, Color.red, scale);
-                }
+                DebugRay_direction1(color_noMagneticCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.bonk_head:
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                Debug.DrawRay(position, -direction, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_isCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
                 break;
 
             case PlayerController.RollType.stuck:
                 if(debugStuck1)
                 {
-                    Debug.DrawRay(position, direction, Color.blue, scale);
-                    Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                    Debug.DrawRay(position, -direction, Color.green, scale);
+                    DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_direction1up1(color_isCube, position, direction, scale);
+                    DebugRay_directionMinus1(color_isCube, position, direction, scale);
                 }
                 else if(debugStuck2)
                 {
-                    Debug.DrawRay(position, direction, Color.green, scale);
-                    Debug.DrawRay(position, Vector3.up, Color.green, scale);
-                    Debug.DrawRay(position, -direction, Color.green, scale);
+                    DebugRay_direction1(color_isCube, position, direction, scale);
+                    DebugRay_up1(color_isCube, position, direction, scale); ;
+                    DebugRay_directionMinus1(color_isCube, position, direction, scale);
                 }
                 else if(debugStuck3)
                 {
-                    Debug.DrawRay(position, direction, Color.red, scale);
-                    Debug.DrawRay(position + direction * scale, Vector3.up, Color.green, scale);
-                    Debug.DrawRay(position, -direction, Color.green, scale);
-                    Debug.DrawRay(position, Vector3.up, Color.green, scale);
+                    DebugRay_direction1(color_noCube, position, direction, scale);
+                    DebugRay_direction1up1(color_isCube, position, direction, scale);
+                    DebugRay_directionMinus1(color_isCube, position, direction, scale);
+                    DebugRay_up1(color_isCube, position, direction, scale);
                 }
                 break;
 
             case PlayerController.RollType.flat:
-                Debug.DrawRay(position, direction, Color.red, scale);
-                Debug.DrawRay(position, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.up, Color.red, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, Color.green, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_up1(color_noCube, position, direction, scale);
+                DebugRay_direction1up1(color_noCube, position, direction, scale);
+                DebugRay_direction1down1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
 
         }
     }
+
+    /////////// DEBUG RAYS //////////////
+    #region debug rays
+
+    //direction 1
+    #region direction 1
+    public void DebugRay_direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, direction * scale,  color, scale);
+    }
+
+    public void DebugRay_direction1up1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, Vector3.up * scale,  color, scale);
+    }
+
+    public void DebugRay_direction1up2(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + Vector3.up * scale + direction * scale, Vector3.up * scale,  color, scale);
+    }
+
+    public void DebugRay_direction1down1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, Vector3.down * scale,  color, scale);
+    }
+
+    #endregion
+
+    //direction 2
+    #region direction 2
+    public void DebugRay_direction2(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, direction * scale,  color, scale);
+    }
+
+    public void DebugRay_direction2down1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale * 2, Vector3.down * scale,  color, scale);
+    }
+
+    #endregion
+
+    //up
+    #region up
+    public void DebugRay_up1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, Vector3.up * scale, color, scale);
+    }
+
+    public void DebugRay_up2(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + Vector3.up * scale, Vector3.up * scale, color, scale);
+    }
+
+    #endregion
+
+    //direction minus 1
+    #region direction minus 1
+    public void DebugRay_directionMinus1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, -direction * scale, color, scale);
+    }
+    
+    public void DebugRay_directionMinus1up1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + Vector3.up * scale, -direction * scale ,  color, scale);
+    }
+
+    public void DebugRay_directionMinus1down1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position - direction * scale, Vector3.down * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //down 1
+    #region down 1
+    public void DebugRay_down1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, Vector3.down * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //down 2
+    #region down 2
+    public void DebugRay_down2(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + Vector3.down * scale, Vector3.down * scale, color, scale);
+    }
+
+    #endregion
+
+    //left forward 1
+    #region left forward 1
+    public void DebugRay_leftForward1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, -Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    public void DebugRay_leftForward1direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, -Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //left forward 2
+    #region left forward 2
+    public void DebugRay_leftForward2direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position - Vector3.Cross(direction, Vector3.up) * scale * 2, direction * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //left back 1
+    #region left back 1
+    public void DebugRay_leftBack1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    public void DebugRay_leftBack1direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //right forward 1
+    #region right forward 1
+    public void DebugRay_rightForward1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    public void DebugRay_rightForward1direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //right back
+    #region right back 1
+    public void DebugRay_rightBack1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position, -Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    public void DebugRay_rightBack1direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + direction * scale, -Vector3.Cross(direction, Vector3.up) * scale ,  color, scale);
+    }
+
+    #endregion
+
+    //right forward 2
+    #region right forward 2
+
+    public void DebugRay_rightForward2direction1(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position + Vector3.Cross(direction, Vector3.up) * scale, direction * scale ,  color, scale);
+    }
+
+    #endregion
+
+    #endregion
 }
 
 
