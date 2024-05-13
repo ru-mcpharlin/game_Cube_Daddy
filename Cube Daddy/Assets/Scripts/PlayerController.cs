@@ -471,8 +471,8 @@ public class PlayerController : MonoBehaviour
 
             //climb up bonk flat
             case RollType.bonk_climbUp_flat:
-                remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position - direction * scale / 2 + Vector3.up * scale / 2;
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 break;
 
             //climb up bonk head
@@ -594,7 +594,7 @@ public class PlayerController : MonoBehaviour
             //calculate rotation angle
             //uses min so that it goes exactly to the angle specified
             //bonk flat
-            if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
+            if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbUp_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
             {
                 rotationAngle = Mathf.Min(bonkCurve.Evaluate(timer) * bonkSpeed * Time.deltaTime, remainingAngle);
             }
@@ -635,7 +635,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
+        if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbUp_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
         {
             cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
         }
