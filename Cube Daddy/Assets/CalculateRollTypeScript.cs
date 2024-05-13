@@ -697,12 +697,6 @@ public class CalculateRollTypeScript : MonoBehaviour
             return PlayerController.RollType.climb_Down;
         }
 
-        ////////////// CLIMB DOWN BONK //////////////
-        
-        /*else if (false)
-        {
-            return PlayerController.RollType.flat;
-        }*/
         #endregion
 
         #region Climb left
@@ -1153,7 +1147,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                 DebugRay_direction1up1(color_isCube, position, direction, scale);
                 DebugRay_up1(color_noCube, position, direction, scale);
                 DebugRay_directionMinus1(color_noCube, position, direction, scale); 
-                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                DebugRay_directionMinus1up1(color_isCube, position, direction, scale);
                 break;
 
             #endregion
