@@ -46,12 +46,28 @@ public class FormingPlatform : MonoBehaviour
         StartCoroutine(ActivateSegments());
     }
 
+    public void Deactivate()
+    {
+        StartCoroutine(DeactivateSegments());
+    }
+
     IEnumerator ActivateSegments()
     {
 
         for (int i = 0; i < segment.Length; i++)
         {
             Vector3 newpos = segment[i].position - positionOffset;
+            Tween.Position(segment[i], newpos, tweenDuration, segmentDelay, movementTween);
+            yield return new WaitForSeconds(segmentDelay);
+        }
+    }
+
+    IEnumerator DeactivateSegments()
+    {
+
+        for (int i = segment.Length -1; i >= 0; i--)
+        {
+            Vector3 newpos = segment[i].position + positionOffset;
             Tween.Position(segment[i], newpos, tweenDuration, segmentDelay, movementTween);
             yield return new WaitForSeconds(segmentDelay);
         }
