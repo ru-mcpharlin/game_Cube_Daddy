@@ -16,17 +16,17 @@ TagManager:
   - UI
   - playerCube1
   - cutOutLayer
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - scale1
+  - scale2
+  - scale4
+  - scale8
+  - scale16
+  - scale32
+  - scale64
+  - scale128
+  - scale256
+  - scale512
+  - scale1024
   - 
   - 
   - 
