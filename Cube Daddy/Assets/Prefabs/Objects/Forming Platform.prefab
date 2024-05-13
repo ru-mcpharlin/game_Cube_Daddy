@@ -744,6 +744,7 @@ MonoBehaviour:
   positionOffset: {x: 0, y: -3, z: 0}
   segmentDelay: 0.08
   tweenDuration: 0.25
+  loopTweenDuration: 0
   movementTween:
     serializedVersion: 2
     m_Curve:
@@ -777,6 +778,13 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  loopTween:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  autoMode: 0
 --- !u!1 &3835124360768069081
 GameObject:
   m_ObjectHideFlags: 0
