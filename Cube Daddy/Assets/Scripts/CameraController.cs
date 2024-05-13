@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] CinemachineBrain brain;
     [SerializeField] Camera mainCamera;
-    [SerializeField] CameraFollow cameraFollow;
+    [SerializeField] public CameraFollow cameraFollow;
 
     [Header("Camera State")]
     [SerializeField] public CameraState cameraState;

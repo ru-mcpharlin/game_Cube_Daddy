@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Space]
+    [SerializeField] public MovementType movementType;
+
+
+    [Space]
+    [Space]
     [Header("Tags")]
     [SerializeField] string tag_Environment;
     [SerializeField] string tag_MagneticEnvironment;
@@ -144,6 +149,12 @@ public class PlayerController : MonoBehaviour
         climb_Left,
         climb_Right
     }
+
+    public enum MovementType
+    {
+        roll,
+        fly
+    }
     #endregion
 
     //**********************************************************************************************************//
@@ -215,64 +226,43 @@ public class PlayerController : MonoBehaviour
         cameraVector_Gamepad = camera_Gamepad.ReadValue<Vector2>();
         #endregion
 
-        //camera 3 debugging
-        #region camera debug
-        //camera control
-        if (cameraController.cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
+        //roll movement
+        #region Roll Movement
+        if (movementType == MovementType.roll)
         {
-            if (Mathf.Abs(cameraVector_Gamepad.x) >= cameraController.camera3_gamepadThreshold)
+            //if current moving or falling do nothing
+            if (isMoving) return;
+            if (isFalling) return;
+
+            //forward
+            if (inputVector.y == 1)
             {
-                if (cameraVector_Gamepad.x > 0)
-                {
-                    cameraController.DecreaseCamera3Index();
-                }
-                else
-                {
-                    cameraController.IncreaseCamera3Index();
-                }
+                StartCoroutine(Roll(Vector3.forward));
             }
-            else if (Mathf.Abs(cameraVector_Mouse.x) >= cameraController.camera3_mouseThreshold)
+            //back
+            else if (inputVector.y == -1)
             {
-                if (cameraVector_Mouse.x > 0)
-                {
-                    cameraController.DecreaseCamera3Index();
-                }
-                else
-                {
-                    cameraController.IncreaseCamera3Index();
-                }
+                StartCoroutine(Roll(Vector3.back));
+            }
+            //right
+            else if (inputVector.x == 1)
+            {
+                StartCoroutine(Roll(Vector3.right));
+            }
+            //left
+            else if (inputVector.x == -1)
+            {
+                StartCoroutine(Roll(Vector3.left));
             }
         }
+        #endregion
+
+        //fly movement
+        #region Fly Movement
+
 
         #endregion
 
-        //control movement
-        #region Movement
-        //if current moving or falling do nothing
-        if (isMoving) return;
-        if (isFalling) return;
-
-        //forward
-        if (inputVector.y == 1)
-        {
-            StartCoroutine(Roll(Vector3.forward));
-        }
-        //back
-        else if (inputVector.y == -1)
-        {
-            StartCoroutine(Roll(Vector3.back));
-        }
-        //right
-        else if (inputVector.x == 1)
-        {
-            StartCoroutine(Roll(Vector3.right));
-        }
-        //left
-        else if (inputVector.x == -1)
-        {
-            StartCoroutine(Roll(Vector3.left));
-        }
-        #endregion
 
         //quit
         #region quit
@@ -719,8 +709,8 @@ public class PlayerController : MonoBehaviour
                     //set cube transform to large cube transform
                     cubeTransform = cubeDatas[cubes_index].transform;
 
-/*                    //update camera follow transform
-                    cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;*/
+                    //update camera follow transform
+                    cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
 
                     //set scale
                     scale = cubeDatas[cubes_index].scale;
