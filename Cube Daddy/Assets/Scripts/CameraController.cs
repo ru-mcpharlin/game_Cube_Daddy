@@ -12,6 +12,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] CinemachineBrain brain;
     [SerializeField] Camera mainCamera;
+    [SerializeField] CameraFollow cameraFollow;
 
     [Header("Camera State")]
     [SerializeField] public CameraState cameraState;
@@ -75,6 +76,7 @@ public class CameraController : MonoBehaviour
         brain = GetComponentInChildren<CinemachineBrain>();
         cameras = GetComponentsInChildren<CinemachineVirtualCamera>();
         mainCamera = GetComponentInChildren<Camera>();
+        cameraFollow = GetComponentInChildren<CameraFollow>();
 
         foreach(CinemachineVirtualCamera vc in cameras)
         {
@@ -104,6 +106,9 @@ public class CameraController : MonoBehaviour
         }
 
         TurnCamera1On();
+
+        cameraFollow.currentCubeTransform = player.cubeTransform;
+        cameraFollow.scale = player.scale;
     }
     #endregion
 

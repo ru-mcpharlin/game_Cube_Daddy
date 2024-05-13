@@ -60,6 +60,7 @@ MonoBehaviour:
   isMagnetic: 0
   onMagneticCube: 0
   calculateRollTypeScript: {fileID: 0}
+  debugMovement: 1
   rollType: 0
   remainingAngle: 0
   rotationAnchor: {x: 0, y: 0, z: 0}
@@ -247,6 +248,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   cubeTransform: {fileID: 0}
+  mergeDistanceThreshold: 0.1
   cubes_index: 0
   cubeDatas: []
   cameraController: {fileID: 0}
@@ -270,10 +272,10 @@ MonoBehaviour:
   cutoutSize: 1
   wallMaterials:
   - {fileID: 2100000, guid: 526ed91fa383cd342bda5d39d44c95d4, type: 2}
-  cam: {fileID: 0}
   mask:
     serializedVersion: 2
     m_Bits: 128
+  cam: {fileID: 0}
 --- !u!114 &4460003246279132946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,9 +291,18 @@ MonoBehaviour:
   player: {fileID: 0}
   tag_MagneticEnvironment: Magnetic Environment
   debug: 0
-  debugRollType: 23
-  debugBonkFlat1: 1
-  debugBonkFlat2: 0
-  debugStuck1: 1
+  debugRollType: 28
+  color_isCube: {r: 0, g: 1, b: 0, a: 1}
+  color_noCube: {r: 1, g: 0, b: 0, a: 1}
+  color_isMagneticCube: {r: 0, g: 0, b: 1, a: 1}
+  color_noMagneticCube: {r: 0, g: 0, b: 0, a: 1}
+  debugClimbDown1: 0
+  debugClimbDown2: 0
+  debugClimbDown3: 0
+  debugClimbDown4: 0
+  debugClimbUp1: 0
+  debugClimbUp2: 0
+  debugClimbUp3: 1
+  debugStuck1: 0
   debugStuck2: 0
   debugStuck3: 0

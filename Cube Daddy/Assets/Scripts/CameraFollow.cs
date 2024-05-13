@@ -5,11 +5,44 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] public Transform currentCubeTransform;
+    [SerializeField] public float scale;
     [SerializeField] public float speed;
+
+    [SerializeField] bool _YcatchUp;
+    [SerializeField] bool _Allcatchup;
+    [SerializeField] public Vector3 targetVector;
+
+    
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, currentCubeTransform.position, Time.deltaTime * speed);
+        Debug.Log(Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)));
+
+
+        if(!_YcatchUp &&
+            Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)) >= scale / 2)
+        {
+            _YcatchUp = true;
+        }
+
+        if(_YcatchUp &&
+            Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)) <= 0.1f)
+        {
+            _YcatchUp = false;
+        }
+
+        if(!_YcatchUp &&
+            Vector3.Distance(transform.position, currentCubeTransform.position) > 0.1f)
+        {
+            targetVector = Vector3.Lerp(targetVector, new Vector3(currentCubeTransform.position.x, targetVector.y, currentCubeTransform.position.z), Time.deltaTime * speed);
+        }
+        else if (Vector3.Distance(transform.position, currentCubeTransform.position) > 0.1f)
+        {
+            targetVector = Vector3.Lerp(targetVector, currentCubeTransform.position, Time.deltaTime * speed);
+        }
+
+
+        transform.position = Vector3.Lerp(targetVector, currentCubeTransform.position, Time.deltaTime * speed);
     }
 }

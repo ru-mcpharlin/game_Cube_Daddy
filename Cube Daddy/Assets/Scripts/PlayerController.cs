@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector3 rotationAxis;
     [Space]
     [Header("Cube variables")]
-    [SerializeField] float scale;
+    [SerializeField] public float scale;
     [SerializeField] float rollSpeed;
     [SerializeField] AnimationCurve rollCurve;
     [Space]
@@ -83,11 +83,12 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("Cube")]
-    [SerializeField] Transform cubeTransform;
+    [SerializeField] public Transform cubeTransform;
 
     [Space]
     [Space]
     [Header("Larger Cubes")]
+    [SerializeField] float mergeDistanceThreshold;
     [SerializeField] int cubes_index;
     [SerializeField] CubeData[] cubeDatas;
 
@@ -96,8 +97,6 @@ public class PlayerController : MonoBehaviour
     [Header("Camera")]
     [SerializeField] CameraController cameraController;
     [SerializeField] public Transform vc_transform;
-    [SerializeField] CameraFollow cameraFollow;
-    [SerializeField] float cameraTrackingSpeed;
 
     [Space]
     [Space]
@@ -163,10 +162,6 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
-
-        //camera follow
-        cameraFollow = FindObjectOfType<CameraFollow>();
-        cameraFollow.currentCubeTransform = cubeTransform;
 
         //cubes
         cubeDatas = FindObjectsOfType<CubeData>();
@@ -546,10 +541,13 @@ public class PlayerController : MonoBehaviour
         //LEFT
         if (rollType == RollType.climb_Left || 
             rollType == RollType.step_Left ||
-            rollType == RollType.bonk_climbLeft_flat ||
-            rollType == RollType.bonk_climbLeft_head)
+            rollType == RollType.bonk_climbLeft_flat)
         {
             rotationAxis = Vector3.up;
+        }
+        else if(rollType == RollType.bonk_climbLeft_head)
+        {
+            rotationAxis = Vector3.down;
         }
         else if(rollType == RollType.bonk_stepLeft1 ||
                 rollType == RollType.bonk_stepLeft2 ||
@@ -557,13 +555,17 @@ public class PlayerController : MonoBehaviour
         {
             rotationAxis = Vector3.down;
         }
+
         //RIGHT
         else if (rollType == RollType.climb_Right || 
                  rollType == RollType.step_Right ||
-                 rollType == RollType.bonk_climbRight_flat ||
-                 rollType == RollType.bonk_climbRight_head)
+                 rollType == RollType.bonk_climbRight_flat)
         {
             rotationAxis = Vector3.down;
+        }
+        else if(rollType == RollType.bonk_climbRight_head)
+        {
+            rotationAxis = Vector3.up;
         }
         else if(rollType == RollType.bonk_stepRight1 ||
                 rollType == RollType.bonk_stepRight2 ||
@@ -571,6 +573,7 @@ public class PlayerController : MonoBehaviour
         {
             rotationAxis = Vector3.up;
         }
+
         //NORMAL
         else
         {
@@ -652,7 +655,6 @@ public class PlayerController : MonoBehaviour
         ///////////////////////////////////////////////////////////////////////////////
         #endregion
 
-
         //fix round errors
         #region Round Errors
         FixFloatingPointErrors();
@@ -665,7 +667,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
             //check not on a magnetic tile
-            CheckIfOnMagneticCube();
+            onMagneticCube = CheckIfOnMagneticCube();
 
             if (!onMagneticCube)
             {
@@ -709,7 +711,7 @@ public class PlayerController : MonoBehaviour
             #region check completed cube
             if (cubeDatas.Count() > 0)
             {
-                if (cubeTransform.position == cubeDatas[cubes_index].missingPosition.position)
+                if (Vector3.Distance(cubeTransform.position, cubeDatas[cubes_index].missingPosition.position) <= mergeDistanceThreshold)
                 {
                     //set current small cubes parent to be large cubes transform
                     cubeTransform.gameObject.SetActive(false);
@@ -717,8 +719,8 @@ public class PlayerController : MonoBehaviour
                     //set cube transform to large cube transform
                     cubeTransform = cubeDatas[cubes_index].transform;
 
-                    //update camera follow transform
-                    cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+/*                    //update camera follow transform
+                    cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;*/
 
                     //set scale
                     scale = cubeDatas[cubes_index].scale;
@@ -753,35 +755,15 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     //methods that help with magnetic cube calculations
     #region Magnetic Methods
-    private void CheckIfOnMagneticCube()
+    public bool CheckIfOnMagneticCube()
     {
+        #region flat
         //forward
         if (Physics.Raycast(cubeTransform.position, Vector3.forward, out RaycastHit hitForward, scale))
         {
             if (hitForward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //forward up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.forward, out RaycastHit hitForwardUp, scale))
-        {
-            if (hitForwardUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //forward down
-        else if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.forward, out RaycastHit hitForwardDown, scale))
-        {
-            if (hitForwardDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
 
@@ -790,88 +772,28 @@ public class PlayerController : MonoBehaviour
         {
             if (hitBackward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
 
-        //Back up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.back, out RaycastHit hitBackUp, scale))
-        {
-            if (hitBackUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //Back down
-        else if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.back, out RaycastHit hitBackDown, scale))
-        {
-            if (hitBackDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
+        
         //left
         else if (Physics.Raycast(cubeTransform.position, Vector3.left, out RaycastHit hitLeft, scale))
         {
             if (hitLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
 
-        //left up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.left, out RaycastHit hitleftUp, scale))
-        {
-            if (hitleftUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //left down
-        else if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.left, out RaycastHit hitleftDown, scale))
-        {
-            if (hitleftDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
+        
 
         //right
         else if (Physics.Raycast(cubeTransform.position, Vector3.right, out RaycastHit hitRight, scale))
         {
             if (hitRight.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //right up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.right, out RaycastHit hitrightUp, scale))
-        {
-            if (hitrightUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
-            }
-        }
-
-        //right down
-        else if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.right, out RaycastHit hitrightDown, scale))
-        {
-            if (hitrightDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
 
@@ -880,8 +802,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitDown.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
 
@@ -890,10 +811,151 @@ public class PlayerController : MonoBehaviour
         {
             if (hitUp.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                onMagneticCube = true;
-                return;
+                return true;
             }
         }
+
+        #endregion
+
+        #region edge
+        int numEdges = 0;
+
+        /*Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.forward, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.forward, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.back, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.back, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.left, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.left, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.right, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.right, Color.gray, scale);*/
+
+        //forward up
+        if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.forward, out RaycastHit hitForwardUp, scale))
+        {
+            if (hitForwardUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //forward down
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.forward, out RaycastHit hitForwardDown, scale))
+        {
+            if (hitForwardDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //forward left
+        if (Physics.Raycast(cubeTransform.position + Vector3.left * scale, Vector3.forward, out RaycastHit hitForwardLeft, scale))
+        {
+            if (hitForwardLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //forward right
+        if (Physics.Raycast(cubeTransform.position + Vector3.right * scale, Vector3.forward, out RaycastHit hitForwardRight, scale))
+        {
+            if (hitForwardRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //Back up
+        if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.back, out RaycastHit hitBackUp, scale))
+        {
+            if (hitBackUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+
+        //Back down
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.back, out RaycastHit hitBackDown, scale))
+        {
+            if (hitBackDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //back left
+        if (Physics.Raycast(cubeTransform.position + Vector3.left * scale, Vector3.back, out RaycastHit hitbackLeft, scale))
+        {
+            if (hitbackLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //back right
+        if (Physics.Raycast(cubeTransform.position + Vector3.right * scale, Vector3.back, out RaycastHit hitbackRight, scale))
+        {
+            if (hitbackRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //left up
+        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.left, out RaycastHit hitleftUp, scale))
+        {
+            if (hitleftUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //left down
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.left, out RaycastHit hitleftDown, scale))
+        {
+            if (hitleftDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //right up
+        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.right, out RaycastHit hitrightUp, scale))
+        {
+            if (hitrightUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //right down
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.right, out RaycastHit hitrightDown, scale))
+        {
+            if (hitrightDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
+            {
+                numEdges++;
+            }
+        }
+
+        //
+        
+        if (numEdges >= 2)
+        {
+            return true;
+
+        }
+        else
+        {
+            return false;
+        }
+
+
+
+        #endregion
     }
 
     #endregion

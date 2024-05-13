@@ -21,6 +21,14 @@ public class CalculateRollTypeScript : MonoBehaviour
     [Space]
     [SerializeField] bool debugClimbDown1;
     [SerializeField] bool debugClimbDown2;
+    [SerializeField] bool debugClimbDown3;
+    [SerializeField] bool debugClimbDown4;
+
+    [Space]
+    [Space]
+    [SerializeField] bool debugClimbUp1;
+    [SerializeField] bool debugClimbUp2;
+    [SerializeField] bool debugClimbUp3;
 
     [Space]
     [Space]
@@ -56,7 +64,7 @@ public class CalculateRollTypeScript : MonoBehaviour
         //direction 1
         bool isCube_direction1 = Physics.Raycast(position, direction, out RaycastHit hit_direction1, scale);
         bool isCube_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, out RaycastHit hit_direction1up1, scale);
-        bool isCube_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, scale);
+        bool isCube_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, out RaycastHit hit_direction1up2, scale);
         bool isCube_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale);
 
         //direction 2
@@ -72,7 +80,8 @@ public class CalculateRollTypeScript : MonoBehaviour
         //direction minus 1
         bool isCube_directionMinus1 = Physics.Raycast(position, -direction, out RaycastHit hit_directionMinus1, scale);
         bool isCube_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale);
-        bool isCube_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, scale);
+        bool isCube_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, out RaycastHit hit_directionMinus1down1, scale);
+        bool isCube_directionMinus1down2 = Physics.Raycast(position + Vector3.down * scale - direction * scale, Vector3.down, out RaycastHit hit_directionMinus1down2, scale);
 
         //down 1
         bool isCube_down1 = Physics.Raycast(position, Vector3.down, out RaycastHit hit_down1, scale);
@@ -82,8 +91,8 @@ public class CalculateRollTypeScript : MonoBehaviour
 
         //left forward 1
         bool isCube_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1, scale);
-        bool isCube_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), scale);
-        bool isCube_leftForward1direction2 = Physics.Raycast(position + direction * scale * 2, -Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction1, scale);
+        bool isCube_leftForward1direction2 = Physics.Raycast(position + direction * scale * 2, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction2, scale);
 
         //left back 1
         bool isCube_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale);
@@ -91,18 +100,19 @@ public class CalculateRollTypeScript : MonoBehaviour
 
         //right forward 1
         bool isCube_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1, scale);
-        bool isCube_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), scale);
-        bool isCube_rightForward1direction2 = Physics.Raycast(position + direction * scale * 2, Vector3.Cross(direction, Vector3.up), scale);
+        bool isCube_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction1, scale);
+        bool isCube_rightForward1direction2 = Physics.Raycast(position + direction * scale * 2, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction2, scale);
 
         //right back 1
         bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale);
         bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
-        
+
 
         #endregion
 
         //////////////// IS MAGNETIC ////////////
         #region is Magnetic
+        #region direction 1
         bool isMagnetic_direction1 = false;
         if (isCube_direction1)
         {
@@ -115,11 +125,34 @@ public class CalculateRollTypeScript : MonoBehaviour
             isMagnetic_direction1up1 = hit_direction1up1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
+        bool isMagnetic_direction1up2 = false;
+        if (isCube_direction1up2)
+        {
+            isMagnetic_direction1up2 = hit_direction1up2.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        #endregion
+
+
+
         bool isMagnetic_directionMinus1 = false;
         if(isCube_directionMinus1)
         {
             isMagnetic_directionMinus1 = hit_directionMinus1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
+
+        bool isMagnetic_directionMinus1down1 = false;
+        if (isCube_directionMinus1down1)
+        {
+            isMagnetic_directionMinus1down1 = hit_directionMinus1down1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        bool isMagnetic_directionMinus1down2 = false;
+        if (isCube_directionMinus1down2)
+        {
+            isMagnetic_directionMinus1down2 = hit_directionMinus1down2.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
 
         bool isMagnetic_up1 = false;
         if (isCube_up1)
@@ -133,17 +166,48 @@ public class CalculateRollTypeScript : MonoBehaviour
             isMagnetic_down1 = hit_down1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
+        #region left forward 1
+
         bool isMagnetic_leftForward1 = false;
         if (isCube_leftForward1)
         {
             isMagnetic_leftForward1 = hit_leftForward1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
 
+        bool isMagnetic_leftForward1direction1 = false;
+        if (isCube_leftForward1direction1)
+        {
+            isMagnetic_leftForward1direction1 = hit_leftForward1direction1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        bool isMagnetic_leftForward1direction2 = false;
+        if (isCube_leftForward1direction2)
+        {
+            isMagnetic_leftForward1direction2 = hit_leftForward1direction2.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        #endregion
+
+        #region Right Forward 1
         bool isMagnetic_rightForward1 = false;
         if (isCube_rightForward1)
         {
             isMagnetic_rightForward1 = hit_rightForward1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
         }
+
+        bool isMagnetic_rightForward1direction1 = false;
+        if (isCube_rightForward1direction1)
+        {
+            isMagnetic_rightForward1direction1 = hit_rightForward1direction1.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        bool isMagnetic_rightForward1direction2 = false;
+        if (isCube_rightForward1direction2)
+        {
+            isMagnetic_rightForward1direction2 = hit_rightForward1direction2.collider.gameObject.CompareTag(tag_MagneticEnvironment);
+        }
+
+        #endregion
 
         #endregion
 
@@ -245,7 +309,8 @@ public class CalculateRollTypeScript : MonoBehaviour
             !isCube_directionMinus1 &&
             !isCube_directionMinus1up1 &&
             !isCube_up2 &&
-            isCube_direction1up2)
+            isCube_direction1up2 &&
+           !isMagnetic_direction1up2)
         {
 
             return PlayerController.RollType.bonk_stepUp3;
@@ -455,7 +520,8 @@ public class CalculateRollTypeScript : MonoBehaviour
                 !isCube_leftBack1 &&
                 !isCube_leftBack1direction1 &&
                 !isCube_direction2 &&
-                 isCube_leftForward1direction2)
+                 isCube_leftForward1direction2 &&
+                !isMagnetic_leftForward1direction2)
 
         {
             return PlayerController.RollType.bonk_stepLeft3;
@@ -589,7 +655,8 @@ public class CalculateRollTypeScript : MonoBehaviour
                 !isCube_rightBack1 &&
                 !isCube_rightBack1direction1 &&
                 !isCube_direction2 &&
-                isCube_rightForward1direction2)
+                 isCube_rightForward1direction2 &&
+                !isMagnetic_rightForward1direction2)
         {
             return PlayerController.RollType.bonk_stepRight3;
         }
@@ -623,7 +690,16 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_direction1up1 &&
                 !isCube_up1 &&
                 !isCube_directionMinus1up1 &&
-                !isCube_directionMinus1)
+                !isCube_directionMinus1
+                 ||
+                 isCube_direction1 &&
+                 isMagnetic_direction1 &&
+                !isCube_direction1up1 &&
+                !isCube_up1 &&
+                !isCube_directionMinus1up1 &&
+                !isCube_directionMinus1 &&
+                 isCube_direction1up2 &&
+                 isMagnetic_direction1up2)
         {
             return PlayerController.RollType.climb_Up;
         }
@@ -692,7 +768,22 @@ public class CalculateRollTypeScript : MonoBehaviour
                 !isCube_directionMinus1down1 &&
                 !isCube_direction1 &&
                 !isCube_direction1down1 &&
-                 isCube_down2)
+                 isCube_down2 
+                 ||
+                 //move onto a gap
+                 player.CheckIfOnMagneticCube() &&
+                !isCube_directionMinus1down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1 &&
+                 isCube_directionMinus1down2 &&
+                 isMagnetic_directionMinus1down2
+                 ||
+                 //move off a gap
+                  player.CheckIfOnMagneticCube() &&
+                 isMagnetic_directionMinus1down1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_direction1down1)
         {
             return PlayerController.RollType.climb_Down;
         }
@@ -716,6 +807,26 @@ public class CalculateRollTypeScript : MonoBehaviour
         else if (isCube_leftForward1 &&
                  isMagnetic_leftForward1 &&
                  isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_leftBack1 &&
+                !isCube_leftBack1direction1
+                 ||
+                //onto gap
+                 isCube_leftForward1 &&
+                 isMagnetic_leftForward1 &&
+                !isCube_leftForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_leftBack1 &&
+                 isCube_leftForward1direction2 &&
+                 isMagnetic_leftForward1direction2
+                 //off gap
+                 ||
+                 player.CheckIfOnMagneticCube() &&
+                !isCube_leftForward1 &&
+                 isCube_leftForward1direction1 &&
+                 isMagnetic_leftForward1direction1 &&
                 !isCube_down1 &&
                 !isCube_direction1 &&
                 !isCube_leftBack1 &&
@@ -788,6 +899,26 @@ public class CalculateRollTypeScript : MonoBehaviour
         else if (isCube_rightForward1 &&
                  isMagnetic_rightForward1 &&
                  isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_rightBack1 &&
+                !isCube_rightBack1direction1
+                 ||
+                 //onto gap
+                 isCube_rightForward1 &&
+                 isMagnetic_rightForward1 &&
+                !isCube_rightForward1direction1 &&
+                !isCube_down1 &&
+                !isCube_direction1 &&
+                !isCube_rightBack1 &&
+                 isCube_rightForward1direction2 &&
+                 isMagnetic_rightForward1direction2
+                 //off gap
+                 ||
+                 player.CheckIfOnMagneticCube() &&
+                !isCube_rightForward1 &&
+                 isCube_rightForward1direction1 &&
+                 isMagnetic_rightForward1direction1 &&
                 !isCube_down1 &&
                 !isCube_direction1 &&
                 !isCube_rightBack1 &&
@@ -1064,7 +1195,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                 DebugRay_leftBack1(color_noCube, position, direction, scale);
                 DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
                 DebugRay_direction2(color_noCube, position, direction, scale);
-                DebugRay_leftForward1direction2(color_isCube, position, direction, scale);
+                DebugRay_leftForward1direction2(color_noMagneticCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1109,7 +1240,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                 DebugRay_rightBack1(color_noCube, position, direction, scale);
                 DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
                 DebugRay_direction2(color_noCube, position, direction, scale);
-                DebugRay_rightForward1direction2(color_isCube, position, direction, scale);
+                DebugRay_rightForward1direction2(color_noMagneticCube, position, direction, scale);
                 break;
 
             #endregion
@@ -1122,15 +1253,30 @@ public class CalculateRollTypeScript : MonoBehaviour
             //////////////////////////////////////////
             #region Climb Up
             case PlayerController.RollType.climb_Up:
-                DebugRay_direction1(color_isMagneticCube, position, direction, scale);
-                DebugRay_up1(color_noCube, position, direction, scale);
-                DebugRay_directionMinus1(color_noCube, position, direction, scale); 
-                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                if (debugClimbUp1)
+                {
+                    DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_up1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                }
+                else if (debugClimbUp2)
+                {
+                    DebugRay_direction1up1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_up1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                }
+                else if(debugClimbUp3)
+                {
+                    DebugRay_direction1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_direction1up1(color_noCube, position, direction, scale);
+                    DebugRay_up1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                    DebugRay_direction1up2(color_isMagneticCube, position, direction, scale);
+                }
 
-                /*DebugRay_direction1up1(color_isMagneticCube, position, direction, scale);
-                DebugRay_up1(color_noCube, position, direction, scale);
-                DebugRay_directionMinus1up1(color_noCube, position, direction, scale);
-                DebugRay_directionMinus1(color_noCube, position, direction, scale);*/
 
                 break;
 
@@ -1172,16 +1318,24 @@ public class CalculateRollTypeScript : MonoBehaviour
                     DebugRay_direction1down1(color_noCube, position, direction, scale);
                     DebugRay_down2(color_isCube, position, direction, scale);
                 }
+                else if(debugClimbDown3)
+                {
+                    DebugRay_directionMinus1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_directionMinus1down1(color_noCube, position, direction, scale);
+                    DebugRay_down1(color_noCube, position, direction, scale);
+                    DebugRay_direction1(color_noCube, position, direction, scale);
+                    DebugRay_direction1down1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1down2(color_isMagneticCube, position, direction, scale);
+                }
+                else if(debugClimbDown4)
+                {
+                    DebugRay_directionMinus1(color_noCube, position, direction, scale);
+                    DebugRay_directionMinus1down1(color_isMagneticCube, position, direction, scale);
+                    DebugRay_down1(color_noCube, position, direction, scale);
+                    DebugRay_direction1(color_noCube, position, direction, scale);
+                    DebugRay_direction1down1(color_noCube, position, direction, scale);
+                }
                 break;
-
-            /*case PlayerController.RollType.bonk_climbDown:
-
-                Debug.DrawRay(position + direction * scale, Vector3.down, color_isCube, scale);
-
-
-                DebugRay_direction1(color_noCube, position, direction, scale);
-                Debug.DrawRay(position + direction * scale, Vector3.down, color_isCube, scale);
-                break;*/
 
             #endregion
 
@@ -1194,6 +1348,22 @@ public class CalculateRollTypeScript : MonoBehaviour
                 DebugRay_direction1(color_noCube, position, direction, scale);
                 DebugRay_leftBack1(color_noCube, position, direction, scale);
                 DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
+
+                /*DebugRay_leftForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction2(color_isMagneticCube, position, direction, scale);*/
+
+                /*DebugRay_leftForward1(color_noCube, position, direction, scale);
+                DebugRay_leftForward1direction1(color_isMagneticCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1(color_noCube, position, direction, scale);
+                DebugRay_leftBack1direction1(color_noCube, position, direction, scale);*/
+
                 break;
 
             case PlayerController.RollType.bonk_climbLeft_flat:
@@ -1226,6 +1396,21 @@ public class CalculateRollTypeScript : MonoBehaviour
                 DebugRay_direction1(color_noCube, position, direction, scale);
                 DebugRay_rightBack1(color_noCube, position, direction, scale);
                 DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
+
+                /*DebugRay_rightForward1(color_isMagneticCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_noCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction2(color_isMagneticCube, position, direction, scale);
+
+                DebugRay_rightForward1(color_noCube, position, direction, scale);
+                DebugRay_rightForward1direction1(color_isMagneticCube, position, direction, scale);
+                DebugRay_down1(color_noCube, position, direction, scale);
+                DebugRay_direction1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1(color_noCube, position, direction, scale);
+                DebugRay_rightBack1direction1(color_noCube, position, direction, scale);*/
                 break;
 
             case PlayerController.RollType.bonk_climbRight_flat:
@@ -1372,6 +1557,13 @@ public class CalculateRollTypeScript : MonoBehaviour
     {
         Debug.DrawRay(position - direction * scale, Vector3.down * scale ,  color, scale);
     }
+
+    public void DebugRay_directionMinus1down2(Color color, Vector3 position, Vector3 direction, float scale)
+    {
+        Debug.DrawRay(position - direction * scale + Vector3.down * scale, Vector3.down * scale, color, scale);
+    }
+
+    
 
     #endregion
 
