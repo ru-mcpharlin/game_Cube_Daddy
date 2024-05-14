@@ -294,7 +294,7 @@ public class PlayerController : MonoBehaviour
 
         //is moving = true
         isMoving = true;
-        onMagneticCube = false;
+        onMagneticCube = CheckIfOnMagneticCube();
 
         //set the roll type information
         #region Roll Type
@@ -659,28 +659,22 @@ public class PlayerController : MonoBehaviour
         #region Fall
         //fall
         //if there is nothing below at the end of a move
-        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale) && !CheckIfOnMagneticCube())
         {
-            //check not on a magnetic tile
-            CheckIfOnMagneticCube();
+            //draw a debug ray down
+            Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
-            if (!onMagneticCube)
-            {
-                //draw a debug ray down
-                Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
+            //raycast straight down
+            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
 
-                //raycast straight down
-                Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
+            //get distance
+            fallDistance = hit.distance;
 
-                //get distance
-                fallDistance = hit.distance;
+            //move cube down 
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
-                //move cube down 
-                Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
-
-                //set falling to true
-                isFalling = true;
-            }
+            //set falling to true
+            isFalling = true;
         }
         #endregion
 
@@ -697,7 +691,7 @@ public class PlayerController : MonoBehaviour
             CheckAllPressurePlates();
 
             //check if on magnetic cube
-            CheckIfOnMagneticCube();
+            onMagneticCube = CheckIfOnMagneticCube();
 
             //enemy moves
             CheckEnemyMovement();
@@ -730,82 +724,105 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     //methods that help with magnetic cube calculations
     #region Magnetic Methods
-    public void CheckIfOnMagneticCube()
+    public bool CheckIfOnMagneticCube()
     {
+        /*Debug.DrawRay(cubeTransform.position, Vector3.forward * scale, Color.black, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.back * scale, Color.black, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.left * scale, Color.black, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.right * scale, Color.black, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.up * scale, Color.black, scale);
+        Debug.DrawRay(cubeTransform.position, Vector3.down * scale, Color.black, scale);*/
+
+        /*Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.forward, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.forward, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.forward, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.forward, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.back, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.back, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.back, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.back, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.left, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.left, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.left, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.left, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.right, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.right, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.right, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.right, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.up, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.up, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.up, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.up, Color.gray, scale);
+
+        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.down, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.down, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.left * scale, Vector3.down, Color.gray, scale);
+        Debug.DrawRay(cubeTransform.position + Vector3.right * scale, Vector3.down, Color.gray, scale);*/
+
         #region flat
         //forward
-        if (Physics.Raycast(cubeTransform.position, Vector3.forward, out RaycastHit hitForward, scale))
+        if (Physics.Raycast(cubeTransform.position, Vector3.forward, out RaycastHit hitForward, scale) &&
+            hitForward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitForward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-            }
+            //Debug.Log("forward: " + true);
+            return true;
         }
+        //Debug.Log("forward: " + false);
 
         //back
-        else if(Physics.Raycast(cubeTransform.position, Vector3.back, out RaycastHit hitBackward, scale))
+        if(Physics.Raycast(cubeTransform.position, Vector3.back, out RaycastHit hitBackward, scale) &&
+           hitBackward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitBackward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-            }
+            //Debug.Log("back: " + true);
+            return true;
         }
-
+        //Debug.Log("back: " + false);
         
         //left
-        else if (Physics.Raycast(cubeTransform.position, Vector3.left, out RaycastHit hitLeft, scale))
+        if (Physics.Raycast(cubeTransform.position, Vector3.left, out RaycastHit hitLeft, scale) &&
+                 hitLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
-            {
-                onMagneticCube = true;
-            }
+            //Debug.Log("left: " + true);
+            return true;
         }
-
+        //Debug.Log("left: " + false);
         
-
         //right
-        else if (Physics.Raycast(cubeTransform.position, Vector3.right, out RaycastHit hitRight, scale))
+        if (Physics.Raycast(cubeTransform.position, Vector3.right, out RaycastHit hitRight, scale) &&
+            hitRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitRight.collider.gameObject.tag == tag_MagneticEnvironment)
-            {
-                onMagneticCube = true;
-            }
+            //Debug.Log("right: " + true);
+            return true;
         }
+        //Debug.Log("right: " + false);
 
         //down
-        else if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hitDown, scale))
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hitDown, scale) &&
+            hitDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitDown.collider.gameObject.tag == tag_MagneticEnvironment)
-            {
-                onMagneticCube = true;
-            }
+
+            //Debug.Log("down: " + true);
+            return true;
         }
+        //Debug.Log("down: " + false);
 
         //up
-        else if (Physics.Raycast(cubeTransform.position, Vector3.up, out RaycastHit hitUp, scale))
+        if (Physics.Raycast(cubeTransform.position, Vector3.up, out RaycastHit hitUp, scale) &&
+            hitUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
-            if (hitUp.collider.gameObject.tag == tag_MagneticEnvironment)
-            {
-                onMagneticCube = true;
-            }
+           //Debug.Log("up: " + true);
+            return true;
         }
+        //Debug.Log("up: " + false);
 
         #endregion
 
         #region edge
         int numEdges = 0;
-
-        /*Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.forward, Color.gray, scale);
-        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.forward, Color.gray, scale);
-
-        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.back, Color.gray, scale);
-        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.back, Color.gray, scale);
-
-        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.left, Color.gray, scale);
-        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.left, Color.gray, scale);
-
-        Debug.DrawRay(cubeTransform.position + Vector3.up * scale, Vector3.right, Color.gray, scale);
-        Debug.DrawRay(cubeTransform.position + Vector3.down * scale, Vector3.right, Color.gray, scale);*/
 
         //forward up
         if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.forward, out RaycastHit hitForwardUp, scale))
@@ -920,8 +937,11 @@ public class PlayerController : MonoBehaviour
         
         if (numEdges >= 2)
         {
-            onMagneticCube = true;
-
+            return true;
+        }
+        else
+        {
+            return false;
         }
         #endregion
     }

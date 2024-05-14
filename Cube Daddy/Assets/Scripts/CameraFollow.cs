@@ -17,7 +17,7 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)));
+        //Debug.Log(Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)));
 
 
         if(!_YcatchUp &&

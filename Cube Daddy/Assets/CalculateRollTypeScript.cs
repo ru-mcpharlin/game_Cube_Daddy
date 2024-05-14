@@ -823,7 +823,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_leftForward1direction2
                  //off gap
                  ||
-                 player.onMagneticCube &&
+                 player.CheckIfOnMagneticCube() &&
                 !isCube_leftForward1 &&
                  isCube_leftForward1direction1 &&
                  isMagnetic_leftForward1direction1 &&
@@ -915,7 +915,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_rightForward1direction2
                  //off gap
                  ||
-                 player.onMagneticCube &&
+                 player.CheckIfOnMagneticCube() &&
                 !isCube_rightForward1 &&
                  isCube_rightForward1direction1 &&
                  isMagnetic_rightForward1direction1 &&
