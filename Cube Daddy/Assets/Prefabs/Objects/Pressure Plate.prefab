@@ -1537,5 +1537,8 @@ MonoBehaviour:
       m_Calls: []
   hasBeenTriggered: 0
   targetPosition: {fileID: 5895325684793268439}
+  needToHaveCollectedPellets: 0
+  hasCollectedPellets: 0
+  pellets: []
   button: {fileID: 5895325683961750426}
   triggeredButtonPosition: {fileID: 5895325685440890848}
