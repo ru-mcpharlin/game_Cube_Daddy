@@ -59,22 +59,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AnimationCurve rollCurve;
     [Space]
     [SerializeField] float bonkAngle;
+    [Space]
     [SerializeField] float bonkSpeed;
     [SerializeField] AnimationCurve bonkCurve;
     [Space]
-    [SerializeField] float headBonkAngle;
     [SerializeField] float headBonkSpeed;
     [SerializeField] AnimationCurve headBonkCurve;
     [Space]
-    [SerializeField] float step1BonkAngle;
     [SerializeField] float step1BonkSpeed;
     [SerializeField] AnimationCurve step1BonkCurve;
     [Space]
-    [SerializeField] float step2BonkAngle;
     [SerializeField] float step2BonkSpeed;
     [SerializeField] AnimationCurve step2BonkCurve;
     [Space]
-    [SerializeField] float step3BonkAngle;
     [SerializeField] float step3BonkSpeed;
     [SerializeField] AnimationCurve step3BonkCurve;
     [Space]
@@ -259,7 +256,7 @@ public class PlayerController : MonoBehaviour
 
         //fly movement
         #region Fly Movement
-
+        FlyMovement();
 
         #endregion
 
@@ -310,7 +307,7 @@ public class PlayerController : MonoBehaviour
 
             //head bonk
             case RollType.bonk_head:
-                remainingAngle = headBonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 direction = -direction;
                 break;
@@ -334,21 +331,21 @@ public class PlayerController : MonoBehaviour
 
             //step up bonk 1
             case RollType.bonk_stepUp1:
-                remainingAngle = headBonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 direction = -direction;
                 break;
 
             //step up bonk 2
             case RollType.bonk_stepUp2:
-                remainingAngle = step2BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 direction = -direction;
                 break;
 
             //step up bonk 3
             case RollType.bonk_stepUp3:
-                remainingAngle = step3BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 direction = -direction;
                 break;
@@ -364,21 +361,21 @@ public class PlayerController : MonoBehaviour
 
             //step down bonk 1
             case RollType.bonk_stepDown1:
-                remainingAngle = step1BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 direction = -direction;
                 break;
 
             //step down bonk 2
             case RollType.bonk_stepDown2:
-                remainingAngle = step2BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 direction = -direction;
                 break;
 
             //step down bonk 3
             case RollType.bonk_stepDown3:
-                remainingAngle = step3BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
                 direction = -direction;
                 break;
@@ -394,19 +391,19 @@ public class PlayerController : MonoBehaviour
 
             //step left bonk 1
             case RollType.bonk_stepLeft1:
-                remainingAngle = step1BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
                 break;
 
             //step left bonk 2
             case RollType.bonk_stepLeft2:
-                remainingAngle = step2BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
                 break;
 
             //step left bonk 2
             case RollType.bonk_stepLeft3:
-                remainingAngle = step3BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
                 break;
 
@@ -421,21 +418,21 @@ public class PlayerController : MonoBehaviour
 
             //step right bonk 1
             case RollType.bonk_stepRight1:
-                remainingAngle = step1BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
                 direction = -direction;
                 break;
 
             //step right bonk 2
             case RollType.bonk_stepRight2:
-                remainingAngle = step2BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
                 direction = -direction;
                 break;
 
             //step right bonk 3
             case RollType.bonk_stepRight3:
-                remainingAngle = step3BonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
                 direction = -direction;
                 break;
@@ -461,7 +458,7 @@ public class PlayerController : MonoBehaviour
 
             //climb up bonk head
             case RollType.bonk_climbUp_head:
-                remainingAngle = headBonkAngle;
+                remainingAngle = bonkAngle;
                 rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
                 direction = -direction;
                 break;
@@ -626,19 +623,19 @@ public class PlayerController : MonoBehaviour
         }
         else if (rollType == RollType.bonk_head || rollType == RollType.bonk_climbUp_head || rollType == RollType.bonk_climbLeft_head || rollType == RollType.bonk_climbRight_head)
         {
-            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -headBonkAngle);
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
         }
         else if (rollType == RollType.bonk_stepUp1 || rollType == RollType.bonk_stepDown1 || rollType == RollType.bonk_stepLeft1 || rollType == RollType.bonk_stepRight1)
         {
-            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -step1BonkAngle);
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
         }
         else if (rollType == RollType.bonk_stepUp2 || rollType == RollType.bonk_stepDown2 || rollType == RollType.bonk_stepLeft2 || rollType == RollType.bonk_stepRight2)
         {
-            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -step2BonkAngle);
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
         }
         else if (rollType == RollType.bonk_stepUp3 || rollType == RollType.bonk_stepDown3 || rollType == RollType.bonk_stepLeft3 || rollType == RollType.bonk_stepRight3)
         {
-            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -step3BonkAngle);
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
         }
 
 
@@ -1067,6 +1064,15 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #endregion
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region FLy Movement
+    public void FlyMovement()
+    {
+        
+    }
 
     #endregion
 }
