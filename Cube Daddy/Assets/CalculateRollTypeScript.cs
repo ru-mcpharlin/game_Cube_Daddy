@@ -771,7 +771,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isCube_down2 
                  ||
                  //move onto a gap
-                 player.CheckIfOnMagneticCube() &&
+                  player.onMagneticCube &&
                 !isCube_directionMinus1down1 &&
                 !isCube_direction1 &&
                 !isCube_direction1down1 &&
@@ -779,7 +779,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_directionMinus1down2
                  ||
                  //move off a gap
-                  player.CheckIfOnMagneticCube() &&
+                  player.onMagneticCube &&
                  isMagnetic_directionMinus1down1 &&
                 !isCube_down1 &&
                 !isCube_direction1 &&
@@ -823,7 +823,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_leftForward1direction2
                  //off gap
                  ||
-                 player.CheckIfOnMagneticCube() &&
+                 player.onMagneticCube &&
                 !isCube_leftForward1 &&
                  isCube_leftForward1direction1 &&
                  isMagnetic_leftForward1direction1 &&
@@ -915,7 +915,7 @@ public class CalculateRollTypeScript : MonoBehaviour
                  isMagnetic_rightForward1direction2
                  //off gap
                  ||
-                 player.CheckIfOnMagneticCube() &&
+                 player.onMagneticCube &&
                 !isCube_rightForward1 &&
                  isCube_rightForward1direction1 &&
                  isMagnetic_rightForward1direction1 &&

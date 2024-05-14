@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isFalling;
     [Space]
     [SerializeField] bool isMagnetic;
-    [SerializeField] bool onMagneticCube;
+    [SerializeField] public bool onMagneticCube;
     [Space]
     [SerializeField] CalculateRollTypeScript calculateRollTypeScript;
     [SerializeField] bool debugMovement;
