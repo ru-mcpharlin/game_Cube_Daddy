@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] public MovementType movementType;
 
+    [Space]
+    [Space]
+    [Header("Player Components")]
+    [SerializeField] public Rigidbody rb;
+
 
     [Space]
     [Space]
@@ -188,6 +193,9 @@ public class PlayerController : MonoBehaviour
 
         //calculate roll type
         calculateRollTypeScript = GetComponent<CalculateRollTypeScript>();
+
+        //rigid body
+        rb = cubeTransform.gameObject.GetComponent<Rigidbody>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -654,7 +662,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale))
         {
             //check not on a magnetic tile
-            onMagneticCube = CheckIfOnMagneticCube();
+            CheckIfOnMagneticCube();
 
             if (!onMagneticCube)
             {
@@ -700,29 +708,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (Vector3.Distance(cubeTransform.position, cubeDatas[cubes_index].missingPosition.position) <= mergeDistanceThreshold)
                 {
-                    //set current small cubes parent to be large cubes transform
-                    cubeTransform.gameObject.SetActive(false);
-
-                    //set cube transform to large cube transform
-                    cubeTransform = cubeDatas[cubes_index].transform;
-
-                    //update camera follow transform
-                    cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
-
-                    //set scale
-                    scale = cubeDatas[cubes_index].scale;
-
-                    //set active = false incomplete meshes
-                    cubeDatas[cubes_index].incompleteMesh.SetActive(false);
-
-                    //set active = true complete meshes
-                    cubeDatas[cubes_index].completeMesh.SetActive(true);
-
-                    //increment index
-                    if (cubes_index < cubeDatas.Length - 1)
-                    {
-                        cubes_index++;
-                    }
+                    MergeCube();
                 }
             }
 
@@ -735,6 +721,8 @@ public class PlayerController : MonoBehaviour
         #endregion
     }
 
+    
+
     //**********************************************************************************************************//
     //methods that assist the roll coroutine
     #region Roll Helper Methods
@@ -742,7 +730,7 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     //methods that help with magnetic cube calculations
     #region Magnetic Methods
-    public bool CheckIfOnMagneticCube()
+    public void CheckIfOnMagneticCube()
     {
         #region flat
         //forward
@@ -750,7 +738,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitForward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -759,7 +747,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitBackward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -769,7 +757,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -780,7 +768,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitRight.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -789,7 +777,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitDown.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -798,7 +786,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitUp.collider.gameObject.tag == tag_MagneticEnvironment)
             {
-                return true;
+                onMagneticCube = true;
             }
         }
 
@@ -932,16 +920,9 @@ public class PlayerController : MonoBehaviour
         
         if (numEdges >= 2)
         {
-            return true;
+            onMagneticCube = true;
 
         }
-        else
-        {
-            return false;
-        }
-
-
-
         #endregion
     }
 
@@ -1008,8 +989,6 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-
-
     //calcualate the direction vector based on the camera
     #region Camera Relative Direction
     public Vector3 TranslateRelativeDirection(Vector3 direction)
@@ -1068,10 +1047,43 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     //**********************************************************************************************************//
-    #region FLy Movement
+    #region Fly Movement
     public void FlyMovement()
     {
         
+    }
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region 
+
+    //merge cube
+    private void MergeCube()
+    {
+        //set current small cubes parent to be large cubes transform
+        cubeTransform.gameObject.SetActive(false);
+
+        //set cube transform to large cube transform
+        cubeTransform = cubeDatas[cubes_index].transform;
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+
+        //set scale
+        scale = cubeDatas[cubes_index].scale;
+
+        //set active = false incomplete meshes
+        cubeDatas[cubes_index].incompleteMesh.SetActive(false);
+
+        //set active = true complete meshes
+        cubeDatas[cubes_index].completeMesh.SetActive(true);
+
+        //increment index
+        if (cubes_index < cubeDatas.Length - 1)
+        {
+            cubes_index++;
+        }
     }
 
     #endregion
