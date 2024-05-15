@@ -1,4 +1,6 @@
 using Cinemachine;
+using JetBrains.Annotations;
+using Pixelplacement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,7 +11,7 @@ using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
-    //**********************************************************************************************************//
+    ////***********************************************//
     #region Variables
     [Header("Components")]
     [SerializeField] PlayerController player;
@@ -23,6 +25,17 @@ public class CameraController : MonoBehaviour
 
     [Header("Camera Scaling Variables")]
     [Space]
+    [SerializeField] public bool _transitioning;
+    [SerializeField] public float currentScale;
+    [SerializeField] public float nextScale;
+    [Space]
+    [SerializeField] public float t;
+    [SerializeField] public float timer;
+    [SerializeField] public float TRANSITION_MAX_TIME;
+    [SerializeField] public AnimationCurve transitionCurve;
+    [Space]
+    [SerializeField] public UniversalRenderPipelineAsset URP_Asset;
+    [Space]
     [SerializeField] public float MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
     [SerializeField] public float MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
     [Space]
@@ -31,6 +44,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float LENS_ORTHO_SIZE_SCALE;
     [Space]
     [SerializeField] public float ISO_CAMERA_DISTANCE_SCALE;
+    [Space]
+    [SerializeField] public float PERSPECTIVE_CAMERA_DISTANCE_SCALE;
 
     [Header("Cameras")]
     [SerializeField] CinemachineVirtualCamera[] cameras;
@@ -50,10 +65,21 @@ public class CameraController : MonoBehaviour
     [SerializeField] public CinemachineOrbitalTransposer _5orbitalTransposer;
     [SerializeField] public Vector2 inputDelta;
     [Space]
+    [SerializeField] public float MIN_HEIGHT;
+    [SerializeField] public float MAX_HEIGHT;
+    [Space]
+    [SerializeField] public float _minHeightClamp;
+    [SerializeField] public float _maxHeightClamp;
+    [Space]
     [SerializeField] public float gamepadSpeed;
     [SerializeField] public float mouseSpeed;
     [Space]
+    [SerializeField] public float _camera5MouseThreshold;
+    [SerializeField] public float _camera5GamepadThreshold;
+    [Space]
     [SerializeField] public float yValue;
+    [SerializeField] public float ySpeed;
+    [SerializeField] public float yThreshold;
     [Space]
 
     [Header("Index")]
@@ -124,12 +150,8 @@ public class CameraController : MonoBehaviour
         TurnCamera1On();
 
         //Shadows
-        var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-
-        if (rpAsset == null)
-            return;
-
-        rpAsset.shadowDistance = SHADOW_DISTANCE;
+        URP_Asset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+        URP_Asset.shadowDistance = SHADOW_DISTANCE;
     }
     #endregion
 
@@ -270,30 +292,31 @@ public class CameraController : MonoBehaviour
 
         #endregion
 
-
-
-
         #region Camera 5 Control
         if (cameraState == CameraState.camera5_DynamicPerspective)
         {
-            //mouse 
-            if(player.cameraVector_Mouse.magnitude > player.cameraVector_Gamepad.magnitude)
-            {
-                _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime;
-                yValue += player.cameraVector_Mouse.y * Time.deltaTime;
-                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(yValue, 3, 10);
-            }
-            //gamepad
-            else
-            {
-                _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
-                yValue += player.cameraVector_Gamepad.y * Time.deltaTime;
-                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(yValue, 3, 10);
-            }
+            //x axis
+            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
 
-            
+            //y axis
+            if (Mathf.Abs(player.cameraVector_Mouse.y) >= _camera5MouseThreshold || Mathf.Abs(player.cameraVector_Gamepad.y) >= _camera5GamepadThreshold)
+            {
+                yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
+                yValue = Mathf.Clamp(yValue, -1, 1);
+                _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
+                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
+            }
 
         }
+
+        #endregion
+
+        #region transition
+        if(_transitioning)
+        {
+            ScaleCamera();
+        }
+
 
         #endregion
 
@@ -417,44 +440,72 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Scale Cameras
-    public void ScaleCamera(float scale)
+    public IEnumerator StartCameraScale(float inputCurrentScale, float inputNextScale)
     {
-        //Shadows
-        var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+        timer = 0;
+        t = 0;
+        currentScale = inputCurrentScale;
+        nextScale = inputNextScale;
 
-        if (rpAsset == null)
-            return;
+        yield return new WaitForEndOfFrame();
 
-        rpAsset.shadowDistance = SHADOW_DISTANCE * scale;
+        cameraFollow._transitioning = true;
+        _transitioning = true;
+    }
 
-        //*************************************************************** CAMERA 1 ***********************************************************//
-        foreach (CinemachineVirtualCamera vc in camera1_cameras)
+
+    public void ScaleCamera()
+    {
+        //CAMERA FOLLOW
+        //cameraFollow.transform.position = Vector3.Lerp(cameraFollow.transform.position, player.cubeTransform.position, t);
+
+        //SHADOWS
+        URP_Asset.shadowDistance = Mathf.Lerp(SHADOW_DISTANCE * currentScale, SHADOW_DISTANCE * nextScale, t);
+
+        //CLIPPING PLAIN
+        foreach(CinemachineVirtualCamera vc in cameras)
         {
-            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
-            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
-
-            vc.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
-            vc.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+            vc.m_Lens.FarClipPlane = Mathf.Lerp(MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
+            vc.m_Lens.NearClipPlane = Mathf.Lerp(MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
         }
 
-        //*************************************************************** CAMERA 2 ***********************************************************//
-        camera2_camera.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
-        camera2_camera.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+        //// CAMERA 1 ////
+        foreach (CinemachineVirtualCamera vc in camera1_cameras)
+        {
+            vc.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
+        }
 
-        camera2_camera.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
-        camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
+        //// CAMERA 2 ////
+        camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+        camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
 
-
-        //*************************************************************** CAMERA 3 ***********************************************************//
-
+        //// CAMERA 3 ////
         foreach (CinemachineVirtualCamera vc in camera3_cameras)
         {
-            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
-            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
+            vc.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
+        }
 
-            vc.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
-            vc.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
-        }   
+        //CAMERA 4
+
+        //CAMERA 5
+        //scale * -5 orbital transposer Z follow offset
+        camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset.z = Mathf.Lerp(PERSPECTIVE_CAMERA_DISTANCE_SCALE * currentScale, PERSPECTIVE_CAMERA_DISTANCE_SCALE * nextScale, t);
+        _minHeightClamp = Mathf.Lerp(MIN_HEIGHT * currentScale, MIN_HEIGHT * nextScale, t);
+        _maxHeightClamp = Mathf.Lerp(MAX_HEIGHT * currentScale, MAX_HEIGHT * nextScale, t);
+
+        //TIMER
+        timer += Time.deltaTime;
+        t = transitionCurve.Evaluate(timer / TRANSITION_MAX_TIME);
+
+        //IF TIMER EXCEEDS MAX TIME END TRANSITION
+        if (timer >= TRANSITION_MAX_TIME)
+        {
+            cameraFollow._transitioning = false;
+            _transitioning = false;
+        }
+
     }
 
     #endregion

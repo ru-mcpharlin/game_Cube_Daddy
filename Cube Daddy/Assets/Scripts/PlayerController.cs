@@ -233,6 +233,7 @@ public class PlayerController : MonoBehaviour
         inputVector.y = Mathf.Round(inputVector.y);
 
         cameraVector_Mouse = camera_Mouse.ReadValue<Vector2>();
+        //cameraVector_Mouse 
         cameraVector_Gamepad = camera_Gamepad.ReadValue<Vector2>();
         #endregion
 
@@ -1111,7 +1112,7 @@ public class PlayerController : MonoBehaviour
         cubeDatas[cubes_index + 1].isCurrentCube = true;
 
         //update camera size
-        cameraController.ScaleCamera(scale);
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index + 1].scale));
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
