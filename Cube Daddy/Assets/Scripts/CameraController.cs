@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class CameraController : MonoBehaviour
 {
@@ -22,6 +24,8 @@ public class CameraController : MonoBehaviour
     [Space]
     [SerializeField] public float MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
     [SerializeField] public float MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
+    [Space]
+    [SerializeField] public float SHADOW_DISTANCE;
     [Space]
     [SerializeField] public float LENS_ORTHO_SIZE_SCALE;
     [Space]
@@ -228,7 +232,31 @@ public class CameraController : MonoBehaviour
         #endregion
 
         #region Camera 3 Control
-
+        if (cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
+        {
+            if (Mathf.Abs(player.cameraVector_Gamepad.x) >= camera3_gamepadThreshold)
+            {
+                if (player.cameraVector_Gamepad.x > 0)
+                {
+                    DecreaseCamera3Index();
+                }
+                else
+                {
+                    IncreaseCamera3Index();
+                }
+            }
+            else if (Mathf.Abs(player.cameraVector_Mouse.x) >= camera3_mouseThreshold)
+            {
+                if (player.cameraVector_Mouse.x > 0)
+                {
+                    DecreaseCamera3Index();
+                }
+                else
+                {
+                    IncreaseCamera3Index();
+                }
+            }
+        }
 
 
         #endregion
@@ -382,6 +410,14 @@ public class CameraController : MonoBehaviour
     #region Scale Cameras
     public void ScaleCamera(float scale)
     {
+        //Shadows
+        var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+
+        if (rpAsset == null)
+            return;
+
+        rpAsset.shadowDistance = SHADOW_DISTANCE * scale;
+
         //*************************************************************** CAMERA 1 ***********************************************************//
         foreach (CinemachineVirtualCamera vc in camera1_cameras)
         {
