@@ -19,8 +19,13 @@ public class CameraController : MonoBehaviour
     [SerializeField] public bool isBlending;
 
     [Header("Camera Scaling Variables")]
-    [SerializeField] public float LENS_ORTHO_SIZE_OFFSET;
+    [Space]
+    [SerializeField] public float MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
+    [SerializeField] public float MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO;
+    [Space]
     [SerializeField] public float LENS_ORTHO_SIZE_SCALE;
+    [Space]
+    [SerializeField] public float ISO_CAMERA_DISTANCE_SCALE;
 
     [Header("Cameras")]
     [SerializeField] CinemachineVirtualCamera[] cameras;
@@ -222,6 +227,15 @@ public class CameraController : MonoBehaviour
         }
         #endregion
 
+        #region Camera 3 Control
+
+
+
+        #endregion
+
+
+
+
         #region Camera 5 Control
         if (cameraState == CameraState.camera5_DynamicPerspective)
         {
@@ -250,16 +264,13 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Camera 1
-
     public void SetCamera1Index(int inputIndex)
     {
         camera1_index = inputIndex;
         TurnCamera1On();
     }
 
-
     #endregion
-
 
     #region Camera 3
     public void IncreaseCamera3Index()
@@ -365,12 +376,41 @@ public class CameraController : MonoBehaviour
         }
     }
 
+
+    #endregion
+
+    #region Scale Cameras
     public void ScaleCamera(float scale)
     {
-        foreach(CinemachineVirtualCamera vc in cameras)
+        //*************************************************************** CAMERA 1 ***********************************************************//
+        foreach (CinemachineVirtualCamera vc in camera1_cameras)
         {
-            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_OFFSET + LENS_ORTHO_SIZE_SCALE * scale;
+            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
+            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
+
+            vc.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+            vc.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
         }
+
+        //*************************************************************** CAMERA 2 ***********************************************************//
+        camera2_camera.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+        camera2_camera.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+
+        camera2_camera.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
+        camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
+
+
+        //*************************************************************** CAMERA 3 ***********************************************************//
+
+        foreach (CinemachineVirtualCamera vc in camera3_cameras)
+        {
+            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_SCALE * scale;
+            vc.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = ISO_CAMERA_DISTANCE_SCALE * scale;
+
+            vc.m_Lens.FarClipPlane = MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+            vc.m_Lens.NearClipPlane = MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * scale;
+        }   
     }
+
     #endregion
 }
