@@ -92,8 +92,8 @@ MonoBehaviour:
   cameraFollow: {fileID: 0}
   cameraState: 0
   isBlending: 0
-  LENS_ORTHO_SIZE_OFFSET: 0
-  LENS_ORTHO_SIZE_SCALE: 0
+  LENS_ORTHO_SIZE_OFFSET: 2.5
+  LENS_ORTHO_SIZE_SCALE: 2.5
   cameras: []
   camera1_cameras: []
   camera2_camera: {fileID: 0}
