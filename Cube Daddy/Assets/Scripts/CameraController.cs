@@ -18,6 +18,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] public CameraState cameraState;
     [SerializeField] public bool isBlending;
 
+    [Header("Camera Scaling Variables")]
+    [SerializeField] public float LENS_ORTHO_SIZE_OFFSET;
+    [SerializeField] public float LENS_ORTHO_SIZE_SCALE;
+
     [Header("Cameras")]
     [SerializeField] CinemachineVirtualCamera[] cameras;
     [SerializeField] List<CinemachineVirtualCamera> camera1_cameras;
@@ -76,7 +80,9 @@ public class CameraController : MonoBehaviour
         brain = GetComponentInChildren<CinemachineBrain>();
         cameras = GetComponentsInChildren<CinemachineVirtualCamera>();
         mainCamera = GetComponentInChildren<Camera>();
+
         cameraFollow = GetComponentInChildren<CameraFollow>();
+        
 
         foreach(CinemachineVirtualCamera vc in cameras)
         {
@@ -106,9 +112,6 @@ public class CameraController : MonoBehaviour
         }
 
         TurnCamera1On();
-
-        cameraFollow.currentCubeTransform = player.cubeTransform;
-        cameraFollow.scale = player.scale;
     }
     #endregion
 
@@ -359,6 +362,14 @@ public class CameraController : MonoBehaviour
         foreach(CinemachineVirtualCamera vc in cameras)
         {
             vc.Priority = CAMERA_OFF;
+        }
+    }
+
+    public void ScaleCamera(float scale)
+    {
+        foreach(CinemachineVirtualCamera vc in cameras)
+        {
+            vc.m_Lens.OrthographicSize = LENS_ORTHO_SIZE_OFFSET + LENS_ORTHO_SIZE_SCALE * scale;
         }
     }
     #endregion

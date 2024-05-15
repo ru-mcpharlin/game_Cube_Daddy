@@ -80,7 +80,7 @@ PrefabInstance:
     - target: {fileID: 896902706168762457, guid: e54c01117b45c9a45a76dff700f04f9a,
         type: 3}
       propertyPath: m_Name
-      value: Cube 256
+      value: Cube 256 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 896902706168762457, guid: e54c01117b45c9a45a76dff700f04f9a,
         type: 3}

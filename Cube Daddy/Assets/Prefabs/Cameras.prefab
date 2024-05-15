@@ -89,8 +89,11 @@ MonoBehaviour:
   player: {fileID: 0}
   brain: {fileID: 0}
   mainCamera: {fileID: 0}
+  cameraFollow: {fileID: 0}
   cameraState: 0
   isBlending: 0
+  LENS_ORTHO_SIZE_OFFSET: 0
+  LENS_ORTHO_SIZE_SCALE: 0
   cameras: []
   camera1_cameras: []
   camera2_camera: {fileID: 0}
@@ -340,7 +343,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCubeTransform: {fileID: 0}
+  scale: 0
   speed: 5
+  _YcatchUp: 0
+  _Allcatchup: 0
+  targetVector: {x: 0, y: 0, z: 0}
 --- !u!1001 &1964128572976311686
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -840,7 +847,7 @@ PrefabInstance:
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.7319
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -850,12 +857,12 @@ PrefabInstance:
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9463371
+      value: 0.9894004
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.3231812
+      value: 0.14521316
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -935,7 +942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 7.7319, z: -10}
+  m_FollowOffset: {x: 0, y: 3, z: -10}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
