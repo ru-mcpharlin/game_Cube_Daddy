@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
@@ -121,6 +122,14 @@ public class CameraController : MonoBehaviour
         }
 
         TurnCamera1On();
+
+        //Shadows
+        var rpAsset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+
+        if (rpAsset == null)
+            return;
+
+        rpAsset.shadowDistance = SHADOW_DISTANCE;
     }
     #endregion
 

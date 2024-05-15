@@ -92,6 +92,9 @@ MonoBehaviour:
   cameraFollow: {fileID: 0}
   cameraState: 0
   isBlending: 0
+  MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO: 0.3
+  MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO: 1000
+  SHADOW_DISTANCE: 150
   LENS_ORTHO_SIZE_SCALE: 5
   ISO_CAMERA_DISTANCE_SCALE: 10
   cameras: []
@@ -706,7 +709,7 @@ PrefabInstance:
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.8631501
+      value: 1.8631502
       objectReference: {fileID: 0}
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
@@ -726,7 +729,7 @@ PrefabInstance:
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.05412272
+      value: -0.054122716
       objectReference: {fileID: 0}
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}

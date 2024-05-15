@@ -1723,26 +1723,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cameras
       objectReference: {fileID: 0}
-    - target: {fileID: 754221149328937202, guid: 4c97667177d7b0849839bd4e6a5e832f,
-        type: 3}
-      propertyPath: SHADOW_DISTANCE
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 754221149328937202, guid: 4c97667177d7b0849839bd4e6a5e832f,
-        type: 3}
-      propertyPath: ISO_CAMERA_DISTANCE_SCALE
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 754221149328937202, guid: 4c97667177d7b0849839bd4e6a5e832f,
-        type: 3}
-      propertyPath: MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 754221149328937202, guid: 4c97667177d7b0849839bd4e6a5e832f,
-        type: 3}
-      propertyPath: MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 5805842606816328191, guid: 4c97667177d7b0849839bd4e6a5e832f,
         type: 3}
       propertyPath: currentCubeTransform
