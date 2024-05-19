@@ -53,13 +53,14 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _duneHeight: 0.3
+    - _duneHeight: 0.5
     - _fresnelPower: 12.95
-    - _sandTiling: 16.4
+    - _sandTiling: -0.64
     - _speed: 0.15
-    - _tiling: 0.05
-    - _windDensity: 1.2
-    - _windSpeed: 0.22
+    - _tiling: 0.01
+    - _windDensity: 0.2
+    - _windSpeed: 2.24
+    - _windVisibilty: 4.71
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &8602660939164994443
