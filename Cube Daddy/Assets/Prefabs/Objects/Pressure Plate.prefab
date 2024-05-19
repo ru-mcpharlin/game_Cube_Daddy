@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 5895325683961750430}
   - component: {fileID: 5895325683961750431}
   - component: {fileID: 5895325683961750424}
-  - component: {fileID: 5895325683961750425}
   m_Layer: 0
   m_Name: PP Button
   m_TagString: Untagged
@@ -331,20 +330,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5895325683961750426}
   m_Mesh: {fileID: 0}
---- !u!64 &5895325683961750425
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5895325683961750426}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &5895325684793268432
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,7 +374,7 @@ GameObject:
   - component: {fileID: 5895325685104604761}
   - component: {fileID: 5895325685104604762}
   - component: {fileID: 5895325685104604763}
-  - component: {fileID: 5895325685104604740}
+  - component: {fileID: 4101653691207115649}
   m_Layer: 0
   m_Name: PP Holder
   m_TagString: Untagged
@@ -1439,8 +1424,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5895325685104604742}
   m_Mesh: {fileID: 0}
---- !u!64 &5895325685104604740
-MeshCollider:
+--- !u!65 &4101653691207115649
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1449,10 +1434,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5895325685440890849
 GameObject:
   m_ObjectHideFlags: 0
@@ -1537,5 +1521,8 @@ MonoBehaviour:
       m_Calls: []
   hasBeenTriggered: 0
   targetPosition: {fileID: 5895325684793268439}
+  needToHaveCollectedPellets: 0
+  hasCollectedPellets: 0
+  pellets: []
   button: {fileID: 5895325683961750426}
   triggeredButtonPosition: {fileID: 5895325685440890848}

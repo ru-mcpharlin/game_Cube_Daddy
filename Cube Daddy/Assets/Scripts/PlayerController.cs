@@ -31,15 +31,16 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Player Components")]
     [SerializeField] public Rigidbody rb;
+    [SerializeField] public SquashCubesScript squash;
 
 
     [Space]
     [Space]
     [Header("Tags")]
-    [SerializeField] string tag_Environment;
-    [SerializeField] string tag_MagneticEnvironment;
-    [SerializeField] string tag_player;
-    [SerializeField] string tag_currentPlayer;
+    [SerializeField] public string tag_Environment;
+    [SerializeField] public string tag_MagneticEnvironment;
+    [SerializeField] public string tag_player;
+    [SerializeField] public string tag_currentPlayer;
 
     [Space]
     [Space]
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Header("Larger Cubes")]
     [SerializeField] float mergeDistanceThreshold;
-    [SerializeField] int cubes_index;
+    [SerializeField] public int cubes_index;
     [SerializeField] CubeData[] cubeDatas;
 
     [Space]
@@ -164,21 +165,13 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //pressure plates
-        pressurePlates = FindObjectsOfType<PressurePlate>();
-
-        //eneies
-        enemies = FindObjectsOfType<EnemyController>();
-
-        //cube transform
-        cubeTransform = GameObject.FindGameObjectWithTag(tag_currentPlayer).transform;
-
-        //camera controller
-        cameraController = FindObjectOfType<CameraController>();
-
         //cubes
         cubeDatas = FindObjectsOfType<CubeData>();
         SortCubeDatasByScale(cubeDatas);
+
+        //cube transform
+        cubeTransform = cubeDatas[cubes_index].transform;
+        cubeDatas[cubes_index].isCurrentCube = true;
 
         //input
         inputActions.Enable();
@@ -196,6 +189,18 @@ public class PlayerController : MonoBehaviour
 
         //rigid body
         rb = cubeTransform.gameObject.GetComponent<Rigidbody>();
+
+        //squash
+        squash = GetComponent<SquashCubesScript>();
+
+        //pressure plates
+        pressurePlates = FindObjectsOfType<PressurePlate>();
+
+        //eneies
+        enemies = FindObjectsOfType<EnemyController>();
+
+        //camera controller
+        cameraController = FindObjectOfType<CameraController>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -228,6 +233,7 @@ public class PlayerController : MonoBehaviour
         inputVector.y = Mathf.Round(inputVector.y);
 
         cameraVector_Mouse = camera_Mouse.ReadValue<Vector2>();
+        //cameraVector_Mouse 
         cameraVector_Gamepad = camera_Gamepad.ReadValue<Vector2>();
         #endregion
 
@@ -698,9 +704,11 @@ public class PlayerController : MonoBehaviour
 
             //check that cube hasnt been completed
             #region check completed cube
-            if (cubeDatas.Count() > 0)
+            if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
             {
-                if (Vector3.Distance(cubeTransform.position, cubeDatas[cubes_index].missingPosition.position) <= mergeDistanceThreshold)
+                //Debug.Log(Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position));
+
+                if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold)
                 {
                     MergeCube();
                 }
@@ -1082,22 +1090,32 @@ public class PlayerController : MonoBehaviour
     private void MergeCube()
     {
         //set current small cubes parent to be large cubes transform
-        cubeTransform.gameObject.SetActive(false);
+        cubeDatas[cubes_index].gameObject.SetActive(false);
+        cubeDatas[cubes_index].isCurrentCube = false;
+
+        //turn on squashable cubes
+        squash.MakeCubesSquashable(cubes_index);
 
         //set cube transform to large cube transform
-        cubeTransform = cubeDatas[cubes_index].transform;
-
-        //update camera follow transform
-        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+        cubeTransform = cubeDatas[cubes_index+1].transform;
 
         //set scale
-        scale = cubeDatas[cubes_index].scale;
+        scale = cubeDatas[cubes_index + 1].scale;
 
         //set active = false incomplete meshes
-        cubeDatas[cubes_index].incompleteMesh.SetActive(false);
+        cubeDatas[cubes_index + 1].incompleteMesh.SetActive(false);
 
         //set active = true complete meshes
-        cubeDatas[cubes_index].completeMesh.SetActive(true);
+        cubeDatas[cubes_index + 1].completeMesh.SetActive(true);
+
+        //set next current cube in cube data
+        cubeDatas[cubes_index + 1].isCurrentCube = true;
+
+        //update camera size
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index + 1].scale));
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)

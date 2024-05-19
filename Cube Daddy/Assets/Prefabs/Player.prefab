@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1841606953749839822}
   - component: {fileID: 6850472812865385636}
   - component: {fileID: 4460003246279132946}
+  - component: {fileID: 1588831672}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -51,6 +52,9 @@ MonoBehaviour:
   inputVector: {x: 0, y: 0}
   cameraVector_Mouse: {x: 0, y: 0}
   cameraVector_Gamepad: {x: 0, y: 0}
+  movementType: 0
+  rb: {fileID: 0}
+  squash: {fileID: 0}
   tag_Environment: Environment
   tag_MagneticEnvironment: Magnetic Environment
   tag_player: Player
@@ -60,7 +64,7 @@ MonoBehaviour:
   isMagnetic: 0
   onMagneticCube: 0
   calculateRollTypeScript: {fileID: 0}
-  debugMovement: 1
+  debugMovement: 0
   rollType: 0
   remainingAngle: 0
   rotationAnchor: {x: 0, y: 0, z: 0}
@@ -117,7 +121,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  headBonkAngle: 1
   headBonkSpeed: 3000
   headBonkCurve:
     serializedVersion: 2
@@ -143,7 +146,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step1BonkAngle: 1
   step1BonkSpeed: 3000
   step1BonkCurve:
     serializedVersion: 2
@@ -169,7 +171,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step2BonkAngle: 1
   step2BonkSpeed: 1700
   step2BonkCurve:
     serializedVersion: 2
@@ -195,7 +196,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step3BonkAngle: 1
   step3BonkSpeed: 1700
   step3BonkCurve:
     serializedVersion: 2
@@ -253,8 +253,6 @@ MonoBehaviour:
   cubeDatas: []
   cameraController: {fileID: 0}
   vc_transform: {fileID: 0}
-  cameraFollow: {fileID: 0}
-  cameraTrackingSpeed: 1
   pressurePlates: []
   enemies: []
 --- !u!114 &6850472812865385636
@@ -264,7 +262,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1841606953749839820}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d185031e629e06a4ba96e5aff13c3e38, type: 3}
   m_Name: 
@@ -306,3 +304,32 @@ MonoBehaviour:
   debugStuck1: 0
   debugStuck2: 0
   debugStuck3: 0
+--- !u!114 &1588831672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841606953749839820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68934293ac716ac4eb7379110ea2d2e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DISTANCE_THRESHOLD: 0.8
+  destroyCubeVFX: {fileID: 1408685256953024747, guid: ff0df45af9935a4478853ebe985863b2,
+    type: 3}
+  player: {fileID: 0}
+  allLayers: []
+  layer1: []
+  layer2: []
+  layer4: []
+  layer8: []
+  layer16: []
+  layer32: []
+  layer64: []
+  layer128: []
+  layer256: []
+  layer512: []
+  layer1024: []
+  layerIndexs: 08000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000
