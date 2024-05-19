@@ -58,7 +58,7 @@ Material:
     - _noiseScale: 200
     - _twirlStrength: 1.8
     m_Colors:
-    - _baseColor: {r: 6.356459, g: 2.9801, b: 1.7690146, a: 0}
-    - _fresnelColor: {r: 34.29675, g: 17.38669, b: 14.72172, a: 0}
+    - _baseColor: {r: 4.237095, g: 1.9965369, b: 1.1979221, a: 0}
+    - _fresnelColor: {r: 19.468573, g: 9.887181, b: 8.358235, a: 0}
     - _panSpeed: {r: 0.005, g: 0.005, b: 0, a: 0}
   m_BuildTextureStacks: []
