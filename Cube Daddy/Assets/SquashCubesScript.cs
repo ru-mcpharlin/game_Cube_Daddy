@@ -56,9 +56,6 @@ public class SquashCubesScript : MonoBehaviour
     {
         //get scripts
         player = FindObjectOfType<PlayerController>();
-
-
-
         allLayers = FindObjectsOfType<GameObject>();
 
         foreach(GameObject gameObject in allLayers)

@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Space]
-    [Header("Enemies")]
-    [SerializeField] EnemyController[] enemies;
+    [Header("Respawn")]
+    [SerializeField] public LayerMask respawnLayer;
     #endregion
 
     //**********************************************************************************************************//
@@ -195,9 +195,6 @@ public class PlayerController : MonoBehaviour
 
         //pressure plates
         pressurePlates = FindObjectsOfType<PressurePlate>();
-
-        //eneies
-        enemies = FindObjectsOfType<EnemyController>();
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
@@ -699,9 +696,6 @@ public class PlayerController : MonoBehaviour
             //check if on magnetic cube
             onMagneticCube = CheckIfOnMagneticCube();
 
-            //enemy moves
-            CheckEnemyMovement();
-
             //check that cube hasnt been completed
             #region check completed cube
             if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
@@ -967,20 +961,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    #endregion
-
-    //**********************************************************************************************************//
-    //enemy
-    #region Enemy Handlers
-
-    public void CheckEnemyMovement()
-    {
-        foreach (EnemyController enemy in enemies)
-        {
-            enemy.EnemyBehaviour();
-        }
-    }
 
     #endregion
 

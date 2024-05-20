@@ -118,7 +118,7 @@ public class CameraController : MonoBehaviour
         mainCamera = GetComponentInChildren<Camera>();
 
         cameraFollow = GetComponentInChildren<CameraFollow>();
-        cameraFollow.currentCubeTransform = player.cubeTransform;
+        
 
         foreach(CinemachineVirtualCamera vc in cameras)
         {
@@ -152,6 +152,11 @@ public class CameraController : MonoBehaviour
         //Shadows
         URP_Asset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
         URP_Asset.shadowDistance = SHADOW_DISTANCE;
+    }
+
+    private void Start()
+    {
+        cameraFollow.currentCubeTransform = player.cubeTransform;
     }
     #endregion
 
@@ -373,7 +378,7 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Turn Cameras On
-    IEnumerator TurnCamera5On()
+    public IEnumerator TurnCamera5On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera5_DynamicPerspective);
@@ -384,7 +389,7 @@ public class CameraController : MonoBehaviour
     }
 
 
-    IEnumerator TurnCamera4On()
+    public IEnumerator TurnCamera4On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera4_PerspectiveMatchCut);
@@ -403,7 +408,7 @@ public class CameraController : MonoBehaviour
         StartCoroutine(TurnCamera5On());
     }
 
-    private void TurnCamera3On()
+    public void TurnCamera3On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera3_DynamicIsometric_Unlocked);
@@ -412,7 +417,7 @@ public class CameraController : MonoBehaviour
         player.vc_transform = camera3_cameras[camera3_index].transform;
     }
 
-    private void TurnCamera2On()
+    public void TurnCamera2On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera2_DynamicIsometric_Locked);
@@ -420,7 +425,7 @@ public class CameraController : MonoBehaviour
         player.vc_transform = camera2_camera.transform;
     }
 
-    private void TurnCamera1On()
+    public void TurnCamera1On()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera1_StaticIsometric);
