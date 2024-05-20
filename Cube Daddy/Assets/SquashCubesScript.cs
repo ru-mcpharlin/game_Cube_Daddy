@@ -52,7 +52,7 @@ public class SquashCubesScript : MonoBehaviour
 
     //**********************************************************************************************************//
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //get scripts
         player = FindObjectOfType<PlayerController>();
