@@ -26,13 +26,24 @@ public class CubeData : MonoBehaviour
         
         if (isCurrentCube)
         {
-            Debug.Log("Test");
             squash.CheckCube(other);
+
+            if(other.gameObject.layer == player.respawnLayer)
+            {
+                //respawn
+                player.teleport.Teleport(player.cubeTransform, player.lastValidPosition, player.respawnTime);
+            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
         if (isCurrentCube) squash.CheckCube(other);
+    }
+
+    public void SetMeshes(bool inputBool)
+    {
+        incompleteMesh.SetActive(inputBool);
+        completeMesh.SetActive(inputBool);
     }
 }
