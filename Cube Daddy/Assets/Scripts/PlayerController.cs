@@ -1099,10 +1099,8 @@ public class PlayerController : MonoBehaviour
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //merge events
-        foreach(UnityEvent _mergeEvent in cubeDatas[cubes_index + 1].mergeEvents)
-        {
-            _mergeEvent.Invoke();
-        }
+        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
+
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)

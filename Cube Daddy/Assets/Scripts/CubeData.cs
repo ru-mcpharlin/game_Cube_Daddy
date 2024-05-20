@@ -12,7 +12,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] public Transform missingPosition;
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
-    [SerializeField] public UnityEvent[] mergeEvents;
+    [SerializeField] public UnityEvent mergeEvents;
     
 
     private void Awake()
