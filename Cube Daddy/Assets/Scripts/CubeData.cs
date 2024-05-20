@@ -23,8 +23,10 @@ public class CubeData : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        
         if (isCurrentCube)
         {
+            Debug.Log("Test");
             squash.CheckCube(other);
         }
     }
@@ -33,17 +35,4 @@ public class CubeData : MonoBehaviour
     {
         if (isCurrentCube) squash.CheckCube(other);
     }
-
-
-
-    private void OnCollision(Collision collision)
-    {
-        if (collision.gameObject.layer == player.respawnLayer)
-        {
-            Debug.Log("Respawn");
-        }
-    }
-
-
-
 }
