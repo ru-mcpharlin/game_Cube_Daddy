@@ -11,7 +11,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
 
-    private void Start()
+    private void Awake()
     {
         squash = FindObjectOfType<SquashCubesScript>();
     }

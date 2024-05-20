@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     #region Start
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //cubes
         cubeDatas = FindObjectsOfType<CubeData>();

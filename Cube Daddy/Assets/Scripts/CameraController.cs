@@ -110,7 +110,7 @@ public class CameraController : MonoBehaviour
 
     #region Start
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         player = FindObjectOfType<PlayerController>();
         brain = GetComponentInChildren<CinemachineBrain>();
@@ -118,7 +118,7 @@ public class CameraController : MonoBehaviour
         mainCamera = GetComponentInChildren<Camera>();
 
         cameraFollow = GetComponentInChildren<CameraFollow>();
-        
+        cameraFollow.currentCubeTransform = player.cubeTransform;
 
         foreach(CinemachineVirtualCamera vc in cameras)
         {
