@@ -463,10 +463,13 @@ public class CameraController : MonoBehaviour
         URP_Asset.shadowDistance = Mathf.Lerp(SHADOW_DISTANCE * currentScale, SHADOW_DISTANCE * nextScale, t);
 
         //CLIPPING PLAIN
-        foreach(CinemachineVirtualCamera vc in cameras)
+        if (cameraState != CameraState.camera1_StaticIsometric)
         {
-            vc.m_Lens.FarClipPlane = Mathf.Lerp(MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
-            vc.m_Lens.NearClipPlane = Mathf.Lerp(MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
+            foreach (CinemachineVirtualCamera vc in cameras)
+            {
+                vc.m_Lens.FarClipPlane = Mathf.Lerp(MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MAX_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
+                vc.m_Lens.NearClipPlane = Mathf.Lerp(MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * currentScale, MIN_MAIN_CAMERA_CLIPPING_PLAIN_ISO * nextScale, t);
+            }
         }
 
         //// CAMERA 1 ////
