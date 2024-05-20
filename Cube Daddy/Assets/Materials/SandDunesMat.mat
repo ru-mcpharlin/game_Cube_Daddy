@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SandDunesMat
+  m_Shader: {fileID: -6465566751694194690, guid: a9c941d38dbbd3c4fa2353f42b780f7e,
+    type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _SampleTexture2DLOD_e6d8d5d023c44795916c961a7637e4f9_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b4677c9630a3f0b4b81b5021e133bb4e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f8f85e5ad46348bd80d4b323d5ac474d_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b4677c9630a3f0b4b81b5021e133bb4e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _heightMap:
+        m_Texture: {fileID: 2800000, guid: a58e36d285e76854ebd01904dd7c4556, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _sandSmoothnessTexture:
+        m_Texture: {fileID: 2800000, guid: 2dceeb3ac96c68c42b4fcb84a0b4b78a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _duneHeight: 0.5
+    - _fresnelPower: 12.95
+    - _sandTiling: -0.64
+    - _speed: 0.15
+    - _tiling: 0.01
+    - _windDensity: 0.2
+    - _windSpeed: 2.24
+    - _windVisibilty: 4.71
+    m_Colors: []
+  m_BuildTextureStacks: []
+--- !u!114 &8602660939164994443
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
