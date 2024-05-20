@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using Pixelplacement;
@@ -113,8 +114,8 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Space]
-    [Header("Enemies")]
-    [SerializeField] EnemyController[] enemies;
+    [Header("Respawn")]
+    [SerializeField] public LayerMask respawnLayer;
     #endregion
 
     //**********************************************************************************************************//
@@ -195,9 +196,6 @@ public class PlayerController : MonoBehaviour
 
         //pressure plates
         pressurePlates = FindObjectsOfType<PressurePlate>();
-
-        //eneies
-        enemies = FindObjectsOfType<EnemyController>();
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
@@ -699,9 +697,6 @@ public class PlayerController : MonoBehaviour
             //check if on magnetic cube
             onMagneticCube = CheckIfOnMagneticCube();
 
-            //enemy moves
-            CheckEnemyMovement();
-
             //check that cube hasnt been completed
             #region check completed cube
             if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
@@ -971,20 +966,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     //**********************************************************************************************************//
-    //enemy
-    #region Enemy Handlers
-
-    public void CheckEnemyMovement()
-    {
-        foreach (EnemyController enemy in enemies)
-        {
-            enemy.EnemyBehaviour();
-        }
-    }
-
-    #endregion
-
-    //**********************************************************************************************************//
     //methods that control what happens at the start and end of the fall tween
     #region Fall Tween Handlers
     public void HandleStartFallTween()
@@ -1084,7 +1065,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     //**********************************************************************************************************//
-    #region 
+    #region Merge
 
     //merge cube
     private void MergeCube()
@@ -1116,6 +1097,12 @@ public class PlayerController : MonoBehaviour
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
+
+        //merge events
+        foreach(UnityEvent _mergeEvent in cubeDatas[cubes_index + 1].mergeEvents)
+        {
+            _mergeEvent.Invoke();
+        }
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
