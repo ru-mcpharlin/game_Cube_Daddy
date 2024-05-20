@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5895325683961750430}
   - component: {fileID: 5895325683961750431}
   - component: {fileID: 5895325683961750424}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: PP Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -339,7 +339,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5895325684793268439}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Target Position
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 5895325685104604762}
   - component: {fileID: 5895325685104604763}
   - component: {fileID: 4101653691207115649}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: PP Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1446,7 +1446,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5895325685440890848}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Button Triggered Position
   m_TagString: Untagged
   m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
@@ -1478,7 +1478,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5895325685719154363}
   - component: {fileID: 5895325685719154340}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Pressure Plate
   m_TagString: Untagged
   m_Icon: {fileID: 0}

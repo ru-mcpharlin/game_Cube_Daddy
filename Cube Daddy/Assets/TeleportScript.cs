@@ -16,18 +16,16 @@ public class TeleportScript : MonoBehaviour
     public void Teleport(Transform cubeTransform, Vector3 newPos, float timer)
     {
         Tween.Position(cubeTransform, newPos, timer, 0, Tween.EaseInOut, Tween.LoopType.None, TeleportStart, TeleportEnd);
+        player.TeleportStart();
     }
 
     public void TeleportStart()
     {
-        player.TeleportStart();
+        
     }
 
     public void TeleportEnd()
     {
         player.TeleportEnd();
-        player.isMoving = false;
-        player.isFalling = false;
-        player.onMagneticCube = player.CheckIfOnMagneticCube();
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3835124359039692285}
   - component: {fileID: 3835124359039692286}
   - component: {fileID: 3835124359039692287}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Segment (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 3835124360475255197}
   - component: {fileID: 3835124360475255198}
   - component: {fileID: 3835124360475255199}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Segment (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,7 +700,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3835124360744002438}
   - component: {fileID: 3835124360744002439}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Forming Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -799,7 +799,7 @@ GameObject:
   - component: {fileID: 3835124360768069029}
   - component: {fileID: 3835124360768069030}
   - component: {fileID: 3835124360768069031}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: Segment
   m_TagString: Untagged
   m_Icon: {fileID: 0}

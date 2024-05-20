@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4460003246279132946}
   - component: {fileID: 1588831672}
   - component: {fileID: 8274585900183101170}
+  - component: {fileID: 6601035500055606674}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -56,10 +57,12 @@ MonoBehaviour:
   movementType: 0
   rb: {fileID: 0}
   squash: {fileID: 0}
+  teleport: {fileID: 0}
   tag_Environment: Environment
   tag_MagneticEnvironment: Magnetic Environment
   tag_player: Player
   tag_currentPlayer: Current Cube
+  canMove: 1
   isMoving: 0
   isFalling: 0
   isMagnetic: 0
@@ -257,7 +260,7 @@ MonoBehaviour:
   pressurePlates: []
   respawnLayer: 19
   lastValidPosition: {x: 0, y: 0, z: 0}
-  respawnTime: 0
+  respawnTime: 1
 --- !u!114 &6850472812865385636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,7 +295,10 @@ MonoBehaviour:
   player: {fileID: 0}
   tag_MagneticEnvironment: Magnetic Environment
   debug: 0
-  debugRollType: 28
+  debugRollType: 21
+  rollLayerMask:
+    serializedVersion: 2
+    m_Bits: 7339784
   color_isCube: {r: 0, g: 1, b: 0, a: 1}
   color_noCube: {r: 1, g: 0, b: 0, a: 1}
   color_isMagneticCube: {r: 0, g: 0, b: 1, a: 1}
@@ -303,7 +309,7 @@ MonoBehaviour:
   debugClimbDown4: 0
   debugClimbUp1: 0
   debugClimbUp2: 0
-  debugClimbUp3: 1
+  debugClimbUp3: 0
   debugStuck1: 0
   debugStuck2: 0
   debugStuck3: 0
@@ -320,7 +326,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DISTANCE_THRESHOLD: 0.8
-  destroyCubeVFX: {fileID: 0}
+  destroyCubeVFX: {fileID: 4880471255732539234, guid: c9b899436e3f5d245af7b0589bb6c92b,
+    type: 3}
   player: {fileID: 0}
   allLayers: []
   layer1: []
@@ -345,5 +352,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ab6ad3554d913f4baa7eeb787d8a31c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+--- !u!114 &6601035500055606674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841606953749839820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8a5c062f53f414b959abeda4c1dc4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

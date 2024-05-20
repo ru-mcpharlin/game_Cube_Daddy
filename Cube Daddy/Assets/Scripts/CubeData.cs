@@ -7,11 +7,15 @@ public class CubeData : MonoBehaviour
 {
     [SerializeField] PlayerController player;
     [SerializeField] SquashCubesScript squash;
+    [Space]
     [SerializeField] public bool isCurrentCube;
     [SerializeField] public float scale;
+    [Space]
     [SerializeField] public Transform missingPosition;
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
+    [SerializeField] public GameObject teleportParticleSystem;
+    [Space]
     [SerializeField] public UnityEvent mergeEvents;
     
 
@@ -19,6 +23,8 @@ public class CubeData : MonoBehaviour
     {
         squash = FindObjectOfType<SquashCubesScript>();
         player = FindObjectOfType<PlayerController>();
+
+        SetTeleportParticleSystem(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,5 +51,11 @@ public class CubeData : MonoBehaviour
     {
         incompleteMesh.SetActive(inputBool);
         completeMesh.SetActive(inputBool);
+    }
+
+    public void SetTeleportParticleSystem(bool inputBool)
+    {
+        var ps = teleportParticleSystem.GetComponent<ParticleSystem>().emission;
+        ps.enabled = inputBool;
     }
 }

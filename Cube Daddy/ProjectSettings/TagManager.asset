@@ -11,10 +11,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - playerCube0
+  - playerCube
   - Water
   - UI
-  - playerCube1
+  - playerCannotInteract
   - cutOutLayer
   - scale1
   - scale2
@@ -28,9 +28,9 @@ TagManager:
   - scale512
   - scale1024
   - respawn
-  - 
-  - 
-  - 
+  - teleportParticleSystem
+  - pressurePlate
+  - formingPlatform
   - 
   - 
   - 
