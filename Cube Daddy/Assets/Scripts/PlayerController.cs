@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("Movement")]
+    [SerializeField] public bool canMove;
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
     [Space]
@@ -243,31 +244,34 @@ public class PlayerController : MonoBehaviour
 
         //roll movement
         #region Roll Movement
-        if (movementType == MovementType.roll)
+        if (canMove)
         {
-            //if current moving or falling do nothing
-            if (isMoving) return;
-            if (isFalling) return;
+            if (movementType == MovementType.roll)
+            {
+                //if current moving or falling do nothing
+                if (isMoving) return;
+                if (isFalling) return;
 
-            //forward
-            if (inputVector.y == 1)
-            {
-                StartCoroutine(Roll(Vector3.forward));
-            }
-            //back
-            else if (inputVector.y == -1)
-            {
-                StartCoroutine(Roll(Vector3.back));
-            }
-            //right
-            else if (inputVector.x == 1)
-            {
-                StartCoroutine(Roll(Vector3.right));
-            }
-            //left
-            else if (inputVector.x == -1)
-            {
-                StartCoroutine(Roll(Vector3.left));
+                //forward
+                if (inputVector.y == 1)
+                {
+                    StartCoroutine(Roll(Vector3.forward));
+                }
+                //back
+                else if (inputVector.y == -1)
+                {
+                    StartCoroutine(Roll(Vector3.back));
+                }
+                //right
+                else if (inputVector.x == 1)
+                {
+                    StartCoroutine(Roll(Vector3.right));
+                }
+                //left
+                else if (inputVector.x == -1)
+                {
+                    StartCoroutine(Roll(Vector3.left));
+                }
             }
         }
         #endregion
@@ -669,13 +673,13 @@ public class PlayerController : MonoBehaviour
         #region Fall
         //fall
         //if there is nothing below at the end of a move
-        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale) && !CheckIfOnMagneticCube())
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
             Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
-            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
+            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
 
             //get distance
             fallDistance = hit.distance;
@@ -1081,6 +1085,9 @@ public class PlayerController : MonoBehaviour
     //merge cube
     private void MergeCube()
     {
+        //set movement off
+        canMove = false;
+
         //set current small cubes parent to be large cubes transform
         cubeDatas[cubes_index].gameObject.SetActive(false);
         cubeDatas[cubes_index].isCurrentCube = false;
@@ -1089,7 +1096,7 @@ public class PlayerController : MonoBehaviour
         squash.MakeCubesSquashable(cubes_index);
 
         //set cube transform to large cube transform
-        cubeTransform = cubeDatas[cubes_index+1].transform;
+        cubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //set scale
         scale = cubeDatas[cubes_index + 1].scale;
@@ -1117,6 +1124,9 @@ public class PlayerController : MonoBehaviour
         {
             cubes_index++;
         }
+
+        //set can move
+        canMove = true;
     }
 
     #endregion
@@ -1125,12 +1135,20 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        canMove = false;
+
         cubeDatas[cubes_index].SetMeshes(false);
+        cubeDatas[cubes_index].SetTeleportParticleSystem(true);
     }
 
     public void TeleportEnd()
     {
+        canMove = true;
+        isMoving = false;
+        isFalling = false;
+
         cubeDatas[cubes_index].SetMeshes(true);
+        cubeDatas[cubes_index].SetTeleportParticleSystem(false);
 
     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1408685256953024747}
   - component: {fileID: 1408685256953024746}
   - component: {fileID: 2008416889141175736}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pellet Collect VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}

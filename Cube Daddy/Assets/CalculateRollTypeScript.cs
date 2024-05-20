@@ -9,6 +9,8 @@ public class CalculateRollTypeScript : MonoBehaviour
 
     [SerializeField] bool debug;
     [SerializeField] PlayerController.RollType debugRollType;
+    [Space]
+    [SerializeField] public LayerMask rollLayerMask;
 
     [Space]
     [Space]
@@ -62,50 +64,50 @@ public class CalculateRollTypeScript : MonoBehaviour
         //////////// IS BLOCK //////////
         #region is Cube
         //direction 1
-        bool isCube_direction1 = Physics.Raycast(position, direction, out RaycastHit hit_direction1, scale);
-        bool isCube_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, out RaycastHit hit_direction1up1, scale);
-        bool isCube_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, out RaycastHit hit_direction1up2, scale);
-        bool isCube_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale);
+        bool isCube_direction1 = Physics.Raycast(position, direction, out RaycastHit hit_direction1, scale, rollLayerMask);
+        bool isCube_direction1up1 = Physics.Raycast(position + Vector3.up * scale, direction, out RaycastHit hit_direction1up1, scale, rollLayerMask);
+        bool isCube_direction1up2 = Physics.Raycast(position + Vector3.up * scale * 2, direction, out RaycastHit hit_direction1up2, scale, rollLayerMask);
+        bool isCube_direction1down1 = Physics.Raycast(position + direction * scale, Vector3.down, scale, rollLayerMask);
 
         //direction 2
-        bool isCube_direction2 = Physics.Raycast(position + direction * scale, direction, scale);
-        bool isCube_direction2down1 = Physics.Raycast(position + direction * scale * 2, Vector3.down, scale);
+        bool isCube_direction2 = Physics.Raycast(position + direction * scale, direction, scale, rollLayerMask);
+        bool isCube_direction2down1 = Physics.Raycast(position + direction * scale * 2, Vector3.down, scale, rollLayerMask);
 
         //block 1
-        bool isCube_up1 = Physics.Raycast(position, Vector3.up, out RaycastHit hit_up1, scale);
+        bool isCube_up1 = Physics.Raycast(position, Vector3.up, out RaycastHit hit_up1, scale, rollLayerMask);
 
         //block 2
-        bool isCube_up2 = Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale);
+        bool isCube_up2 = Physics.Raycast(position + Vector3.up * scale, Vector3.up, scale, rollLayerMask);
 
         //direction minus 1
-        bool isCube_directionMinus1 = Physics.Raycast(position, -direction, out RaycastHit hit_directionMinus1, scale);
-        bool isCube_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale);
-        bool isCube_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, out RaycastHit hit_directionMinus1down1, scale);
-        bool isCube_directionMinus1down2 = Physics.Raycast(position + Vector3.down * scale - direction * scale, Vector3.down, out RaycastHit hit_directionMinus1down2, scale);
+        bool isCube_directionMinus1 = Physics.Raycast(position, -direction, out RaycastHit hit_directionMinus1, scale, rollLayerMask);
+        bool isCube_directionMinus1up1 = Physics.Raycast(position + Vector3.up * scale, -direction, scale, rollLayerMask);
+        bool isCube_directionMinus1down1 = Physics.Raycast(position + Vector3.down * scale, -direction, out RaycastHit hit_directionMinus1down1, scale, rollLayerMask);
+        bool isCube_directionMinus1down2 = Physics.Raycast(position + Vector3.down * scale - direction * scale, Vector3.down, out RaycastHit hit_directionMinus1down2, scale, rollLayerMask);
 
         //down 1
-        bool isCube_down1 = Physics.Raycast(position, Vector3.down, out RaycastHit hit_down1, scale);
+        bool isCube_down1 = Physics.Raycast(position, Vector3.down, out RaycastHit hit_down1, scale, rollLayerMask);
 
         //down 2
-        bool isCube_down2 = Physics.Raycast(position + Vector3.down * scale, Vector3.down, scale);
+        bool isCube_down2 = Physics.Raycast(position + Vector3.down * scale, Vector3.down, scale, rollLayerMask);
 
         //left forward 1
-        bool isCube_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1, scale);
-        bool isCube_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction1, scale);
-        bool isCube_leftForward1direction2 = Physics.Raycast(position + direction * scale * 2, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction2, scale);
+        bool isCube_leftForward1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1, scale, rollLayerMask);
+        bool isCube_leftForward1direction1 = Physics.Raycast(position + direction * scale, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction1, scale, rollLayerMask);
+        bool isCube_leftForward1direction2 = Physics.Raycast(position + direction * scale * 2, -Vector3.Cross(direction, Vector3.up), out RaycastHit hit_leftForward1direction2, scale, rollLayerMask);
 
         //left back 1
-        bool isCube_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale);
-        bool isCube_leftBack1direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
+        bool isCube_leftBack1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), scale, rollLayerMask);
+        bool isCube_leftBack1direction1 = Physics.Raycast(position + Vector3.Cross(direction, Vector3.up) * scale, direction, scale, rollLayerMask);
 
         //right forward 1
-        bool isCube_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1, scale);
-        bool isCube_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction1, scale);
-        bool isCube_rightForward1direction2 = Physics.Raycast(position + direction * scale * 2, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction2, scale);
+        bool isCube_rightForward1 = Physics.Raycast(position, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1, scale, rollLayerMask);
+        bool isCube_rightForward1direction1 = Physics.Raycast(position + direction * scale, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction1, scale, rollLayerMask);
+        bool isCube_rightForward1direction2 = Physics.Raycast(position + direction * scale * 2, Vector3.Cross(direction, Vector3.up), out RaycastHit hit_rightForward1direction2, scale, rollLayerMask);
 
         //right back 1
-        bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale);
-        bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale);
+        bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale, rollLayerMask);
+        bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale, rollLayerMask);
 
 
         #endregion
@@ -1057,6 +1059,7 @@ public class CalculateRollTypeScript : MonoBehaviour
         }
         else
         {
+            Debug.Log("Umm wtf");
             return PlayerController.RollType.stuck;
         }
 
