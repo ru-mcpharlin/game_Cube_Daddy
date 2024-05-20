@@ -20,8 +20,8 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 9
   colorFilter:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0.5852206, g: 1, b: 0.1462264, a: 1}
   hueShift:
     m_OverrideState: 0
     m_Value: 0
@@ -73,13 +73,13 @@ MonoBehaviour:
     m_Value: 0
   focusDistance:
     m_OverrideState: 1
-    m_Value: 0.307
+    m_Value: 1.22
   aperture:
     m_OverrideState: 1
-    m_Value: 12.3
+    m_Value: 6
   focalLength:
     m_OverrideState: 1
-    m_Value: 206
+    m_Value: 148
   bladeCount:
     m_OverrideState: 0
     m_Value: 5
