@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using Pixelplacement;
@@ -1064,7 +1065,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     //**********************************************************************************************************//
-    #region 
+    #region Merge
 
     //merge cube
     private void MergeCube()
@@ -1096,6 +1097,12 @@ public class PlayerController : MonoBehaviour
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
+
+        //merge events
+        foreach(UnityEvent _mergeEvent in cubeDatas[cubes_index + 1].mergeEvents)
+        {
+            _mergeEvent.Invoke();
+        }
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
