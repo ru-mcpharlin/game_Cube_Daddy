@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player Components")]
     [SerializeField] public Rigidbody rb;
     [SerializeField] public SquashCubesScript squash;
+    [SerializeField] public TeleportScript teleport;
 
 
     [Space]
@@ -46,8 +47,8 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("Movement")]
-    [SerializeField] bool isMoving;
-    [SerializeField] bool isFalling;
+    [SerializeField] public bool isMoving;
+    [SerializeField] public bool isFalling;
     [Space]
     [SerializeField] bool isMagnetic;
     [SerializeField] public bool onMagneticCube;
@@ -115,7 +116,9 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("Respawn")]
-    [SerializeField] public LayerMask respawnLayer;
+    [SerializeField] public int respawnLayer;
+    [SerializeField] public Vector3 lastValidPosition;
+    [SerializeField] public float respawnTime;
     #endregion
 
     //**********************************************************************************************************//
@@ -199,6 +202,9 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
+
+        //teleport
+        teleport = FindObjectOfType<TeleportScript>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -711,13 +717,18 @@ public class PlayerController : MonoBehaviour
 
             #endregion
 
+            //last valid move transform
+            if(Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, scale) && hit_down.collider.gameObject.layer != respawnLayer)
+            {
+                lastValidPosition = cubeTransform.position;
+            }
+
             //set isMoving to false
             isMoving = false;
         }
 
         #endregion
     }
-
     
 
     //**********************************************************************************************************//
@@ -1099,10 +1110,7 @@ public class PlayerController : MonoBehaviour
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //merge events
-        foreach(UnityEvent _mergeEvent in cubeDatas[cubes_index + 1].mergeEvents)
-        {
-            _mergeEvent.Invoke();
-        }
+        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
@@ -1110,6 +1118,22 @@ public class PlayerController : MonoBehaviour
             cubes_index++;
         }
     }
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region Teleport
+    public void TeleportStart()
+    {
+        cubeDatas[cubes_index].SetMeshes(false);
+    }
+
+    public void TeleportEnd()
+    {
+        cubeDatas[cubes_index].SetMeshes(true);
+
+    }
+
 
     #endregion
 }

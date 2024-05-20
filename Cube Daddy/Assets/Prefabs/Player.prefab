@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6850472812865385636}
   - component: {fileID: 4460003246279132946}
   - component: {fileID: 1588831672}
+  - component: {fileID: 8274585900183101170}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -254,7 +255,9 @@ MonoBehaviour:
   cameraController: {fileID: 0}
   vc_transform: {fileID: 0}
   pressurePlates: []
-  enemies: []
+  respawnLayer: 19
+  lastValidPosition: {x: 0, y: 0, z: 0}
+  respawnTime: 0
 --- !u!114 &6850472812865385636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,8 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DISTANCE_THRESHOLD: 0.8
-  destroyCubeVFX: {fileID: 1408685256953024747, guid: ff0df45af9935a4478853ebe985863b2,
-    type: 3}
+  destroyCubeVFX: {fileID: 0}
   player: {fileID: 0}
   allLayers: []
   layer1: []
@@ -333,3 +335,15 @@ MonoBehaviour:
   layer512: []
   layer1024: []
   layerIndexs: 08000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000
+--- !u!114 &8274585900183101170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841606953749839820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ab6ad3554d913f4baa7eeb787d8a31c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

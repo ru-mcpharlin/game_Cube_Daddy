@@ -12,7 +12,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] public Transform missingPosition;
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
-    [SerializeField] public UnityEvent[] mergeEvents;
+    [SerializeField] public UnityEvent mergeEvents;
     
 
     private void Awake()
@@ -23,9 +23,16 @@ public class CubeData : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        
         if (isCurrentCube)
         {
             squash.CheckCube(other);
+
+            if(other.gameObject.layer == player.respawnLayer)
+            {
+                //respawn
+                player.teleport.Teleport(player.cubeTransform, player.lastValidPosition, player.respawnTime);
+            }
         }
     }
 
@@ -34,16 +41,9 @@ public class CubeData : MonoBehaviour
         if (isCurrentCube) squash.CheckCube(other);
     }
 
-
-
-    private void OnCollision(Collision collision)
+    public void SetMeshes(bool inputBool)
     {
-        if (collision.gameObject.layer == player.respawnLayer)
-        {
-            Debug.Log("Respawn");
-        }
+        incompleteMesh.SetActive(inputBool);
+        completeMesh.SetActive(inputBool);
     }
-
-
-
 }
