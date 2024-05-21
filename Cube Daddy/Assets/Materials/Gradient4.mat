@@ -63,7 +63,7 @@ Material:
     - _normalStrength: 0.133
     - _smoothness: 1
     m_Colors:
-    - _color1: {r: 0.5754717, g: 0.5754717, b: 0.5754717, a: 0}
-    - _color2: {r: 0.3301887, g: 0.24798915, b: 0.16353685, a: 0}
+    - _color1: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 0}
+    - _color2: {r: 0.2264151, g: 0.109014675, b: 0, a: 0}
     - _fadeDistance: {r: 0, g: 30, b: 0, a: 0}
   m_BuildTextureStacks: []
