@@ -728,7 +728,16 @@ public class PlayerController : MonoBehaviour
 
         //call animations
         #region Call Animations
-
+        //roll continous
+        if(inputVector.magnitude != 0f)
+        {
+            onRollContinous.Invoke();
+        }
+        //roll stop
+        else
+        {
+            onRollStop.Invoke();
+        }
         #endregion
 
         //set isMoving to false
