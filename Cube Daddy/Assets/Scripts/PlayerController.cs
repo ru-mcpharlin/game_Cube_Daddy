@@ -80,13 +80,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UnityEvent onFall_med;
     [SerializeField] UnityEvent onFall_large;
     [Space]
-    [SerializeField] UnityEvent teleportStart;
-    [SerializeField] UnityEvent teleportEnd;
+    [SerializeField] UnityEvent event_teleportStart;
+    [SerializeField] UnityEvent event_teleportEnd;
 
     [Space]
     [Space]
     [Header("Teleport")]
-    [SerializeField] float teleportLength;
+    [SerializeField] float teleportDuration;
     [SerializeField] float teleportDelay;
 
 
@@ -304,7 +304,7 @@ public class PlayerController : MonoBehaviour
 
         //figure out roll type
         rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, currentScale);
-        if(debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
+        if (debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
 
         //is moving = true
         isMoving = true;
@@ -548,17 +548,17 @@ public class PlayerController : MonoBehaviour
 
         //find roll axis
         //LEFT
-        if (rollType == RollType.climb_Left || 
+        if (rollType == RollType.climb_Left ||
             rollType == RollType.step_Left ||
             rollType == RollType.bonk_climbLeft_flat)
         {
             rotationAxis = Vector3.up;
         }
-        else if(rollType == RollType.bonk_climbLeft_head)
+        else if (rollType == RollType.bonk_climbLeft_head)
         {
             rotationAxis = Vector3.down;
         }
-        else if(rollType == RollType.bonk_stepLeft1 ||
+        else if (rollType == RollType.bonk_stepLeft1 ||
                 rollType == RollType.bonk_stepLeft2 ||
                 rollType == RollType.bonk_stepLeft3)
         {
@@ -566,17 +566,17 @@ public class PlayerController : MonoBehaviour
         }
 
         //RIGHT
-        else if (rollType == RollType.climb_Right || 
+        else if (rollType == RollType.climb_Right ||
                  rollType == RollType.step_Right ||
                  rollType == RollType.bonk_climbRight_flat)
         {
             rotationAxis = Vector3.down;
         }
-        else if(rollType == RollType.bonk_climbRight_head)
+        else if (rollType == RollType.bonk_climbRight_head)
         {
             rotationAxis = Vector3.up;
         }
-        else if(rollType == RollType.bonk_stepRight1 ||
+        else if (rollType == RollType.bonk_stepRight1 ||
                 rollType == RollType.bonk_stepRight2 ||
                 rollType == RollType.bonk_stepRight3)
         {
@@ -696,6 +696,7 @@ public class PlayerController : MonoBehaviour
 
         while (isFalling)
         {
+            //Debug.Log("Falling");
             yield return new WaitForEndOfFrame();
         }
         #endregion
@@ -711,12 +712,12 @@ public class PlayerController : MonoBehaviour
 
         //check that cube hasnt been completed
         #region check completed cube
-        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
+        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count() - 1)
         {
-            //Debug.Log(Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position));
-
-            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold)
+            //if the distance between the current cube and the next cubes missing transform is less than or equal to the merge distance threshold
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale)
             {
+                //merge cube
                 MergeCube();
             }
         }
@@ -736,9 +737,10 @@ public class PlayerController : MonoBehaviour
         //roll continous
         if (!isTeleporting && !isFallingToDeath)
         {
+
             if (inputVector.magnitude != 0f)
             {
-                onRollContinous.Invoke();
+                //onRollContinous.Invoke();
             }
             //roll stop
             else
@@ -748,12 +750,21 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
+        Debug.Log("End movement");
         //set isMoving to false
-        isMoving = false;
+        EndRoll();
 
         #endregion
     }
-    
+
+    private void EndRoll()
+    {
+        isMoving = false;
+        isFalling = false;
+        isTeleporting = false;
+        isFallingToDeath = false;
+    }
+
 
     //**********************************************************************************************************//
     //methods that assist the roll coroutine
@@ -1029,9 +1040,10 @@ public class PlayerController : MonoBehaviour
                 onFall_large.Invoke();
             }
         }
-
-        isFalling = false;
-        isMoving = false;
+        else
+        {
+            StartCoroutine(Teleport(lastValidPosition, teleportDuration, teleportDelay));
+        }
     }
     #endregion
 
@@ -1173,7 +1185,25 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     #region Teleport
 
+    public IEnumerator Teleport(Vector3 teleportPos, float duration, float delay)
+    {
+        isFallingToDeath = false;
+        cubeTransform.GetComponent<CubeData>().SetTeleportParticleSystem(true);
+        event_teleportStart.Invoke();
+        Tween.Position(cubeTransform, teleportPos, duration, delay, Tween.EaseInOut, Tween.LoopType.None, TeleportStartTween, TeleportEndTween);
+        yield return new WaitForEndOfFrame();
+    }
 
+    public void TeleportStartTween()
+    {
+        
+    }
+
+    public void TeleportEndTween()
+    {
+        cubeTransform.GetComponent<CubeData>().SetTeleportParticleSystem(false);
+        event_teleportEnd.Invoke();
+    }
 
 
     #endregion

@@ -61,6 +61,7 @@ public class AnimationController : MonoBehaviour
 
         player.canMove = true;
 
+        Debug.Log("Animation " + animationTrigger + " has ended");
     }
 
     public void PlayAnimation_canMove_Method(string animationTrigger)
@@ -111,11 +112,20 @@ public class AnimationController : MonoBehaviour
         {
             player.cubeTransform.SetParent(null);
         }
-
     }
 
     public void FinishAnimation()
     {
         isAnimating = false;
+    }
+
+    public void StartTeleport_stuff()
+    {
+        player.cubeTransform.GetComponent<CubeData>().StartTeleport_stuff();
+    }
+
+    public void EndTeleport_stuff()
+    {
+        player.cubeTransform.GetComponent<CubeData>().EndTeleport_stuff();
     }
 }
