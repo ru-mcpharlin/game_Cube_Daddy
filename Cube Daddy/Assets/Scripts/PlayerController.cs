@@ -1166,7 +1166,6 @@ public class PlayerController : MonoBehaviour
 
         canMove = false;
 
-        cubeDatas[cubes_index].SetMeshes(false);
         cubeDatas[cubes_index].SetTeleportParticleSystem(true);
     }
 
@@ -1178,7 +1177,6 @@ public class PlayerController : MonoBehaviour
         isMoving = false;
         isFalling = false;
 
-        cubeDatas[cubes_index].SetMeshes(true);
         cubeDatas[cubes_index].SetTeleportParticleSystem(false);
 
     }
