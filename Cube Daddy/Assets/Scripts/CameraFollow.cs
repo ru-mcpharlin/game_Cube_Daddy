@@ -20,8 +20,7 @@ public class CameraFollow : MonoBehaviour
     {
         //Debug.Log(Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)));
 
-        if (!_transitioning)
-        {
+        
             if (!_YcatchUp &&
                 Mathf.Abs(Mathf.Abs(transform.position.y) - Mathf.Abs(currentCubeTransform.position.y)) >= scale / 2)
             {
@@ -46,6 +45,6 @@ public class CameraFollow : MonoBehaviour
 
 
             transform.position = Vector3.Lerp(targetVector, currentCubeTransform.position, Time.deltaTime * speed);
-        }
+        
     }
 }
