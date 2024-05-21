@@ -671,7 +671,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
-            Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
+            //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
             Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
@@ -679,8 +679,10 @@ public class PlayerController : MonoBehaviour
             //get distance
             fallDistance = hit_fall.distance;
 
+            Debug.Log("Duration: " + fallDistance / scale * scale);
+
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / scale * scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
