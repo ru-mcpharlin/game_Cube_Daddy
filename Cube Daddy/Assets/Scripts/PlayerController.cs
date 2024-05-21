@@ -1162,6 +1162,7 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        Debug.Log("teleport start");
         teleportStart.Invoke();
 
         canMove = false;
@@ -1171,6 +1172,7 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportEnd()
     {
+        Debug.Log("teleport end");
         teleportEnd.Invoke();
 
         canMove = true;

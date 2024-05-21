@@ -37,6 +37,8 @@ public class AnimationController : MonoBehaviour
 
     public IEnumerator PlayAnimation_cannotMove_Coroutine(string animationTrigger)
     {
+        Debug.Log("Calling: " + animationTrigger);
+
         isAnimating = true;
 
         player.canMove = false;
