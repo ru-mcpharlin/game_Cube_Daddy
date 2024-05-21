@@ -77,6 +77,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UnityEvent onFall_small;
     [SerializeField] UnityEvent onFall_med;
     [SerializeField] UnityEvent onFall_large;
+    [Space]
+    [SerializeField] UnityEvent teleportStart;
+    [SerializeField] UnityEvent teleportEnd;
 
 
     [Space]
@@ -1135,6 +1138,8 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        teleportStart.Invoke();
+
         canMove = false;
 
         cubeDatas[cubes_index].SetMeshes(false);
@@ -1143,6 +1148,8 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportEnd()
     {
+        teleportEnd.Invoke();
+
         canMove = true;
         isMoving = false;
         isFalling = false;
