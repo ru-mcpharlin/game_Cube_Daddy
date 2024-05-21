@@ -1176,12 +1176,16 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportEnd()
     {
+        
+
+        teleportEnd.Invoke();
+
         canMove = true;
         isMoving = false;
         isFalling = false;
         isTeleporting = false;
 
-        teleportEnd.Invoke();
+        
 
         cubeDatas[cubes_index].SetTeleportParticleSystem(false);
     }

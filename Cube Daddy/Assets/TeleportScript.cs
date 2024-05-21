@@ -16,8 +16,9 @@ public class TeleportScript : MonoBehaviour
 
     public void Teleport(Transform cubeTransform, Vector3 newPos, float timer)
     {
-        Tween.Position(cubeTransform, newPos, timer, delay, Tween.EaseInOut, Tween.LoopType.None, TeleportStart, TeleportEnd);
         player.TeleportStart();
+        Tween.Position(cubeTransform, newPos, timer, delay, Tween.EaseInOut, Tween.LoopType.None, TeleportStart, TeleportEnd);
+        
     }
 
     public void TeleportStart()

@@ -32,7 +32,7 @@ public class AnimationController : MonoBehaviour
 
     public void PlayAnimation_cannotMove_Method(string animationTrigger)
     {
-        if (!isAnimating && !player.isMoving)
+        if (!isAnimating)
         {
             StartCoroutine(PlayAnimation_cannotMove_Coroutine(animationTrigger));
         }
