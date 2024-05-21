@@ -66,7 +66,6 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] float smallFall_Threshold;
     [SerializeField] float medFall_Threshold;
-    [SerializeField] float largeFall_Threshold;
 
     [Space]
     [Space]
@@ -77,6 +76,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UnityEvent onFall_small;
     [SerializeField] UnityEvent onFall_med;
     [SerializeField] UnityEvent onFall_large;
+    [Space]
+    [SerializeField] UnityEvent teleportStart;
+    [SerializeField] UnityEvent teleportEnd;
 
 
     [Space]
@@ -669,7 +671,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
-            Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
+            //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
             Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
@@ -677,23 +679,23 @@ public class PlayerController : MonoBehaviour
             //get distance
             fallDistance = hit_fall.distance;
 
+            Debug.Log("Duration: " + fallDistance / scale * scale);
+
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / scale * scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
+        }
+
+        while (isFalling)
+        {
+            yield return new WaitForEndOfFrame();
         }
         #endregion
 
         //final checks to end movement
         #region end movement
-        //if is falling do nothing
-        while (isFalling)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        Debug.Log("Test");
 
         //pressure plates
         CheckAllPressurePlates();
@@ -725,7 +727,16 @@ public class PlayerController : MonoBehaviour
 
         //call animations
         #region Call Animations
-
+        //roll continous
+        if(inputVector.magnitude != 0f)
+        {
+            onRollContinous.Invoke();
+        }
+        //roll stop
+        else
+        {
+            onRollStop.Invoke();
+        }
         #endregion
 
         //set isMoving to false
@@ -991,6 +1002,22 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
+        if(fallDistance < smallFall_Threshold * scale)
+        {
+            Debug.Log("Small: " + fallDistance);
+            onFall_small.Invoke();
+        }
+        else if(fallDistance < medFall_Threshold * scale)
+        {
+            Debug.Log("Med: " + fallDistance);
+            onFall_med.Invoke();
+        }
+        else
+        {
+            Debug.Log("Large: " + fallDistance);
+            onFall_large.Invoke();
+        }
+
         isFalling = false;
         isMoving = false;
     }
@@ -1135,6 +1162,8 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        teleportStart.Invoke();
+
         canMove = false;
 
         cubeDatas[cubes_index].SetMeshes(false);
@@ -1143,6 +1172,8 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportEnd()
     {
+        teleportEnd.Invoke();
+
         canMove = true;
         isMoving = false;
         isFalling = false;
