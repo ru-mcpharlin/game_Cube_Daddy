@@ -19,42 +19,25 @@ public class PlayerController : MonoBehaviour
     private InputAction move;
     private InputAction camera_Mouse;
     private InputAction camera_Gamepad;
-    [Space]
-    [SerializeField] public Vector2 inputVector;
-    [SerializeField] public Vector2 cameraVector_Mouse;
-    [SerializeField] public Vector2 cameraVector_Gamepad;
+    private Vector2 inputVector;
+    [HideInInspector] public Vector2 cameraVector_Mouse;
+    [HideInInspector] public Vector2 cameraVector_Gamepad;
 
-    [Space]
-    [Space]
-    [SerializeField] public MovementType movementType;
-
-    [Space]
-    [Space]
-    [Header("Player Components")]
-    [SerializeField] public Rigidbody rb;
-    [SerializeField] public SquashCubesScript squash;
-
-
-    [Space]
-    [Space]
-    [Header("Tags")]
-    [SerializeField] public string tag_Environment;
-    [SerializeField] public string tag_MagneticEnvironment;
-    [SerializeField] public string tag_player;
-    [SerializeField] public string tag_currentPlayer;
-
-    [Space]
     [Space]
     [Header("Movement")]
-    [SerializeField] bool isMoving;
-    [SerializeField] bool isFalling;
+    [SerializeField] public MovementType movementType;
+    [SerializeField] public RollType rollType;
+    [Space]
+    [SerializeField] public bool canMove;
+    [SerializeField] public bool isMoving;
+    [SerializeField] public bool isFalling;
     [Space]
     [SerializeField] bool isMagnetic;
     [SerializeField] public bool onMagneticCube;
     [Space]
     [SerializeField] CalculateRollTypeScript calculateRollTypeScript;
     [SerializeField] bool debugMovement;
-    [SerializeField] RollType rollType;
+    
     [Header("Rotation")]
     [SerializeField] float remainingAngle;
     [SerializeField] Vector3 rotationAnchor;
@@ -115,7 +98,20 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("Respawn")]
-    [SerializeField] public LayerMask respawnLayer;
+    [SerializeField] public int respawnLayer;
+    [SerializeField] public Vector3 lastValidPosition;
+    [SerializeField] public float respawnTime;
+
+    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public SquashCubesScript squash;
+    [HideInInspector] public TeleportScript teleport;
+
+    [Space]
+    [Header("Tags")]
+    [SerializeField] public string tag_Environment;
+    [SerializeField] public string tag_MagneticEnvironment;
+    [SerializeField] public string tag_player;
+    [SerializeField] public string tag_currentPlayer;
     #endregion
 
     //**********************************************************************************************************//
@@ -199,6 +195,9 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
+
+        //teleport
+        teleport = FindObjectOfType<TeleportScript>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -237,31 +236,34 @@ public class PlayerController : MonoBehaviour
 
         //roll movement
         #region Roll Movement
-        if (movementType == MovementType.roll)
+        if (canMove)
         {
-            //if current moving or falling do nothing
-            if (isMoving) return;
-            if (isFalling) return;
+            if (movementType == MovementType.roll)
+            {
+                //if current moving or falling do nothing
+                if (isMoving) return;
+                if (isFalling) return;
 
-            //forward
-            if (inputVector.y == 1)
-            {
-                StartCoroutine(Roll(Vector3.forward));
-            }
-            //back
-            else if (inputVector.y == -1)
-            {
-                StartCoroutine(Roll(Vector3.back));
-            }
-            //right
-            else if (inputVector.x == 1)
-            {
-                StartCoroutine(Roll(Vector3.right));
-            }
-            //left
-            else if (inputVector.x == -1)
-            {
-                StartCoroutine(Roll(Vector3.left));
+                //forward
+                if (inputVector.y == 1)
+                {
+                    StartCoroutine(Roll(Vector3.forward));
+                }
+                //back
+                else if (inputVector.y == -1)
+                {
+                    StartCoroutine(Roll(Vector3.back));
+                }
+                //right
+                else if (inputVector.x == 1)
+                {
+                    StartCoroutine(Roll(Vector3.right));
+                }
+                //left
+                else if (inputVector.x == -1)
+                {
+                    StartCoroutine(Roll(Vector3.left));
+                }
             }
         }
         #endregion
@@ -663,13 +665,13 @@ public class PlayerController : MonoBehaviour
         #region Fall
         //fall
         //if there is nothing below at the end of a move
-        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale) && !CheckIfOnMagneticCube())
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
             Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
-            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity);
+            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
 
             //get distance
             fallDistance = hit.distance;
@@ -711,13 +713,18 @@ public class PlayerController : MonoBehaviour
 
             #endregion
 
+            //last valid move transform
+            if(Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, scale) && hit_down.collider.gameObject.layer != respawnLayer)
+            {
+                lastValidPosition = cubeTransform.position;
+            }
+
             //set isMoving to false
             isMoving = false;
         }
 
         #endregion
     }
-
     
 
     //**********************************************************************************************************//
@@ -1070,6 +1077,9 @@ public class PlayerController : MonoBehaviour
     //merge cube
     private void MergeCube()
     {
+        //set movement off
+        canMove = false;
+
         //set current small cubes parent to be large cubes transform
         cubeDatas[cubes_index].gameObject.SetActive(false);
         cubeDatas[cubes_index].isCurrentCube = false;
@@ -1078,7 +1088,7 @@ public class PlayerController : MonoBehaviour
         squash.MakeCubesSquashable(cubes_index);
 
         //set cube transform to large cube transform
-        cubeTransform = cubeDatas[cubes_index+1].transform;
+        cubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //set scale
         scale = cubeDatas[cubes_index + 1].scale;
@@ -1101,13 +1111,39 @@ public class PlayerController : MonoBehaviour
         //merge events
         cubeDatas[cubes_index + 1].mergeEvents.Invoke();
 
-
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
         {
             cubes_index++;
         }
+
+        //set can move
+        canMove = true;
     }
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region Teleport
+    public void TeleportStart()
+    {
+        canMove = false;
+
+        cubeDatas[cubes_index].SetMeshes(false);
+        cubeDatas[cubes_index].SetTeleportParticleSystem(true);
+    }
+
+    public void TeleportEnd()
+    {
+        canMove = true;
+        isMoving = false;
+        isFalling = false;
+
+        cubeDatas[cubes_index].SetMeshes(true);
+        cubeDatas[cubes_index].SetTeleportParticleSystem(false);
+
+    }
+
 
     #endregion
 }

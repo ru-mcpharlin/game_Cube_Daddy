@@ -97,6 +97,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3376135486713660124, guid: db7fd1566eedd79419209aff7c242dfb,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3376135486713660125, guid: db7fd1566eedd79419209aff7c242dfb,
         type: 3}
       propertyPath: m_Name
@@ -106,6 +111,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3853733391944055732, guid: db7fd1566eedd79419209aff7c242dfb,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3853733391944055732, guid: db7fd1566eedd79419209aff7c242dfb,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3853733391944055732, guid: db7fd1566eedd79419209aff7c242dfb,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3853733391944055732, guid: db7fd1566eedd79419209aff7c242dfb,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4379116270212947144, guid: db7fd1566eedd79419209aff7c242dfb,
         type: 3}

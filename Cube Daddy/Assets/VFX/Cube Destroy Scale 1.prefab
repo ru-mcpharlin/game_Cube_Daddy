@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4880471255732539234}
   - component: {fileID: 1715714439254978582}
   - component: {fileID: 2537438926134090265}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube Destroy Scale 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
