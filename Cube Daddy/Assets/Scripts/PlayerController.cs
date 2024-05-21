@@ -1166,10 +1166,10 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        teleportStart.Invoke();
+
         isTeleporting = true;
         canMove = false;
-
-        teleportStart.Invoke();
 
         cubeDatas[cubes_index].SetTeleportParticleSystem(true);
     }
