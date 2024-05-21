@@ -723,6 +723,11 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
+        //call animations
+        #region Call Animations
+
+        #endregion
+
         //set isMoving to false
         isMoving = false;
 

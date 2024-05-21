@@ -32,7 +32,7 @@ public class AnimationController : MonoBehaviour
 
     public void PlayAnimation_cannotMove_Method(string animationTrigger)
     {
-        StartCoroutine(PlayAnimation_cannotMove_Coroutine(testAnimation_cannotMove));
+        StartCoroutine(PlayAnimation_cannotMove_Coroutine(animationTrigger));
     }
 
     public IEnumerator PlayAnimation_cannotMove_Coroutine(string animationTrigger)
@@ -60,7 +60,7 @@ public class AnimationController : MonoBehaviour
 
     public void PlayAnimation_canMove_Method(string animationTrigger)
     {
-        StartCoroutine(PlayAnimation_canMove_Coroutine(testAnimation_cannotMove));
+        StartCoroutine(PlayAnimation_canMove_Coroutine(animationTrigger));
     }
 
     public IEnumerator PlayAnimation_canMove_Coroutine(string animationTrigger)
