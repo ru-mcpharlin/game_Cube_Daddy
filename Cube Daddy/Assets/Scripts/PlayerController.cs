@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] float smallFall_Threshold;
     [SerializeField] float medFall_Threshold;
+    [Space]
+    [SerializeField] public bool isFallingToDeath;
 
     [Space]
     [Space]
@@ -81,13 +83,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UnityEvent teleportStart;
     [SerializeField] UnityEvent teleportEnd;
 
+    [Space]
+    [Space]
+    [Header("Teleport")]
+    [SerializeField] float teleportLength;
+    [SerializeField] float teleportDelay;
+
 
     [Space]
     [Space]
     [Header("CUBE VARIABLES")]
     [SerializeField] CubeData[] cubeDatas;
     [Header("Current Cube")]
-    [SerializeField] public float scale;
+    [SerializeField] public float currentScale;
     [SerializeField] public Transform cubeTransform;
     [Header("Larger Cubes")]
     [SerializeField] float mergeDistanceThreshold;
@@ -106,7 +114,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Transform vc_transform;
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public SquashCubesScript squash;
-    [HideInInspector] public TeleportScript teleport;
     [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
     [HideInInspector] PressurePlate[] pressurePlates;
 
@@ -199,9 +206,6 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
-
-        //teleport
-        teleport = FindObjectOfType<TeleportScript>();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -299,8 +303,8 @@ public class PlayerController : MonoBehaviour
         direction = TranslateRelativeDirection(direction);
 
         //figure out roll type
-        rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, scale);
-        if(debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, scale);
+        rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, currentScale);
+        if(debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
 
         //is moving = true
         isMoving = true;
@@ -320,20 +324,20 @@ public class PlayerController : MonoBehaviour
             //bonk
             case RollType.bonk_flat:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position - direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 break;
 
             //head bonk
             case RollType.bonk_head:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 direction = -direction;
                 break;
 
             //flat
             case RollType.flat:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 break;
 
             #endregion
@@ -344,27 +348,27 @@ public class PlayerController : MonoBehaviour
             //step up
             case RollType.step_Up:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 break;
 
             //step up bonk 1
             case RollType.bonk_stepUp1:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step up bonk 2
             case RollType.bonk_stepUp2:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step up bonk 3
             case RollType.bonk_stepUp3:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 direction = -direction;
                 break;
 
@@ -374,27 +378,27 @@ public class PlayerController : MonoBehaviour
             //step down
             case RollType.step_Down:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 break;
 
             //step down bonk 1
             case RollType.bonk_stepDown1:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step down bonk 2
             case RollType.bonk_stepDown2:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step down bonk 3
             case RollType.bonk_stepDown3:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 direction = -direction;
                 break;
 
@@ -404,25 +408,25 @@ public class PlayerController : MonoBehaviour
             //step left
             case RollType.step_Left:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //step left bonk 1
             case RollType.bonk_stepLeft1:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //step left bonk 2
             case RollType.bonk_stepLeft2:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //step left bonk 2
             case RollType.bonk_stepLeft3:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             #endregion
@@ -431,27 +435,27 @@ public class PlayerController : MonoBehaviour
             //step right
             case RollType.step_Right:
                 remainingAngle = 180f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //step right bonk 1
             case RollType.bonk_stepRight1:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step right bonk 2
             case RollType.bonk_stepRight2:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 direction = -direction;
                 break;
 
             //step right bonk 3
             case RollType.bonk_stepRight3:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 direction = -direction;
                 break;
 
@@ -465,19 +469,19 @@ public class PlayerController : MonoBehaviour
             //climb up
             case RollType.climb_Up:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 break;
 
             //climb up bonk flat
             case RollType.bonk_climbUp_flat:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 break;
 
             //climb up bonk head
             case RollType.bonk_climbUp_head:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.up * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
                 direction = -direction;
                 break;
 
@@ -487,7 +491,7 @@ public class PlayerController : MonoBehaviour
             //climb down
             case RollType.climb_Down:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + -direction * scale / 2 + Vector3.down * scale / 2;
+                rotationAnchor = cubeTransform.position + -direction * currentScale / 2 + Vector3.down * currentScale / 2;
                 break;
 
             #endregion
@@ -496,19 +500,19 @@ public class PlayerController : MonoBehaviour
             //climb left
             case RollType.climb_Left:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //climb left bonk flat
             case RollType.bonk_climbLeft_flat:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position - direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //climb left bonk head
             case RollType.bonk_climbLeft_head:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + -Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             #endregion
@@ -517,19 +521,19 @@ public class PlayerController : MonoBehaviour
             //climb right
             case RollType.climb_Right:
                 remainingAngle = 90f;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //climb right bonk flat
             case RollType.bonk_climbRight_flat:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position - direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
             //climb right bonk flat
             case RollType.bonk_climbRight_head:
                 remainingAngle = bonkAngle;
-                rotationAnchor = cubeTransform.position + direction * scale / 2 + Vector3.Cross(direction, Vector3.up) * scale / 2;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
                 break;
 
                 #endregion
@@ -669,21 +673,22 @@ public class PlayerController : MonoBehaviour
         #region Fall
         //fall
         //if there is nothing below at the end of a move
-        if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, currentScale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
             //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
-            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
+            Physics.Raycast(cubeTransform.position + Vector3.down * currentScale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
 
             //get distance
             fallDistance = hit_fall.distance;
 
-            Debug.Log("Duration: " + fallDistance / scale * scale);
+            //falling to death check
+            isFallingToDeath = hit_fall.collider.gameObject.layer == respawnLayer;
 
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / scale * scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale * currentScale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
@@ -720,7 +725,7 @@ public class PlayerController : MonoBehaviour
 
         //last valid move transform
         #region Respawn
-        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, scale) && hit_down.collider.gameObject.layer != respawnLayer)
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, currentScale) && hit_down.collider.gameObject.layer != respawnLayer)
         {
             lastValidPosition = cubeTransform.position;
         }
@@ -729,7 +734,7 @@ public class PlayerController : MonoBehaviour
         //call animations
         #region Call Animations
         //roll continous
-        if (!isTeleporting)
+        if (!isTeleporting && !isFallingToDeath)
         {
             if (inputVector.magnitude != 0f)
             {
@@ -798,7 +803,7 @@ public class PlayerController : MonoBehaviour
 
         #region flat
         //forward
-        if (Physics.Raycast(cubeTransform.position, Vector3.forward, out RaycastHit hitForward, scale) &&
+        if (Physics.Raycast(cubeTransform.position, Vector3.forward, out RaycastHit hitForward, currentScale) &&
             hitForward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
             //Debug.Log("forward: " + true);
@@ -807,7 +812,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("forward: " + false);
 
         //back
-        if(Physics.Raycast(cubeTransform.position, Vector3.back, out RaycastHit hitBackward, scale) &&
+        if(Physics.Raycast(cubeTransform.position, Vector3.back, out RaycastHit hitBackward, currentScale) &&
            hitBackward.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
             //Debug.Log("back: " + true);
@@ -816,7 +821,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("back: " + false);
         
         //left
-        if (Physics.Raycast(cubeTransform.position, Vector3.left, out RaycastHit hitLeft, scale) &&
+        if (Physics.Raycast(cubeTransform.position, Vector3.left, out RaycastHit hitLeft, currentScale) &&
                  hitLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
             //Debug.Log("left: " + true);
@@ -825,7 +830,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("left: " + false);
         
         //right
-        if (Physics.Raycast(cubeTransform.position, Vector3.right, out RaycastHit hitRight, scale) &&
+        if (Physics.Raycast(cubeTransform.position, Vector3.right, out RaycastHit hitRight, currentScale) &&
             hitRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
             //Debug.Log("right: " + true);
@@ -834,7 +839,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("right: " + false);
 
         //down
-        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hitDown, scale) &&
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hitDown, currentScale) &&
             hitDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
 
@@ -844,7 +849,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("down: " + false);
 
         //up
-        if (Physics.Raycast(cubeTransform.position, Vector3.up, out RaycastHit hitUp, scale) &&
+        if (Physics.Raycast(cubeTransform.position, Vector3.up, out RaycastHit hitUp, currentScale) &&
             hitUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
         {
            //Debug.Log("up: " + true);
@@ -858,7 +863,7 @@ public class PlayerController : MonoBehaviour
         int numEdges = 0;
 
         //forward up
-        if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.forward, out RaycastHit hitForwardUp, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.up * currentScale, Vector3.forward, out RaycastHit hitForwardUp, currentScale))
         {
             if (hitForwardUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -867,7 +872,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //forward down
-        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.forward, out RaycastHit hitForwardDown, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * currentScale, Vector3.forward, out RaycastHit hitForwardDown, currentScale))
         {
             if (hitForwardDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -876,7 +881,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //forward left
-        if (Physics.Raycast(cubeTransform.position + Vector3.left * scale, Vector3.forward, out RaycastHit hitForwardLeft, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.left * currentScale, Vector3.forward, out RaycastHit hitForwardLeft, currentScale))
         {
             if (hitForwardLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -885,7 +890,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //forward right
-        if (Physics.Raycast(cubeTransform.position + Vector3.right * scale, Vector3.forward, out RaycastHit hitForwardRight, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.right * currentScale, Vector3.forward, out RaycastHit hitForwardRight, currentScale))
         {
             if (hitForwardRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -894,7 +899,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Back up
-        if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.back, out RaycastHit hitBackUp, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.up * currentScale, Vector3.back, out RaycastHit hitBackUp, currentScale))
         {
             if (hitBackUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -904,7 +909,7 @@ public class PlayerController : MonoBehaviour
 
 
         //Back down
-        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.back, out RaycastHit hitBackDown, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * currentScale, Vector3.back, out RaycastHit hitBackDown, currentScale))
         {
             if (hitBackDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -913,7 +918,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //back left
-        if (Physics.Raycast(cubeTransform.position + Vector3.left * scale, Vector3.back, out RaycastHit hitbackLeft, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.left * currentScale, Vector3.back, out RaycastHit hitbackLeft, currentScale))
         {
             if (hitbackLeft.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -922,7 +927,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //back right
-        if (Physics.Raycast(cubeTransform.position + Vector3.right * scale, Vector3.back, out RaycastHit hitbackRight, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.right * currentScale, Vector3.back, out RaycastHit hitbackRight, currentScale))
         {
             if (hitbackRight.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -931,7 +936,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //left up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.left, out RaycastHit hitleftUp, scale))
+        else if (Physics.Raycast(cubeTransform.position + Vector3.up * currentScale, Vector3.left, out RaycastHit hitleftUp, currentScale))
         {
             if (hitleftUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -940,7 +945,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //left down
-        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.left, out RaycastHit hitleftDown, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * currentScale, Vector3.left, out RaycastHit hitleftDown, currentScale))
         {
             if (hitleftDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -949,7 +954,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //right up
-        else if (Physics.Raycast(cubeTransform.position + Vector3.up * scale, Vector3.right, out RaycastHit hitrightUp, scale))
+        else if (Physics.Raycast(cubeTransform.position + Vector3.up * currentScale, Vector3.right, out RaycastHit hitrightUp, currentScale))
         {
             if (hitrightUp.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -958,7 +963,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //right down
-        if (Physics.Raycast(cubeTransform.position + Vector3.down * scale, Vector3.right, out RaycastHit hitrightDown, scale))
+        if (Physics.Raycast(cubeTransform.position + Vector3.down * currentScale, Vector3.right, out RaycastHit hitrightDown, currentScale))
         {
             if (hitrightDown.collider.gameObject.CompareTag(tag_MagneticEnvironment))
             {
@@ -988,7 +993,7 @@ public class PlayerController : MonoBehaviour
     {
         foreach (PressurePlate pressurePlate in pressurePlates)
         {
-            pressurePlate.CheckIfTriggered(cubeTransform.position, scale);
+            pressurePlate.CheckIfTriggered(cubeTransform.position, currentScale);
         }
     }
 
@@ -1006,20 +1011,23 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
-        if(fallDistance < smallFall_Threshold * scale)
+        if (!isFallingToDeath)
         {
-            Debug.Log("Small: " + fallDistance);
-            onFall_small.Invoke();
-        }
-        else if(fallDistance < medFall_Threshold * scale)
-        {
-            Debug.Log("Med: " + fallDistance);
-            onFall_med.Invoke();
-        }
-        else
-        {
-            Debug.Log("Large: " + fallDistance);
-            onFall_large.Invoke();
+            if (fallDistance < smallFall_Threshold * currentScale)
+            {
+                Debug.Log("Small: " + fallDistance);
+                onFall_small.Invoke();
+            }
+            else if (fallDistance < medFall_Threshold * currentScale)
+            {
+                Debug.Log("Med: " + fallDistance);
+                onFall_med.Invoke();
+            }
+            else
+            {
+                Debug.Log("Large: " + fallDistance);
+                onFall_large.Invoke();
+            }
         }
 
         isFalling = false;
@@ -1130,7 +1138,7 @@ public class PlayerController : MonoBehaviour
         cubeTransform = cubeDatas[cubes_index + 1].transform;
 
         //set scale
-        scale = cubeDatas[cubes_index + 1].scale;
+        currentScale = cubeDatas[cubes_index + 1].scale;
 
         //set active = false incomplete meshes
         cubeDatas[cubes_index + 1].incompleteMesh.SetActive(false);
@@ -1164,27 +1172,8 @@ public class PlayerController : MonoBehaviour
 
     //**********************************************************************************************************//
     #region Teleport
-    public void TeleportStart()
-    {
-        isTeleporting = true;
-        canMove = false;
 
-        teleportStart.Invoke();
 
-        cubeDatas[cubes_index].SetTeleportParticleSystem(true);
-    }
-
-    public void TeleportEnd()
-    {
-        canMove = true;
-        isMoving = false;
-        isFalling = false;
-        isTeleporting = false;
-
-        teleportEnd.Invoke();
-
-        cubeDatas[cubes_index].SetTeleportParticleSystem(false);
-    }
 
 
     #endregion
