@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool canMove;
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
+    [SerializeField] public bool isTeleporting;
     [Space]
     [SerializeField] bool isMagnetic;
     [SerializeField] public bool onMagneticCube;  
@@ -728,14 +729,17 @@ public class PlayerController : MonoBehaviour
         //call animations
         #region Call Animations
         //roll continous
-        if(inputVector.magnitude != 0f)
+        if (!isTeleporting)
         {
-            onRollContinous.Invoke();
-        }
-        //roll stop
-        else
-        {
-            onRollStop.Invoke();
+            if (inputVector.magnitude != 0f)
+            {
+                onRollContinous.Invoke();
+            }
+            //roll stop
+            else
+            {
+                onRollStop.Invoke();
+            }
         }
         #endregion
 
@@ -1162,25 +1166,24 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
-        Debug.Log("teleport start");
-        teleportStart.Invoke();
-
+        isTeleporting = true;
         canMove = false;
+
+        teleportStart.Invoke();
 
         cubeDatas[cubes_index].SetTeleportParticleSystem(true);
     }
 
     public void TeleportEnd()
     {
-        Debug.Log("teleport end");
-        teleportEnd.Invoke();
-
         canMove = true;
         isMoving = false;
         isFalling = false;
+        isTeleporting = false;
+
+        teleportEnd.Invoke();
 
         cubeDatas[cubes_index].SetTeleportParticleSystem(false);
-
     }
 
 
