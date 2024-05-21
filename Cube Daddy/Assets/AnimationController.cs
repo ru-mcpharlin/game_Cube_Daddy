@@ -93,7 +93,7 @@ public class AnimationController : MonoBehaviour
 
     public void SetPositionAtBase()
     {
-        transform.position = player.cubeTransform.position + Vector3.down * player.scale * 1 / 2;
+        transform.position = player.cubeTransform.position + 0.5f * player.currentScale * Vector3.down;
     }
 
     public void SetPositionAtCenter()
