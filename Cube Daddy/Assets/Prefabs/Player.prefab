@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4460003246279132946}
   - component: {fileID: 1588831672}
   - component: {fileID: 8274585900183101170}
-  - component: {fileID: 6601035500055606674}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -49,32 +48,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4555a57cdf981914ebed7bb4f96f819b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMovement: 0
   inputActions: {fileID: -944628639613478452, guid: 40d8f8fb3e1728e4bb98e9c60d419829,
     type: 3}
-  inputVector: {x: 0, y: 0}
   cameraVector_Mouse: {x: 0, y: 0}
   cameraVector_Gamepad: {x: 0, y: 0}
   movementType: 0
-  rb: {fileID: 0}
-  squash: {fileID: 0}
-  teleport: {fileID: 0}
-  tag_Environment: Environment
-  tag_MagneticEnvironment: Magnetic Environment
-  tag_player: Player
-  tag_currentPlayer: Current Cube
+  rollType: 0
   canMove: 1
   isMoving: 0
   isFalling: 0
   isMagnetic: 0
   onMagneticCube: 0
-  calculateRollTypeScript: {fileID: 0}
-  debugMovement: 0
-  rollType: 0
-  remainingAngle: 0
-  rotationAnchor: {x: 0, y: 0, z: 0}
-  rotationAxis: {x: 0, y: -0, z: 0}
-  scale: 1
   rollSpeed: 3000
+  bonkSpeed: 3000
+  headBonkSpeed: 3000
+  step1BonkSpeed: 3000
+  step2BonkSpeed: 1700
+  step3BonkSpeed: 1700
   rollCurve:
     serializedVersion: 2
     m_Curve:
@@ -99,8 +90,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  bonkAngle: 1
-  bonkSpeed: 3000
   bonkCurve:
     serializedVersion: 2
     m_Curve:
@@ -125,7 +114,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  headBonkSpeed: 3000
   headBonkCurve:
     serializedVersion: 2
     m_Curve:
@@ -150,7 +138,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step1BonkSpeed: 3000
   step1BonkCurve:
     serializedVersion: 2
     m_Curve:
@@ -175,7 +162,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step2BonkSpeed: 1700
   step2BonkCurve:
     serializedVersion: 2
     m_Curve:
@@ -200,7 +186,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  step3BonkSpeed: 1700
   step3BonkCurve:
     serializedVersion: 2
     m_Curve:
@@ -225,6 +210,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  bonkAngle: 1
   fallDistance: 0
   fallJourneyLength: 0.5
   fallCurve:
@@ -251,16 +237,46 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  smallFall_Threshold: 2
+  medFall_Threshold: 4
+  onRollContinous:
+    m_PersistentCalls:
+      m_Calls: []
+  onRollStop:
+    m_PersistentCalls:
+      m_Calls: []
+  onFall_small:
+    m_PersistentCalls:
+      m_Calls: []
+  onFall_med:
+    m_PersistentCalls:
+      m_Calls: []
+  onFall_large:
+    m_PersistentCalls:
+      m_Calls: []
+  teleportStart:
+    m_PersistentCalls:
+      m_Calls: []
+  teleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  cubeDatas: []
+  scale: 1
   cubeTransform: {fileID: 0}
   mergeDistanceThreshold: 0.1
   cubes_index: 0
-  cubeDatas: []
-  cameraController: {fileID: 0}
-  vc_transform: {fileID: 0}
-  pressurePlates: []
   respawnLayer: 19
   lastValidPosition: {x: 0, y: 0, z: 0}
   respawnTime: 1
+  vc_transform: {fileID: 0}
+  rb: {fileID: 0}
+  squash: {fileID: 0}
+  teleport: {fileID: 0}
+  calculateRollTypeScript: {fileID: 0}
+  tag_Environment: Environment
+  tag_MagneticEnvironment: Magnetic Environment
+  tag_player: Player
+  tag_currentPlayer: Current Cube
 --- !u!114 &6850472812865385636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,15 +371,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
---- !u!114 &6601035500055606674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841606953749839820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a8a5c062f53f414b959abeda4c1dc4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  delay: 0

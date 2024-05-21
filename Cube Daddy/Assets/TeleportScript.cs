@@ -6,6 +6,7 @@ using Pixelplacement;
 public class TeleportScript : MonoBehaviour
 {
     [SerializeField] PlayerController player;
+    [SerializeField] float delay;
 
     private void Awake()
     {
@@ -15,7 +16,7 @@ public class TeleportScript : MonoBehaviour
 
     public void Teleport(Transform cubeTransform, Vector3 newPos, float timer)
     {
-        Tween.Position(cubeTransform, newPos, timer, 0, Tween.EaseInOut, Tween.LoopType.None, TeleportStart, TeleportEnd);
+        Tween.Position(cubeTransform, newPos, timer, delay, Tween.EaseInOut, Tween.LoopType.None, TeleportStart, TeleportEnd);
         player.TeleportStart();
     }
 

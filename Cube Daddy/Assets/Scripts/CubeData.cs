@@ -15,6 +15,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] public GameObject incompleteMesh;
     [SerializeField] public GameObject completeMesh;
     [SerializeField] public GameObject teleportParticleSystem;
+    [SerializeField] public ParticleSystem.EmissionModule em;
     [Space]
     [SerializeField] public UnityEvent mergeEvents;
     
@@ -23,6 +24,7 @@ public class CubeData : MonoBehaviour
     {
         squash = FindObjectOfType<SquashCubesScript>();
         player = FindObjectOfType<PlayerController>();
+        em = teleportParticleSystem.GetComponent<ParticleSystem>().emission;
 
         SetTeleportParticleSystem(false);
     }
@@ -49,13 +51,11 @@ public class CubeData : MonoBehaviour
 
     public void SetMeshes(bool inputBool)
     {
-        incompleteMesh.SetActive(inputBool);
         completeMesh.SetActive(inputBool);
     }
 
     public void SetTeleportParticleSystem(bool inputBool)
     {
-        var ps = teleportParticleSystem.GetComponent<ParticleSystem>().emission;
-        ps.enabled = inputBool;
+        em.enabled = inputBool;
     }
 }

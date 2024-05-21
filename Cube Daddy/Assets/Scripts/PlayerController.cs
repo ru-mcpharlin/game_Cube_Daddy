@@ -14,105 +14,83 @@ public class PlayerController : MonoBehaviour
 {
     //**********************************************************************************************************//
     #region Variables
-    [Header("Player Input")]
+    [Header("DEBUGGING")]
+    [SerializeField] bool debugMovement;
+
+
+    [Header("PLAYER INPUT")]
     [SerializeField] InputActionAsset inputActions;
     private InputAction move;
     private InputAction camera_Mouse;
     private InputAction camera_Gamepad;
-    [Space]
-    [SerializeField] public Vector2 inputVector;
-    [SerializeField] public Vector2 cameraVector_Mouse;
-    [SerializeField] public Vector2 cameraVector_Gamepad;
+    private Vector2 inputVector;
+    [HideInInspector] public Vector2 cameraVector_Mouse;
+    [HideInInspector] public Vector2 cameraVector_Gamepad;
 
     [Space]
     [Space]
+    [Header("MOVEMENT")]
     [SerializeField] public MovementType movementType;
-
-    [Space]
-    [Space]
-    [Header("Player Components")]
-    [SerializeField] public Rigidbody rb;
-    [SerializeField] public SquashCubesScript squash;
-    [SerializeField] public TeleportScript teleport;
-
-
-    [Space]
-    [Space]
-    [Header("Tags")]
-    [SerializeField] public string tag_Environment;
-    [SerializeField] public string tag_MagneticEnvironment;
-    [SerializeField] public string tag_player;
-    [SerializeField] public string tag_currentPlayer;
-
-    [Space]
-    [Space]
-    [Header("Movement")]
+    [SerializeField] public RollType rollType;
+    [Header("Movement Bools")]
     [SerializeField] public bool canMove;
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
     [Space]
     [SerializeField] bool isMagnetic;
-    [SerializeField] public bool onMagneticCube;
-    [Space]
-    [SerializeField] CalculateRollTypeScript calculateRollTypeScript;
-    [SerializeField] bool debugMovement;
-    [SerializeField] RollType rollType;
-    [Header("Rotation")]
-    [SerializeField] float remainingAngle;
-    [SerializeField] Vector3 rotationAnchor;
-    [SerializeField] Vector3 rotationAxis;
-    [Space]
-    [Header("Cube variables")]
-    [SerializeField] public float scale;
+    [SerializeField] public bool onMagneticCube;  
+    //ROTATION
+    [HideInInspector] float remainingAngle;
+    [HideInInspector] Vector3 rotationAnchor;
+    [HideInInspector] Vector3 rotationAxis;
+    [Header("Movement Speeds")]
     [SerializeField] float rollSpeed;
-    [SerializeField] AnimationCurve rollCurve;
-    [Space]
-    [SerializeField] float bonkAngle;
-    [Space]
     [SerializeField] float bonkSpeed;
-    [SerializeField] AnimationCurve bonkCurve;
-    [Space]
     [SerializeField] float headBonkSpeed;
-    [SerializeField] AnimationCurve headBonkCurve;
-    [Space]
     [SerializeField] float step1BonkSpeed;
-    [SerializeField] AnimationCurve step1BonkCurve;
-    [Space]
     [SerializeField] float step2BonkSpeed;
-    [SerializeField] AnimationCurve step2BonkCurve;
-    [Space]
     [SerializeField] float step3BonkSpeed;
+    [Header("Movement Curves")]
+    [SerializeField] AnimationCurve rollCurve;
+    [SerializeField] AnimationCurve bonkCurve;
+    [SerializeField] AnimationCurve headBonkCurve;
+    [SerializeField] AnimationCurve step1BonkCurve;
+    [SerializeField] AnimationCurve step2BonkCurve;
     [SerializeField] AnimationCurve step3BonkCurve;
-    [Space]
-
+    [Header("Movement Angles")]
+    [SerializeField] float bonkAngle;
     [Header("Fall")]
     [SerializeField] float fallDistance;
     [SerializeField] float fallJourneyLength;
     [SerializeField] AnimationCurve fallCurve;
-    [SerializeField] RaycastHit hit;
+    [Space]
+    [SerializeField] float smallFall_Threshold;
+    [SerializeField] float medFall_Threshold;
 
     [Space]
     [Space]
-    [Header("Cube")]
+    [Header("Animations")]
+    [SerializeField] UnityEvent onRollContinous;
+    [SerializeField] UnityEvent onRollStop;
+    [Space]
+    [SerializeField] UnityEvent onFall_small;
+    [SerializeField] UnityEvent onFall_med;
+    [SerializeField] UnityEvent onFall_large;
+    [Space]
+    [SerializeField] UnityEvent teleportStart;
+    [SerializeField] UnityEvent teleportEnd;
+
+
+    [Space]
+    [Space]
+    [Header("CUBE VARIABLES")]
+    [SerializeField] CubeData[] cubeDatas;
+    [Header("Current Cube")]
+    [SerializeField] public float scale;
     [SerializeField] public Transform cubeTransform;
-
-    [Space]
-    [Space]
     [Header("Larger Cubes")]
     [SerializeField] float mergeDistanceThreshold;
     [SerializeField] public int cubes_index;
-    [SerializeField] CubeData[] cubeDatas;
-
-    [Space]
-    [Space]
-    [Header("Camera")]
-    [SerializeField] CameraController cameraController;
-    [SerializeField] public Transform vc_transform;
-
-    [Space]
-    [Space]
-    [Header("Pressure Plates")]
-    [SerializeField] PressurePlate[] pressurePlates;
 
     [Space]
     [Space]
@@ -120,6 +98,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public int respawnLayer;
     [SerializeField] public Vector3 lastValidPosition;
     [SerializeField] public float respawnTime;
+
+
+    //NOT SHOWN IN INSPECTOR
+    [HideInInspector] CameraController cameraController;
+    [HideInInspector] public Transform vc_transform;
+    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public SquashCubesScript squash;
+    [HideInInspector] public TeleportScript teleport;
+    [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
+    [HideInInspector] PressurePlate[] pressurePlates;
+
+    [Space]
+    [Header("Tags")]
+    [SerializeField] public string tag_Environment;
+    [SerializeField] public string tag_MagneticEnvironment;
+    [SerializeField] public string tag_player;
+    [SerializeField] public string tag_currentPlayer;
     #endregion
 
     //**********************************************************************************************************//
@@ -676,60 +671,76 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, scale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
             //draw a debug ray down
-            Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
+            //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
             //raycast straight down
-            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out hit, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
+            Physics.Raycast(cubeTransform.position + Vector3.down * scale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
 
             //get distance
-            fallDistance = hit.distance;
+            fallDistance = hit_fall.distance;
+
+            Debug.Log("Duration: " + fallDistance / scale * scale);
 
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallJourneyLength * fallDistance / scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / scale * scale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
+        }
+
+        while (isFalling)
+        {
+            yield return new WaitForEndOfFrame();
         }
         #endregion
 
         //final checks to end movement
         #region end movement
-        //if is falling do nothing
-        if (isFalling)
+
+        //pressure plates
+        CheckAllPressurePlates();
+
+        //check if on magnetic cube
+        onMagneticCube = CheckIfOnMagneticCube();
+
+        //check that cube hasnt been completed
+        #region check completed cube
+        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
         {
-            yield return new WaitForEndOfFrame();
+            //Debug.Log(Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position));
+
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold)
+            {
+                MergeCube();
+            }
         }
+
+        #endregion
+
+        //last valid move transform
+        #region Respawn
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, scale) && hit_down.collider.gameObject.layer != respawnLayer)
+        {
+            lastValidPosition = cubeTransform.position;
+        }
+        #endregion
+
+        //call animations
+        #region Call Animations
+        //roll continous
+        if(inputVector.magnitude != 0f)
+        {
+            onRollContinous.Invoke();
+        }
+        //roll stop
         else
         {
-            //pressure plates
-            CheckAllPressurePlates();
-
-            //check if on magnetic cube
-            onMagneticCube = CheckIfOnMagneticCube();
-
-            //check that cube hasnt been completed
-            #region check completed cube
-            if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
-            {
-                //Debug.Log(Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position));
-
-                if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold)
-                {
-                    MergeCube();
-                }
-            }
-
-            #endregion
-
-            //last valid move transform
-            if(Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, scale) && hit_down.collider.gameObject.layer != respawnLayer)
-            {
-                lastValidPosition = cubeTransform.position;
-            }
-
-            //set isMoving to false
-            isMoving = false;
+            onRollStop.Invoke();
         }
+        #endregion
+
+        //set isMoving to false
+        isMoving = false;
 
         #endregion
     }
@@ -991,6 +1002,22 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
+        if(fallDistance < smallFall_Threshold * scale)
+        {
+            Debug.Log("Small: " + fallDistance);
+            onFall_small.Invoke();
+        }
+        else if(fallDistance < medFall_Threshold * scale)
+        {
+            Debug.Log("Med: " + fallDistance);
+            onFall_med.Invoke();
+        }
+        else
+        {
+            Debug.Log("Large: " + fallDistance);
+            onFall_large.Invoke();
+        }
+
         isFalling = false;
         isMoving = false;
     }
@@ -1135,6 +1162,8 @@ public class PlayerController : MonoBehaviour
     #region Teleport
     public void TeleportStart()
     {
+        teleportStart.Invoke();
+
         canMove = false;
 
         cubeDatas[cubes_index].SetMeshes(false);
@@ -1143,6 +1172,8 @@ public class PlayerController : MonoBehaviour
 
     public void TeleportEnd()
     {
+        teleportEnd.Invoke();
+
         canMove = true;
         isMoving = false;
         isFalling = false;
