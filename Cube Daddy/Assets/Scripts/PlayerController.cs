@@ -19,34 +19,15 @@ public class PlayerController : MonoBehaviour
     private InputAction move;
     private InputAction camera_Mouse;
     private InputAction camera_Gamepad;
-    [Space]
-    [SerializeField] public Vector2 inputVector;
-    [SerializeField] public Vector2 cameraVector_Mouse;
-    [SerializeField] public Vector2 cameraVector_Gamepad;
+    private Vector2 inputVector;
+    [HideInInspector] public Vector2 cameraVector_Mouse;
+    [HideInInspector] public Vector2 cameraVector_Gamepad;
 
-    [Space]
-    [Space]
-    [SerializeField] public MovementType movementType;
-
-    [Space]
-    [Space]
-    [Header("Player Components")]
-    [SerializeField] public Rigidbody rb;
-    [SerializeField] public SquashCubesScript squash;
-    [SerializeField] public TeleportScript teleport;
-
-
-    [Space]
-    [Space]
-    [Header("Tags")]
-    [SerializeField] public string tag_Environment;
-    [SerializeField] public string tag_MagneticEnvironment;
-    [SerializeField] public string tag_player;
-    [SerializeField] public string tag_currentPlayer;
-
-    [Space]
     [Space]
     [Header("Movement")]
+    [SerializeField] public MovementType movementType;
+    [SerializeField] public RollType rollType;
+    [Space]
     [SerializeField] public bool canMove;
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
@@ -56,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] CalculateRollTypeScript calculateRollTypeScript;
     [SerializeField] bool debugMovement;
-    [SerializeField] RollType rollType;
+    
     [Header("Rotation")]
     [SerializeField] float remainingAngle;
     [SerializeField] Vector3 rotationAnchor;
@@ -120,6 +101,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public int respawnLayer;
     [SerializeField] public Vector3 lastValidPosition;
     [SerializeField] public float respawnTime;
+
+    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public SquashCubesScript squash;
+    [HideInInspector] public TeleportScript teleport;
+
+    [Space]
+    [Header("Tags")]
+    [SerializeField] public string tag_Environment;
+    [SerializeField] public string tag_MagneticEnvironment;
+    [SerializeField] public string tag_player;
+    [SerializeField] public string tag_currentPlayer;
     #endregion
 
     //**********************************************************************************************************//
