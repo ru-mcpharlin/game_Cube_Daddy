@@ -5,7 +5,7 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     [SerializeField] PlayerController player;
-
+    [SerializeField] string testAnimation;
     [SerializeField] Animator animator;
     [SerializeField] public bool isAnimating;
     // Start is called before the first frame update
@@ -17,14 +17,14 @@ public class AnimationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.LeftControl) && !isAnimating)
+        if(Input.GetKeyDown(KeyCode.LeftControl) && !isAnimating && !player.isMoving)
         {
-            StartCoroutine(PlayAnimation("TestSquash"));
+            StartCoroutine(PlayAnimation_cannotMove(testAnimation));
         }
     }
 
 
-    public IEnumerator PlayAnimation(string animationTrigger)
+    public IEnumerator PlayAnimation_cannotMove(string animationTrigger)
     {
         isAnimating = true;
 
@@ -36,13 +36,15 @@ public class AnimationController : MonoBehaviour
 
         animator.SetTrigger(animationTrigger);
 
-        yield return new WaitForSeconds(1f);
+        while(isAnimating)
+        {
+            yield return new WaitForEndOfFrame();
+        }
 
         ParentPlayerCube(false);
 
-        isAnimating = false;
-
         player.canMove = true;
+
     }
 
 
@@ -62,5 +64,10 @@ public class AnimationController : MonoBehaviour
             player.cubeTransform.SetParent(null);
         }
 
+    }
+
+    public void FinishAnimation()
+    {
+        isAnimating = false;
     }
 }
