@@ -66,7 +66,6 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] float smallFall_Threshold;
     [SerializeField] float medFall_Threshold;
-    [SerializeField] float largeFall_Threshold;
 
     [Space]
     [Space]
@@ -686,17 +685,15 @@ public class PlayerController : MonoBehaviour
             //set falling to true
             isFalling = true;
         }
-        #endregion
 
-        //final checks to end movement
-        #region end movement
-        //if is falling do nothing
         while (isFalling)
         {
             yield return new WaitForEndOfFrame();
         }
+        #endregion
 
-        Debug.Log("Test");
+        //final checks to end movement
+        #region end movement
 
         //pressure plates
         CheckAllPressurePlates();
@@ -1003,6 +1000,22 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
+        if(fallDistance < smallFall_Threshold * scale)
+        {
+            Debug.Log("Small: " + fallDistance);
+            onFall_small.Invoke();
+        }
+        else if(fallDistance < medFall_Threshold * scale)
+        {
+            Debug.Log("Med: " + fallDistance);
+            onFall_med.Invoke();
+        }
+        else
+        {
+            Debug.Log("Large: " + fallDistance);
+            onFall_large.Invoke();
+        }
+
         isFalling = false;
         isMoving = false;
     }
