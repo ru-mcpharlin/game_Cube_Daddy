@@ -47,4 +47,15 @@ public class CubeData : MonoBehaviour
     {
         em.enabled = inputBool;
     }
+
+    public void StartTeleport_stuff()
+    {
+        completeMesh.SetActive(false);
+        transform.localScale = Vector3.one;
+    }
+
+    public void EndTeleport_stuff()
+    {
+        completeMesh.SetActive(true);
+    }
 }

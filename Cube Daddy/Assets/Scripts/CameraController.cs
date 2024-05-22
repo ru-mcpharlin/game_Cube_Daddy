@@ -1,6 +1,7 @@
 using Cinemachine;
 using JetBrains.Annotations;
 using Pixelplacement;
+using Pixelplacement.TweenSystem;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -54,6 +55,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] List<CinemachineVirtualCamera> camera3_cameras;
     [SerializeField] CinemachineVirtualCamera camera4_camera;
     [SerializeField] CinemachineVirtualCamera camera5_camera;
+    [SerializeField] CinemachineVirtualCamera camera6_camera;
+    [SerializeField] CinemachineVirtualCamera camera7_camera;
 
     [Header("Camera 3")]
     [SerializeField] public float camera3_mouseThreshold;
@@ -82,6 +85,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float yThreshold;
     [Space]
 
+    [Header("Camera 6")]
+    [SerializeField] public Transform camera6_follow;
+    [Space]
+    [SerializeField] public float CAM6_SPEED;
+    [SerializeField] public float CAM6_DISTANCE;
+
     [Header("Index")]
     [SerializeField] int camera1_index;
     [SerializeField] int camera3_index;
@@ -99,7 +108,9 @@ public class CameraController : MonoBehaviour
         camera2_DynamicIsometric_Locked,
         camera3_DynamicIsometric_Unlocked,
         camera4_PerspectiveMatchCut,
-        camera5_DynamicPerspective
+        camera5_DynamicPerspective_Limited,
+        camera6_DynamicPerspective_Free,
+        camera7_BlackHole
     }
 
     public void SetCameraState(CameraState inputState)
@@ -140,18 +151,51 @@ public class CameraController : MonoBehaviour
                     camera4_camera = vc;
                     break;
 
-                case CameraState.camera5_DynamicPerspective:
+                case CameraState.camera5_DynamicPerspective_Limited:
                     camera5_camera = vc;
                     _5orbitalTransposer = camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    break;
+
+                case CameraState.camera6_DynamicPerspective_Free:
+                    camera6_camera = vc;
                     break;
             }
         }
 
-        TurnCamera1On();
-
         //Shadows
         URP_Asset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
         URP_Asset.shadowDistance = SHADOW_DISTANCE;
+
+        switch (cameraState)
+        {
+            case CameraState.camera1_StaticIsometric:
+                TurnCamera1On();
+
+                break;
+
+            case CameraState.camera2_DynamicIsometric_Locked:
+                TurnCamera2On();
+                break;
+
+            case CameraState.camera3_DynamicIsometric_Unlocked:
+                TurnCamera3On();
+                break;
+
+            case CameraState.camera4_PerspectiveMatchCut:
+                TurnCamera4On();
+                break;
+
+            case CameraState.camera5_DynamicPerspective_Limited:
+                TurnCamera5On();
+                break;
+
+            case CameraState.camera6_DynamicPerspective_Free:
+                TurnCamera6On();
+                break;
+
+            case CameraState.camera7_BlackHole:
+                break;
+        }
     }
 
     private void Start()
@@ -180,11 +224,15 @@ public class CameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            StartCoroutine(TurnCamera4On());
+            TurnCamera4On();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            StartCoroutine(TurnCamera5On());
+            TurnCamera5On();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            TurnCamera6On();
         }
 
 
@@ -297,8 +345,11 @@ public class CameraController : MonoBehaviour
 
         #endregion
 
+        yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
+        yValue = Mathf.Clamp(yValue, -1, 1);
+
         #region Camera 5 Control
-        if (cameraState == CameraState.camera5_DynamicPerspective)
+        if (cameraState == CameraState.camera5_DynamicPerspective_Limited)
         {
             //x axis
             _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
@@ -306,18 +357,28 @@ public class CameraController : MonoBehaviour
             //y axis
             if (Mathf.Abs(player.cameraVector_Mouse.y) >= _camera5MouseThreshold || Mathf.Abs(player.cameraVector_Gamepad.y) >= _camera5GamepadThreshold)
             {
-                yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
-                yValue = Mathf.Clamp(yValue, -1, 1);
                 _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
                 _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
             }
+        }
 
+        #region camera 6 Control
+        else if(cameraState == CameraState.camera6_DynamicPerspective_Free)
+        {
+
+            camera6_follow.RotateAround(player.cubeTransform.position, Vector3.right, yValue * Time.deltaTime * CAM6_SPEED);
+
+
+            /*transform.RotateAround(focalObject.transform.position, Vector3.up, hRotation * Time.deltaTime);
+            transform.RotateAround(focalObject.transform.position, transform.right, vRotation * Time.deltaTime);*/
         }
 
         #endregion
 
+        #endregion
+
         #region transition
-        if(_transitioning)
+        if (_transitioning)
         {
             ScaleCamera();
         }
@@ -378,18 +439,32 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Turn Cameras On
-    public IEnumerator TurnCamera5On()
-    {
-        TurnOffAllCameras();
-        SetCameraState(CameraState.camera5_DynamicPerspective);
-        camera5_camera.Priority = CAMERA_ON;
-        player.vc_transform = camera5_camera.transform;
 
-        yield return null;
+    public void TurnCamera6On()
+    {
+
+        TurnOffAllCameras();
+        SetCameraState(CameraState.camera6_DynamicPerspective_Free);
+        camera6_camera.Priority = CAMERA_ON;
+        player.vc_transform = camera6_camera.transform;
+
+        mainCamera.orthographic = false;
     }
 
+    public void TurnCamera5On()
+    {
+        TurnOffAllCameras();
+        SetCameraState(CameraState.camera5_DynamicPerspective_Limited);
+        camera5_camera.Priority = CAMERA_ON;
+        player.vc_transform = camera5_camera.transform;
+    }
 
-    public IEnumerator TurnCamera4On()
+    public void TurnCamera4On()
+    {
+        TurnCamera4On_Coroutine();
+    }
+
+    public IEnumerator TurnCamera4On_Coroutine()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera4_PerspectiveMatchCut);
@@ -405,7 +480,7 @@ public class CameraController : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
-        StartCoroutine(TurnCamera5On());
+        TurnCamera5On();
     }
 
     public void TurnCamera3On()
@@ -502,6 +577,9 @@ public class CameraController : MonoBehaviour
         camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset.z = Mathf.Lerp(PERSPECTIVE_CAMERA_DISTANCE_SCALE * currentScale, PERSPECTIVE_CAMERA_DISTANCE_SCALE * nextScale, t);
         _minHeightClamp = Mathf.Lerp(MIN_HEIGHT * currentScale, MIN_HEIGHT * nextScale, t);
         _maxHeightClamp = Mathf.Lerp(MAX_HEIGHT * currentScale, MAX_HEIGHT * nextScale, t);
+
+        //camera 6
+        
 
         //TIMER
         timer += Time.deltaTime;

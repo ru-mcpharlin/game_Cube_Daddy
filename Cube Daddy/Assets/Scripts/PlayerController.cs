@@ -80,20 +80,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] UnityEvent onFall_med;
     [SerializeField] UnityEvent onFall_large;
     [Space]
-    [SerializeField] UnityEvent teleportStart;
-    [SerializeField] UnityEvent teleportEnd;
+    [SerializeField] UnityEvent event_teleportStart;
+    [SerializeField] UnityEvent event_teleportEnd;
 
     [Space]
     [Space]
     [Header("Teleport")]
-    [SerializeField] float teleportLength;
+    [SerializeField] float teleportDuration;
     [SerializeField] float teleportDelay;
 
 
     [Space]
     [Space]
     [Header("CUBE VARIABLES")]
-    [SerializeField] CubeData[] cubeDatas;
+    [SerializeField] public CubeData[] cubeDatas;
     [Header("Current Cube")]
     [SerializeField] public float currentScale;
     [SerializeField] public Transform cubeTransform;
@@ -116,6 +116,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public SquashCubesScript squash;
     [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
     [HideInInspector] PressurePlate[] pressurePlates;
+    [SerializeField] public AnimationController animationController;
 
     [Space]
     [Header("Tags")]
@@ -206,6 +207,17 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
+
+        //animation controller
+        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
+
+        //set scale
+        currentScale = cubeDatas[cubes_index].scale;
+    }
+
+    private void Start()
+    {
+        SetCurrentCube();
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -304,7 +316,7 @@ public class PlayerController : MonoBehaviour
 
         //figure out roll type
         rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, currentScale);
-        if(debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
+        if (debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
 
         //is moving = true
         isMoving = true;
@@ -548,17 +560,17 @@ public class PlayerController : MonoBehaviour
 
         //find roll axis
         //LEFT
-        if (rollType == RollType.climb_Left || 
+        if (rollType == RollType.climb_Left ||
             rollType == RollType.step_Left ||
             rollType == RollType.bonk_climbLeft_flat)
         {
             rotationAxis = Vector3.up;
         }
-        else if(rollType == RollType.bonk_climbLeft_head)
+        else if (rollType == RollType.bonk_climbLeft_head)
         {
             rotationAxis = Vector3.down;
         }
-        else if(rollType == RollType.bonk_stepLeft1 ||
+        else if (rollType == RollType.bonk_stepLeft1 ||
                 rollType == RollType.bonk_stepLeft2 ||
                 rollType == RollType.bonk_stepLeft3)
         {
@@ -566,17 +578,17 @@ public class PlayerController : MonoBehaviour
         }
 
         //RIGHT
-        else if (rollType == RollType.climb_Right || 
+        else if (rollType == RollType.climb_Right ||
                  rollType == RollType.step_Right ||
                  rollType == RollType.bonk_climbRight_flat)
         {
             rotationAxis = Vector3.down;
         }
-        else if(rollType == RollType.bonk_climbRight_head)
+        else if (rollType == RollType.bonk_climbRight_head)
         {
             rotationAxis = Vector3.up;
         }
-        else if(rollType == RollType.bonk_stepRight1 ||
+        else if (rollType == RollType.bonk_stepRight1 ||
                 rollType == RollType.bonk_stepRight2 ||
                 rollType == RollType.bonk_stepRight3)
         {
@@ -675,6 +687,8 @@ public class PlayerController : MonoBehaviour
         //if there is nothing below at the end of a move
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, currentScale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
+            canMove = false;
+
             //draw a debug ray down
             //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
@@ -693,9 +707,26 @@ public class PlayerController : MonoBehaviour
             //set falling to true
             isFalling = true;
         }
+        else
+        {
+            //call animations
+            #region Call Animations
+            //roll continous
+            if (inputVector.magnitude != 0f)
+            {
+                onRollContinous.Invoke();
+            }
+            //roll stop
+            else
+            {
+                onRollStop.Invoke();
+            }
+            #endregion
+        }
 
         while (isFalling)
         {
+            Debug.Log("Falling");
             yield return new WaitForEndOfFrame();
         }
         #endregion
@@ -711,12 +742,12 @@ public class PlayerController : MonoBehaviour
 
         //check that cube hasnt been completed
         #region check completed cube
-        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count()-1) 
+        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count() - 1)
         {
-            //Debug.Log(Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position));
-
-            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold)
+            //if the distance between the current cube and the next cubes missing transform is less than or equal to the merge distance threshold
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale)
             {
+                //merge cube
                 MergeCube();
             }
         }
@@ -731,29 +762,21 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
-        //call animations
-        #region Call Animations
-        //roll continous
-        if (!isTeleporting && !isFallingToDeath)
-        {
-            if (inputVector.magnitude != 0f)
-            {
-                onRollContinous.Invoke();
-            }
-            //roll stop
-            else
-            {
-                onRollStop.Invoke();
-            }
-        }
-        #endregion
-
+        Debug.Log("End movement");
         //set isMoving to false
-        isMoving = false;
+        EndRoll();
 
         #endregion
     }
-    
+
+    private void EndRoll()
+    {
+        isMoving = false;
+        isFalling = false;
+        isTeleporting = false;
+        isFallingToDeath = false;
+    }
+
 
     //**********************************************************************************************************//
     //methods that assist the roll coroutine
@@ -1011,6 +1034,8 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
+        isFalling = false;
+
         if (!isFallingToDeath)
         {
             if (fallDistance < smallFall_Threshold * currentScale)
@@ -1029,9 +1054,10 @@ public class PlayerController : MonoBehaviour
                 onFall_large.Invoke();
             }
         }
-
-        isFalling = false;
-        isMoving = false;
+        else
+        {
+            StartCoroutine(Teleport(lastValidPosition, teleportDuration, teleportDelay));
+        }
     }
     #endregion
 
@@ -1158,6 +1184,9 @@ public class PlayerController : MonoBehaviour
         //merge events
         cubeDatas[cubes_index + 1].mergeEvents.Invoke();
 
+        //animation
+        animationController = cubeDatas[cubes_index + 1].GetComponentInChildren<AnimationController>();
+
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
         {
@@ -1168,12 +1197,89 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
+    private void SetCurrentCube()
+    {
+        //set movement off
+        canMove = false;
+
+        //turn on squashable cubes
+        squash.MakeCubesSquashable(cubes_index);
+
+        //set cube transform to large cube transform
+        cubeTransform = cubeDatas[cubes_index].transform;
+
+        //set scale
+        currentScale = cubeDatas[cubes_index].scale;
+
+        //set active = false incomplete meshes
+        cubeDatas[cubes_index].incompleteMesh.SetActive(false);
+
+        //set active = true complete meshes
+        cubeDatas[cubes_index].completeMesh.SetActive(true);
+
+        //set next current cube in cube data
+        cubeDatas[cubes_index].isCurrentCube = true;
+
+        //update camera size
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index].scale));
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+
+        //animation
+        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
+
+        //set can move
+        canMove = true;
+    }
+
+
     #endregion
 
     //**********************************************************************************************************//
     #region Teleport
+    public void Teleport_Method(Vector3 teleportPos, float duration, float delay)
+    {
+        StartCoroutine(Teleport(teleportPos, duration, delay));
+    }
 
 
+
+    public IEnumerator Teleport(Vector3 teleportPos, float duration, float delay)
+    {
+        isFallingToDeath = false;
+        cubeTransform.GetComponent<CubeData>().SetTeleportParticleSystem(true);
+        event_teleportStart.Invoke();
+        Tween.Position(cubeTransform, teleportPos, duration, delay, Tween.EaseInOut, Tween.LoopType.None, TeleportStartTween, TeleportEndTween);
+        yield return new WaitForEndOfFrame();
+    }
+
+    public void TeleportStartTween()
+    {
+        
+    }
+
+    public void TeleportEndTween()
+    {
+        cubeTransform.GetComponent<CubeData>().SetTeleportParticleSystem(false);
+        event_teleportEnd.Invoke();
+    }
+
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region Animation
+
+    public void PlayAnimation_CannotMove(string animationTrigger)
+    {
+        animationController.PlayAnimation_cannotMove_Method(animationTrigger);
+    }
+
+    public void PlayAnimation_CanMove(string animationTrigger)
+    {
+        animationController.PlayAnimation_canMove_Method(animationTrigger);
+    }
 
 
     #endregion
