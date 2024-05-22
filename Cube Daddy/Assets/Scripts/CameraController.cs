@@ -14,6 +14,18 @@ public class CameraController : MonoBehaviour
 {
     ////***********************************************//
     #region Variables
+    [Header("Player Input")]
+    [Space]
+    [SerializeField] public float yValue;
+    [SerializeField] public float ySpeed;
+    [SerializeField] public float yThreshold_mouse;
+    [SerializeField] public float yThreshold_gamepad;
+    [Space]
+    [SerializeField] public float xValue;
+    [SerializeField] public float xSpeed;
+    [SerializeField] public float xThreshold_mouse;
+    [SerializeField] public float xThreshold_gamepad;
+
     [Header("Components")]
     [SerializeField] PlayerController player;
     [SerializeField] CinemachineBrain brain;
@@ -66,7 +78,6 @@ public class CameraController : MonoBehaviour
 
     [Header("Camera 5")]
     [SerializeField] public CinemachineOrbitalTransposer _5orbitalTransposer;
-    [SerializeField] public Vector2 inputDelta;
     [Space]
     [SerializeField] public float MIN_HEIGHT;
     [SerializeField] public float MAX_HEIGHT;
@@ -74,21 +85,17 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float _minHeightClamp;
     [SerializeField] public float _maxHeightClamp;
     [Space]
-    [SerializeField] public float gamepadSpeed;
-    [SerializeField] public float mouseSpeed;
-    [Space]
-    [SerializeField] public float _camera5MouseThreshold;
-    [SerializeField] public float _camera5GamepadThreshold;
-    [Space]
-    [SerializeField] public float yValue;
-    [SerializeField] public float ySpeed;
-    [SerializeField] public float yThreshold;
+    [SerializeField] public float _cam5_gamepadSpeed;
+    [SerializeField] public float _cam5_mouseSpeed;
+
     [Space]
 
     [Header("Camera 6")]
+    [SerializeField] public Transform camera6_target;
     [SerializeField] public Transform camera6_follow;
     [Space]
-    [SerializeField] public float CAM6_SPEED;
+    [SerializeField] public float CAM6_SPEED_GAMEPAD;
+    [SerializeField] public float CAM6_SPEED_MOUSE;
     [SerializeField] public float CAM6_DISTANCE;
 
     [Header("Index")]
@@ -209,7 +216,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         #region Debug
-        
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             TurnCamera1On();
@@ -238,9 +245,9 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Comma))
         {
-            if(cameraState == CameraState.camera1_StaticIsometric)
+            if (cameraState == CameraState.camera1_StaticIsometric)
             {
-                if(camera1_index == 0)
+                if (camera1_index == 0)
                 {
                     camera1_index = camera1_cameras.Count - 1;
                     TurnCamera1On();
@@ -256,7 +263,7 @@ public class CameraController : MonoBehaviour
             {
                 if (camera3_index == 0)
                 {
-                    camera3_index = camera3_cameras.Count-1;
+                    camera3_index = camera3_cameras.Count - 1;
                     TurnCamera3On();
                 }
                 else
@@ -267,11 +274,11 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Period))
+        if (Input.GetKeyDown(KeyCode.Period))
         {
             if (cameraState == CameraState.camera1_StaticIsometric)
             {
-                if (camera1_index == camera1_cameras.Count-1)
+                if (camera1_index == camera1_cameras.Count - 1)
                 {
                     camera1_index = 0;
                     TurnCamera1On();
@@ -285,7 +292,7 @@ public class CameraController : MonoBehaviour
 
             if (cameraState == CameraState.camera3_DynamicIsometric_Unlocked)
             {
-                if (camera3_index == camera3_cameras.Count-1)
+                if (camera3_index == camera3_cameras.Count - 1)
                 {
                     camera3_index = 0;
                     TurnCamera3On();
@@ -309,11 +316,35 @@ public class CameraController : MonoBehaviour
             isBlending = false;
         }
 
-        if(coolDownTimer >= 0)
+        if (coolDownTimer >= 0)
         {
             coolDownTimer -= Time.deltaTime;
         }
         #endregion
+
+        #region Player Input
+        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
+        {
+            yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
+            yValue = Mathf.Clamp(yValue, -1, 1);
+        }
+        else
+        {
+            yValue = 0;
+        }
+
+        if (Mathf.Abs(player.cameraVector_Mouse.x) >= xThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.x) >= xThreshold_gamepad)
+        { 
+            xValue = player.cameraVector_Mouse.x + player.cameraVector_Gamepad.x;
+            xValue = Mathf.Clamp(xValue, -1, 1);
+        }
+        else
+        {
+            xValue = 0;
+        }
+
+        #endregion
+
 
         #region Camera 3 Control
         if (cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
@@ -343,19 +374,17 @@ public class CameraController : MonoBehaviour
         }
 
 
-        #endregion
+        #endregion       
 
-        yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
-        yValue = Mathf.Clamp(yValue, -1, 1);
 
         #region Camera 5 Control
         if (cameraState == CameraState.camera5_DynamicPerspective_Limited)
         {
             //x axis
-            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
+            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * _cam5_mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * _cam5_gamepadSpeed * Time.deltaTime;
 
             //y axis
-            if (Mathf.Abs(player.cameraVector_Mouse.y) >= _camera5MouseThreshold || Mathf.Abs(player.cameraVector_Gamepad.y) >= _camera5GamepadThreshold)
+            if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
             {
                 _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
                 _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
@@ -365,12 +394,22 @@ public class CameraController : MonoBehaviour
         #region camera 6 Control
         else if(cameraState == CameraState.camera6_DynamicPerspective_Free)
         {
+            if (player.cameraVector_Gamepad.normalized.magnitude > player.cameraVector_Mouse.normalized.magnitude)
+            {
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_GAMEPAD);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, -xValue * Time.deltaTime * CAM6_SPEED_GAMEPAD);
+            }
+            else
+            {
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_MOUSE);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, xValue * Time.deltaTime * CAM6_SPEED_MOUSE);
+            }
 
-            camera6_follow.RotateAround(player.cubeTransform.position, Vector3.right, yValue * Time.deltaTime * CAM6_SPEED);
-
-
-            /*transform.RotateAround(focalObject.transform.position, Vector3.up, hRotation * Time.deltaTime);
-            transform.RotateAround(focalObject.transform.position, transform.right, vRotation * Time.deltaTime);*/
+            if(Vector3.Distance(camera6_target.position, player.cubeTransform.position) >= CAM6_DISTANCE)
+            {
+                camera6_follow.position = Vector3.Lerp(camera6_follow.position, player.cubeTransform.position, Time.deltaTime);
+            }
+            camera6_follow.position = Vector3.Lerp(camera6_follow.position, camera6_target.position, 1f * Time.deltaTime);
         }
 
         #endregion
