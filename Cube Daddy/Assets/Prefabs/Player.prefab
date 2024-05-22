@@ -243,9 +243,9 @@ MonoBehaviour:
   onRollContinous:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CanMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -258,9 +258,9 @@ MonoBehaviour:
   onRollStop:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CanMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -273,9 +273,9 @@ MonoBehaviour:
   onFall_small:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CannotMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -288,9 +288,9 @@ MonoBehaviour:
   onFall_med:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CannotMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -303,9 +303,9 @@ MonoBehaviour:
   onFall_large:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CannotMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -315,12 +315,12 @@ MonoBehaviour:
           m_StringArgument: LandLarge
           m_BoolArgument: 0
         m_CallState: 2
-  teleportStart:
+  event_teleportStart:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CannotMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -330,12 +330,12 @@ MonoBehaviour:
           m_StringArgument: TeleportStart
           m_BoolArgument: 0
         m_CallState: 2
-  teleportEnd:
+  event_teleportEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AnimationController, Assembly-CSharp
-        m_MethodName: PlayAnimation_cannotMove_Method
+      - m_Target: {fileID: 1841606953749839822}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: PlayAnimation_CannotMove
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -345,10 +345,10 @@ MonoBehaviour:
           m_StringArgument: TeleportEnd
           m_BoolArgument: 0
         m_CallState: 2
-  teleportDuration: 0
-  teleportDelay: 0
+  teleportDuration: 1
+  teleportDelay: 0.45
   cubeDatas: []
-  currentScale: 0
+  currentScale: 1
   cubeTransform: {fileID: 0}
   mergeDistanceThreshold: 0.1
   cubes_index: 0
@@ -359,6 +359,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   squash: {fileID: 0}
   calculateRollTypeScript: {fileID: 0}
+  animationController: {fileID: 0}
   tag_Environment: Environment
   tag_MagneticEnvironment: Magnetic Environment
   tag_player: Player

@@ -5,8 +5,6 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     [SerializeField] PlayerController player;
-    [SerializeField] string testAnimation_cannotMove;
-    [SerializeField] string testAnimation_canMove;
     [SerializeField] Animator animator;
     [SerializeField] public bool isAnimating;
     // Start is called before the first frame update
@@ -18,15 +16,6 @@ public class AnimationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.LeftControl) && !isAnimating && !player.isMoving)
-        {
-            StartCoroutine(PlayAnimation_cannotMove_Coroutine(testAnimation_cannotMove));
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightControl) && !isAnimating)
-        {
-            StartCoroutine(PlayAnimation_canMove_Coroutine(testAnimation_canMove));
-        }
     }
 
 
@@ -47,7 +36,7 @@ public class AnimationController : MonoBehaviour
         player.canMove = false;
 
         SetPositionAtBase();
-
+        
         ParentPlayerCube(true);
 
         animator.SetTrigger(animationTrigger);
@@ -64,6 +53,8 @@ public class AnimationController : MonoBehaviour
         Debug.Log("Animation " + animationTrigger + " has ended");
     }
 
+    //CAN MOVE
+    #region Can Move
     public void PlayAnimation_canMove_Method(string animationTrigger)
     {
         if (!isAnimating)
@@ -76,7 +67,7 @@ public class AnimationController : MonoBehaviour
     {
         isAnimating = true;
 
-        SetPositionAtBase();
+        SetPositionAtCenter();
 
         ParentPlayerCube(true);
 
@@ -84,13 +75,13 @@ public class AnimationController : MonoBehaviour
 
         while (isAnimating)
         {
-            SetPositionAtBase();
+            SetPositionAtCenter();
             yield return new WaitForEndOfFrame();
         }
 
         ParentPlayerCube(false);
     }
-
+    #endregion
 
     public void SetPositionAtBase()
     {
@@ -106,11 +97,11 @@ public class AnimationController : MonoBehaviour
     {
         if(inputBool)
         {
-            player.cubeTransform.SetParent(transform);
+            player.cubeDatas[player.cubes_index].completeMesh.transform.SetParent(transform);
         }
         else
         {
-            player.cubeTransform.SetParent(null);
+            player.cubeDatas[player.cubes_index].completeMesh.transform.SetParent(player.cubeDatas[player.cubes_index].transform);
         }
     }
 

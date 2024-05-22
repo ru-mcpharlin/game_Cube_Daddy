@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
     [Space]
     [Space]
     [Header("CUBE VARIABLES")]
-    [SerializeField] CubeData[] cubeDatas;
+    [SerializeField] public CubeData[] cubeDatas;
     [Header("Current Cube")]
     [SerializeField] public float currentScale;
     [SerializeField] public Transform cubeTransform;
@@ -116,6 +116,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public SquashCubesScript squash;
     [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
     [HideInInspector] PressurePlate[] pressurePlates;
+    [SerializeField] public AnimationController animationController;
 
     [Space]
     [Header("Tags")]
@@ -206,6 +207,12 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
+
+        //animation controller
+        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
+
+        //set scale
+        currentScale = cubeDatas[cubes_index].scale;
     }
 
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
@@ -675,6 +682,8 @@ public class PlayerController : MonoBehaviour
         //if there is nothing below at the end of a move
         if (!Physics.Raycast(cubeTransform.position, Vector3.down, currentScale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
         {
+            canMove = false;
+
             //draw a debug ray down
             //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
 
@@ -693,10 +702,26 @@ public class PlayerController : MonoBehaviour
             //set falling to true
             isFalling = true;
         }
+        else
+        {
+            //call animations
+            #region Call Animations
+            //roll continous
+            if (inputVector.magnitude != 0f)
+            {
+                onRollContinous.Invoke();
+            }
+            //roll stop
+            else
+            {
+                onRollStop.Invoke();
+            }
+            #endregion
+        }
 
         while (isFalling)
         {
-            //Debug.Log("Falling");
+            Debug.Log("Falling");
             yield return new WaitForEndOfFrame();
         }
         #endregion
@@ -729,24 +754,6 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, currentScale) && hit_down.collider.gameObject.layer != respawnLayer)
         {
             lastValidPosition = cubeTransform.position;
-        }
-        #endregion
-
-        //call animations
-        #region Call Animations
-        //roll continous
-        if (!isTeleporting && !isFallingToDeath)
-        {
-
-            if (inputVector.magnitude != 0f)
-            {
-                //onRollContinous.Invoke();
-            }
-            //roll stop
-            else
-            {
-                onRollStop.Invoke();
-            }
         }
         #endregion
 
@@ -1022,6 +1029,8 @@ public class PlayerController : MonoBehaviour
 
     public void HandleEndFallTween()
     {
+        isFalling = false;
+
         if (!isFallingToDeath)
         {
             if (fallDistance < smallFall_Threshold * currentScale)
@@ -1170,6 +1179,9 @@ public class PlayerController : MonoBehaviour
         //merge events
         cubeDatas[cubes_index + 1].mergeEvents.Invoke();
 
+        //animation
+        animationController = cubeDatas[cubes_index + 1].GetComponentInChildren<AnimationController>();
+
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
         {
@@ -1203,6 +1215,22 @@ public class PlayerController : MonoBehaviour
     {
         cubeTransform.GetComponent<CubeData>().SetTeleportParticleSystem(false);
         event_teleportEnd.Invoke();
+    }
+
+
+    #endregion
+
+    //**********************************************************************************************************//
+    #region Animation
+
+    public void PlayAnimation_CannotMove(string animationTrigger)
+    {
+        animationController.PlayAnimation_cannotMove_Method(animationTrigger);
+    }
+
+    public void PlayAnimation_CanMove(string animationTrigger)
+    {
+        animationController.PlayAnimation_canMove_Method(animationTrigger);
     }
 
 
