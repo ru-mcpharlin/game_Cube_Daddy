@@ -215,6 +215,11 @@ public class PlayerController : MonoBehaviour
         currentScale = cubeDatas[cubes_index].scale;
     }
 
+    private void Start()
+    {
+        SetCurrentCube();
+    }
+
     public void SortCubeDatasByScale(CubeData[] cubeDatas)
     {
         // Create a list to hold the cube datas
@@ -1192,10 +1197,53 @@ public class PlayerController : MonoBehaviour
         canMove = true;
     }
 
+    private void SetCurrentCube()
+    {
+        //set movement off
+        canMove = false;
+
+        //turn on squashable cubes
+        squash.MakeCubesSquashable(cubes_index);
+
+        //set cube transform to large cube transform
+        cubeTransform = cubeDatas[cubes_index].transform;
+
+        //set scale
+        currentScale = cubeDatas[cubes_index].scale;
+
+        //set active = false incomplete meshes
+        cubeDatas[cubes_index].incompleteMesh.SetActive(false);
+
+        //set active = true complete meshes
+        cubeDatas[cubes_index].completeMesh.SetActive(true);
+
+        //set next current cube in cube data
+        cubeDatas[cubes_index].isCurrentCube = true;
+
+        //update camera size
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index].scale));
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
+
+        //animation
+        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
+
+        //set can move
+        canMove = true;
+    }
+
+
     #endregion
 
     //**********************************************************************************************************//
     #region Teleport
+    public void Teleport_Method(Vector3 teleportPos, float duration, float delay)
+    {
+        StartCoroutine(Teleport(teleportPos, duration, delay));
+    }
+
+
 
     public IEnumerator Teleport(Vector3 teleportPos, float duration, float delay)
     {
