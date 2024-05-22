@@ -58,7 +58,7 @@ Material:
     - _sandTiling: -0.64
     - _speed: 0.15
     - _tiling: 0.01
-    - _windDensity: 0.2
+    - _windDensity: 0.17
     - _windSpeed: 2.24
     - _windVisibilty: 4.71
     m_Colors: []

@@ -64,6 +64,6 @@ Material:
     - _smoothness: 1
     m_Colors:
     - _color1: {r: 1, g: 0.7783101, b: 0.5411765, a: 0}
-    - _color2: {r: 0.9056604, g: 0.2007832, b: 0.42723775, a: 0}
+    - _color2: {r: 0.9339623, g: 0.36609778, b: 0.3039783, a: 0}
     - _fadeDistance: {r: 20, g: 40, b: 0, a: 0}
   m_BuildTextureStacks: []
