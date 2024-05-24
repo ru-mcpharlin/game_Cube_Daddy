@@ -1145,22 +1145,23 @@ public class PlayerController : MonoBehaviour
     #region Fly Movement
     public void FlyMovement()
     {
+        //set the space variables, should not be done here
         if(rb.isKinematic)
         {
             rb.isKinematic = false;
             cubeDatas[cubes_index].SetTeleportParticleSystem(true);
         }
 
+        //if there is input
+        if(inputVector.magnitude > 0)
+        {
+            Vector3 force = vc_transform.right * inputVector.x + vc_transform.forward * inputVector.y;
+            force *= currentScale * FORCE_MODIFIER;
 
-        Vector3 force = vc_transform.right * inputVector.x + vc_transform.forward * inputVector.y;
-        force *= currentScale * FORCE_MODIFIER * Time.deltaTime;
-
-        rb.AddForce(force, ForceMode.Force);
-
-
-        cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, vc_transform.rotation, ROTATION_SPEED * Time.deltaTime * force.normalized.magnitude);
-
-
+            rb.AddForce(force, ForceMode.Force);
+        }
+        
+        //cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED * Time.deltaTime * rb.velocity.normalized.magnitude);
     }
 
     #endregion

@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class CameraController : MonoBehaviour
 {
@@ -91,12 +92,22 @@ public class CameraController : MonoBehaviour
     [Space]
 
     [Header("Camera 6")]
-    [SerializeField] public Transform camera6_target;
     [SerializeField] public Transform camera6_follow;
+    [Space]
+    [SerializeField] public Vector3 camera6_pos;
+    [SerializeField] public Vector3 currentVelocity;
+    [SerializeField] public float smoothDampTime;
+
+    [Space]
+    [SerializeField] float CAM6_HEIGHTCLAMP_MAX;
+    [SerializeField] float CAM6_HEIGHTCLAMP_MIN;
     [Space]
     [SerializeField] public float CAM6_SPEED_GAMEPAD;
     [SerializeField] public float CAM6_SPEED_MOUSE;
     [SerializeField] public float CAM6_DISTANCE;
+    [Space]
+    [SerializeField] float CAM6_XSENSITIVITY;
+    [SerializeField] float CAM6_YSENSITIVITY;
 
     [Header("Index")]
     [SerializeField] int camera1_index;
@@ -391,28 +402,58 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        #endregion
+
         #region camera 6 Control
-        else if(cameraState == CameraState.camera6_DynamicPerspective_Free)
+        else if (cameraState == CameraState.camera6_DynamicPerspective_Free)
         {
-            if (player.cameraVector_Gamepad.normalized.magnitude > player.cameraVector_Mouse.normalized.magnitude)
+            camera6_pos = new Vector3(camera6_pos.x + xValue * CAM6_XSENSITIVITY * Time.deltaTime * player.currentScale, 
+                                      camera6_pos.y + yValue * CAM6_YSENSITIVITY + Time.deltaTime * player.currentScale, 0);
+
+            camera6_pos.y = Mathf.Clamp(camera6_pos.y, CAM6_HEIGHTCLAMP_MIN, CAM6_HEIGHTCLAMP_MAX);
+
+            Quaternion rotatation = Quaternion.Euler(camera6_pos.y, camera6_pos.x , 0);
+
+            Vector3 desiredPos = player.cubeTransform.position - (rotatation * Vector3.forward * CAM6_DISTANCE * player.currentScale);
+
+            camera6_follow.position = Vector3.SmoothDamp(camera6_follow.position, desiredPos, ref currentVelocity, smoothDampTime);
+
+
+            /*if (player.cameraVector_Gamepad.normalized.magnitude > player.cameraVector_Mouse.normalized.magnitude)
             {
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_GAMEPAD);
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, -xValue * Time.deltaTime * CAM6_SPEED_GAMEPAD);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, -xValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
             }
             else
             {
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_MOUSE);
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, xValue * Time.deltaTime * CAM6_SPEED_MOUSE);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, xValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
             }
 
             if(Vector3.Distance(camera6_target.position, player.cubeTransform.position) >= CAM6_DISTANCE)
             {
-                camera6_follow.position = Vector3.Lerp(camera6_follow.position, player.cubeTransform.position, Time.deltaTime);
+                camera6_follow.position = Vector3.Lerp(camera6_follow.position, player.cubeTransform.position, Time.deltaTime * player.currentScale);
             }
-            camera6_follow.position = Vector3.Lerp(camera6_follow.position, camera6_target.position, 1f * Time.deltaTime);
-        }
+            camera6_follow.position = Vector3.Lerp(camera6_follow.position, camera6_target.position, 1f * Time.deltaTime * player.currentScale);*/
 
-        #endregion
+            /*// Update the input values
+            xValue += Input.GetAxis("Horizontal") * sensitivity * Time.deltaTime;
+            yValue += Input.GetAxis("Vertical") * sensitivity * Time.deltaTime;
+
+            // Clamp the yValue to avoid flipping the camera upside down
+            yValue = Mathf.Clamp(yValue, -85f, 85f);
+
+            // Calculate the new position and rotation
+            Quaternion rotation = Quaternion.Euler(yValue, xValue, 0);
+            Vector3 desiredPosition = player.position - (rotation * Vector3.forward * distance);
+
+            // Smoothly transition to the new position
+            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, smoothSpeed);
+
+            // Apply the position and rotation to the camera
+            transform.position = smoothedPosition;
+            transform.LookAt(player.position);*/
+        }
 
         #endregion
 
