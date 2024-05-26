@@ -163,45 +163,45 @@ MonoBehaviour:
   - m_Vertices: 0b0000000e00000012000000
   m_SharedTextures: []
   m_Positions:
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   m_Textures0:
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
   - {x: -0.5, y: 0.5}
@@ -248,11 +248,19 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 17
+  m_VersionIndex: 98
   m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
+  m_SelectedFaces: 05000000
+  m_SelectedEdges:
+  - a: 20
+    b: 21
+  - a: 22
+    b: 20
+  - a: 21
+    b: 23
+  - a: 23
+    b: 22
+  m_SelectedVertices: 14000000150000001600000017000000
 --- !u!114 &3835124359039692284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,45 +516,45 @@ MonoBehaviour:
   - m_Vertices: 0b0000000e00000012000000
   m_SharedTextures: []
   m_Positions:
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   m_Textures0:
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
   - {x: -0.5, y: 0.5}
@@ -593,11 +601,19 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 17
+  m_VersionIndex: 98
   m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
+  m_SelectedFaces: 05000000
+  m_SelectedEdges:
+  - a: 20
+    b: 21
+  - a: 22
+    b: 20
+  - a: 21
+    b: 23
+  - a: 23
+    b: 22
+  m_SelectedVertices: 14000000150000001600000017000000
 --- !u!114 &3835124360475255196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -700,7 +716,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3835124360744002438}
   - component: {fileID: 3835124360744002439}
-  m_Layer: 22
+  m_Layer: 0
   m_Name: Forming Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -798,7 +814,7 @@ GameObject:
   - component: {fileID: 3835124360768069028}
   - component: {fileID: 3835124360768069029}
   - component: {fileID: 3835124360768069030}
-  - component: {fileID: 3835124360768069031}
+  - component: {fileID: 867897570560792461}
   m_Layer: 22
   m_Name: Segment
   m_TagString: Untagged
@@ -948,45 +964,45 @@ MonoBehaviour:
   - m_Vertices: 0b0000000e00000012000000
   m_SharedTextures: []
   m_Positions:
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: 0.5}
   - {x: 0.5, y: 1.5, z: 0.5}
   - {x: -0.5, y: 1.5, z: -0.5}
   - {x: 0.5, y: 1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: -0.5}
-  - {x: 0.5, y: -1.5, z: -0.5}
-  - {x: -0.5, y: -1.5, z: 0.5}
-  - {x: 0.5, y: -1.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
   m_Textures0:
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
-  - {x: 0.5, y: -1.5}
-  - {x: -0.5, y: -1.5}
+  - {x: 0.5, y: 0.5}
+  - {x: -0.5, y: 0.5}
   - {x: 0.5, y: 1.5}
   - {x: -0.5, y: 1.5}
   - {x: -0.5, y: 0.5}
@@ -1033,11 +1049,19 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 17
+  m_VersionIndex: 98
   m_IsSelectable: 1
-  m_SelectedFaces: 
-  m_SelectedEdges: []
-  m_SelectedVertices: 
+  m_SelectedFaces: 05000000
+  m_SelectedEdges:
+  - a: 20
+    b: 21
+  - a: 22
+    b: 20
+  - a: 21
+    b: 23
+  - a: 23
+    b: 22
+  m_SelectedVertices: 14000000150000001600000017000000
 --- !u!114 &3835124360768069028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1116,8 +1140,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3835124360768069081}
   m_Mesh: {fileID: 0}
---- !u!64 &3835124360768069031
-MeshCollider:
+--- !u!65 &867897570560792461
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1126,7 +1150,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 3, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
