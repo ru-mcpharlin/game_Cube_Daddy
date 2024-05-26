@@ -35,12 +35,6 @@ public class CubeData : MonoBehaviour
         if (isCurrentCube)
         {
             squash.CheckCube(other);
-
-            if(other.gameObject.layer == player.respawnLayer)
-            {
-                //respawn
-                player.teleport.Teleport(player.cubeTransform, player.lastValidPosition, player.respawnTime);
-            }
         }
     }
 
@@ -49,13 +43,19 @@ public class CubeData : MonoBehaviour
         if (isCurrentCube) squash.CheckCube(other);
     }
 
-    public void SetMeshes(bool inputBool)
-    {
-        completeMesh.SetActive(inputBool);
-    }
-
     public void SetTeleportParticleSystem(bool inputBool)
     {
         em.enabled = inputBool;
+    }
+
+    public void StartTeleport_stuff()
+    {
+        completeMesh.SetActive(false);
+        transform.localScale = Vector3.one;
+    }
+
+    public void EndTeleport_stuff()
+    {
+        completeMesh.SetActive(true);
     }
 }

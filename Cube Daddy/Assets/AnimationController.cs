@@ -5,8 +5,6 @@ using UnityEngine;
 public class AnimationController : MonoBehaviour
 {
     [SerializeField] PlayerController player;
-    [SerializeField] string testAnimation_cannotMove;
-    [SerializeField] string testAnimation_canMove;
     [SerializeField] Animator animator;
     [SerializeField] public bool isAnimating;
     // Start is called before the first frame update
@@ -18,31 +16,27 @@ public class AnimationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.LeftControl) && !isAnimating && !player.isMoving)
-        {
-            StartCoroutine(PlayAnimation_cannotMove_Coroutine(testAnimation_cannotMove));
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightControl) && !isAnimating)
-        {
-            StartCoroutine(PlayAnimation_canMove_Coroutine(testAnimation_canMove));
-        }
     }
 
 
     public void PlayAnimation_cannotMove_Method(string animationTrigger)
     {
-        StartCoroutine(PlayAnimation_cannotMove_Coroutine(animationTrigger));
+        if (!isAnimating)
+        {
+            StartCoroutine(PlayAnimation_cannotMove_Coroutine(animationTrigger));
+        }
     }
 
     public IEnumerator PlayAnimation_cannotMove_Coroutine(string animationTrigger)
     {
+        Debug.Log("Calling: " + animationTrigger);
+
         isAnimating = true;
 
         player.canMove = false;
 
         SetPositionAtBase();
-
+        
         ParentPlayerCube(true);
 
         animator.SetTrigger(animationTrigger);
@@ -56,18 +50,24 @@ public class AnimationController : MonoBehaviour
 
         player.canMove = true;
 
+        Debug.Log("Animation " + animationTrigger + " has ended");
     }
 
+    //CAN MOVE
+    #region Can Move
     public void PlayAnimation_canMove_Method(string animationTrigger)
     {
-        StartCoroutine(PlayAnimation_canMove_Coroutine(animationTrigger));
+        if (!isAnimating)
+        {
+            StartCoroutine(PlayAnimation_canMove_Coroutine(animationTrigger));
+        }
     }
 
     public IEnumerator PlayAnimation_canMove_Coroutine(string animationTrigger)
     {
         isAnimating = true;
 
-        SetPositionAtBase();
+        SetPositionAtCenter();
 
         ParentPlayerCube(true);
 
@@ -75,17 +75,17 @@ public class AnimationController : MonoBehaviour
 
         while (isAnimating)
         {
-            SetPositionAtBase();
+            SetPositionAtCenter();
             yield return new WaitForEndOfFrame();
         }
 
         ParentPlayerCube(false);
     }
-
+    #endregion
 
     public void SetPositionAtBase()
     {
-        transform.position = player.cubeTransform.position + Vector3.down * player.scale * 1 / 2;
+        transform.position = player.cubeTransform.position + 0.5f * player.currentScale * Vector3.down;
     }
 
     public void SetPositionAtCenter()
@@ -97,17 +97,26 @@ public class AnimationController : MonoBehaviour
     {
         if(inputBool)
         {
-            player.cubeTransform.SetParent(transform);
+            player.cubeDatas[player.cubes_index].completeMesh.transform.SetParent(transform);
         }
         else
         {
-            player.cubeTransform.SetParent(null);
+            player.cubeDatas[player.cubes_index].completeMesh.transform.SetParent(player.cubeDatas[player.cubes_index].transform);
         }
-
     }
 
     public void FinishAnimation()
     {
         isAnimating = false;
+    }
+
+    public void StartTeleport_stuff()
+    {
+        player.cubeTransform.GetComponent<CubeData>().StartTeleport_stuff();
+    }
+
+    public void EndTeleport_stuff()
+    {
+        player.cubeTransform.GetComponent<CubeData>().EndTeleport_stuff();
     }
 }

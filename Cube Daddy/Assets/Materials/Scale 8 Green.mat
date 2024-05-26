@@ -59,11 +59,11 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _noiseBlend: 0.463
-    - _noiseTiling: 3
+    - _noiseTiling: 5
     - _normalStrength: 0.133
     - _smoothness: 1
     m_Colors:
-    - _color1: {r: 0.5411765, g: 1, b: 0.70979613, a: 0}
-    - _color2: {r: 0.09371662, g: 0.735849, b: 0.65456975, a: 0}
+    - _color1: {r: 0.5411765, g: 1, b: 0.60561156, a: 0}
+    - _color2: {r: 0.003921577, g: 0.4246602, b: 0.49019608, a: 0}
     - _fadeDistance: {r: 15, g: 24, b: 0, a: 0}
   m_BuildTextureStacks: []

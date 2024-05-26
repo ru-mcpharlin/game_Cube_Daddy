@@ -156,7 +156,7 @@ public class SquashCubesScript : MonoBehaviour
         if (currentLayerIndex > colliderLayer && 
             colliderLayer >= layerIndexs[0] && 
             colliderLayer <= layerIndexs[layerIndexs.Length-1] &&
-            distance <= DISTANCE_THRESHOLD * player.scale)
+            distance <= DISTANCE_THRESHOLD * player.currentScale)
         {
             Destroy(collider.gameObject);
             Instantiate(destroyCubeVFX, collider.transform.position, Quaternion.identity, null);

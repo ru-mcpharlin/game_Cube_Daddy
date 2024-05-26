@@ -1,6 +1,7 @@
 using Cinemachine;
 using JetBrains.Annotations;
 using Pixelplacement;
+using Pixelplacement.TweenSystem;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,11 +9,24 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class CameraController : MonoBehaviour
 {
     ////***********************************************//
     #region Variables
+    [Header("Player Input")]
+    [Space]
+    [SerializeField] public float yValue;
+    [SerializeField] public float ySpeed;
+    [SerializeField] public float yThreshold_mouse;
+    [SerializeField] public float yThreshold_gamepad;
+    [Space]
+    [SerializeField] public float xValue;
+    [SerializeField] public float xSpeed;
+    [SerializeField] public float xThreshold_mouse;
+    [SerializeField] public float xThreshold_gamepad;
+
     [Header("Components")]
     [SerializeField] PlayerController player;
     [SerializeField] CinemachineBrain brain;
@@ -54,6 +68,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] List<CinemachineVirtualCamera> camera3_cameras;
     [SerializeField] CinemachineVirtualCamera camera4_camera;
     [SerializeField] CinemachineVirtualCamera camera5_camera;
+    [SerializeField] CinemachineVirtualCamera camera6_camera;
+    [SerializeField] CinemachineVirtualCamera camera7_camera;
 
     [Header("Camera 3")]
     [SerializeField] public float camera3_mouseThreshold;
@@ -63,7 +79,6 @@ public class CameraController : MonoBehaviour
 
     [Header("Camera 5")]
     [SerializeField] public CinemachineOrbitalTransposer _5orbitalTransposer;
-    [SerializeField] public Vector2 inputDelta;
     [Space]
     [SerializeField] public float MIN_HEIGHT;
     [SerializeField] public float MAX_HEIGHT;
@@ -71,16 +86,28 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float _minHeightClamp;
     [SerializeField] public float _maxHeightClamp;
     [Space]
-    [SerializeField] public float gamepadSpeed;
-    [SerializeField] public float mouseSpeed;
+    [SerializeField] public float _cam5_gamepadSpeed;
+    [SerializeField] public float _cam5_mouseSpeed;
+
     [Space]
-    [SerializeField] public float _camera5MouseThreshold;
-    [SerializeField] public float _camera5GamepadThreshold;
+
+    [Header("Camera 6")]
+    [SerializeField] public Transform camera6_follow;
     [Space]
-    [SerializeField] public float yValue;
-    [SerializeField] public float ySpeed;
-    [SerializeField] public float yThreshold;
+    [SerializeField] public Vector3 camera6_pos;
+    [SerializeField] public Vector3 currentVelocity;
+    [SerializeField] public float smoothDampTime;
+
     [Space]
+    [SerializeField] float CAM6_HEIGHTCLAMP_MAX;
+    [SerializeField] float CAM6_HEIGHTCLAMP_MIN;
+    [Space]
+    [SerializeField] public float CAM6_SPEED_GAMEPAD;
+    [SerializeField] public float CAM6_SPEED_MOUSE;
+    [SerializeField] public float CAM6_DISTANCE;
+    [Space]
+    [SerializeField] float CAM6_XSENSITIVITY;
+    [SerializeField] float CAM6_YSENSITIVITY;
 
     [Header("Index")]
     [SerializeField] int camera1_index;
@@ -99,7 +126,9 @@ public class CameraController : MonoBehaviour
         camera2_DynamicIsometric_Locked,
         camera3_DynamicIsometric_Unlocked,
         camera4_PerspectiveMatchCut,
-        camera5_DynamicPerspective
+        camera5_DynamicPerspective_Limited,
+        camera6_DynamicPerspective_Free,
+        camera7_BlackHole
     }
 
     public void SetCameraState(CameraState inputState)
@@ -140,18 +169,51 @@ public class CameraController : MonoBehaviour
                     camera4_camera = vc;
                     break;
 
-                case CameraState.camera5_DynamicPerspective:
+                case CameraState.camera5_DynamicPerspective_Limited:
                     camera5_camera = vc;
                     _5orbitalTransposer = camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    break;
+
+                case CameraState.camera6_DynamicPerspective_Free:
+                    camera6_camera = vc;
                     break;
             }
         }
 
-        TurnCamera1On();
-
         //Shadows
         URP_Asset = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
         URP_Asset.shadowDistance = SHADOW_DISTANCE;
+
+        switch (cameraState)
+        {
+            case CameraState.camera1_StaticIsometric:
+                TurnCamera1On();
+
+                break;
+
+            case CameraState.camera2_DynamicIsometric_Locked:
+                TurnCamera2On();
+                break;
+
+            case CameraState.camera3_DynamicIsometric_Unlocked:
+                TurnCamera3On();
+                break;
+
+            case CameraState.camera4_PerspectiveMatchCut:
+                TurnCamera4On();
+                break;
+
+            case CameraState.camera5_DynamicPerspective_Limited:
+                TurnCamera5On();
+                break;
+
+            case CameraState.camera6_DynamicPerspective_Free:
+                TurnCamera6On();
+                break;
+
+            case CameraState.camera7_BlackHole:
+                break;
+        }
     }
 
     private void Start()
@@ -165,7 +227,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         #region Debug
-        
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             TurnCamera1On();
@@ -180,19 +242,23 @@ public class CameraController : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            StartCoroutine(TurnCamera4On());
+            TurnCamera4On();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            StartCoroutine(TurnCamera5On());
+            TurnCamera5On();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            TurnCamera6On();
         }
 
 
         if (Input.GetKeyDown(KeyCode.Comma))
         {
-            if(cameraState == CameraState.camera1_StaticIsometric)
+            if (cameraState == CameraState.camera1_StaticIsometric)
             {
-                if(camera1_index == 0)
+                if (camera1_index == 0)
                 {
                     camera1_index = camera1_cameras.Count - 1;
                     TurnCamera1On();
@@ -208,7 +274,7 @@ public class CameraController : MonoBehaviour
             {
                 if (camera3_index == 0)
                 {
-                    camera3_index = camera3_cameras.Count-1;
+                    camera3_index = camera3_cameras.Count - 1;
                     TurnCamera3On();
                 }
                 else
@@ -219,11 +285,11 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Period))
+        if (Input.GetKeyDown(KeyCode.Period))
         {
             if (cameraState == CameraState.camera1_StaticIsometric)
             {
-                if (camera1_index == camera1_cameras.Count-1)
+                if (camera1_index == camera1_cameras.Count - 1)
                 {
                     camera1_index = 0;
                     TurnCamera1On();
@@ -237,7 +303,7 @@ public class CameraController : MonoBehaviour
 
             if (cameraState == CameraState.camera3_DynamicIsometric_Unlocked)
             {
-                if (camera3_index == camera3_cameras.Count-1)
+                if (camera3_index == camera3_cameras.Count - 1)
                 {
                     camera3_index = 0;
                     TurnCamera3On();
@@ -261,11 +327,35 @@ public class CameraController : MonoBehaviour
             isBlending = false;
         }
 
-        if(coolDownTimer >= 0)
+        if (coolDownTimer >= 0)
         {
             coolDownTimer -= Time.deltaTime;
         }
         #endregion
+
+        #region Player Input
+        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
+        {
+            yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
+            yValue = Mathf.Clamp(yValue, -1, 1);
+        }
+        else
+        {
+            yValue = 0;
+        }
+
+        if (Mathf.Abs(player.cameraVector_Mouse.x) >= xThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.x) >= xThreshold_gamepad)
+        { 
+            xValue = player.cameraVector_Mouse.x + player.cameraVector_Gamepad.x;
+            xValue = Mathf.Clamp(xValue, -1, 1);
+        }
+        else
+        {
+            xValue = 0;
+        }
+
+        #endregion
+
 
         #region Camera 3 Control
         if (cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
@@ -295,29 +385,80 @@ public class CameraController : MonoBehaviour
         }
 
 
-        #endregion
+        #endregion       
+
 
         #region Camera 5 Control
-        if (cameraState == CameraState.camera5_DynamicPerspective)
+        if (cameraState == CameraState.camera5_DynamicPerspective_Limited)
         {
             //x axis
-            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * gamepadSpeed * Time.deltaTime;
+            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * _cam5_mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * _cam5_gamepadSpeed * Time.deltaTime;
 
             //y axis
-            if (Mathf.Abs(player.cameraVector_Mouse.y) >= _camera5MouseThreshold || Mathf.Abs(player.cameraVector_Gamepad.y) >= _camera5GamepadThreshold)
+            if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
             {
-                yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
-                yValue = Mathf.Clamp(yValue, -1, 1);
                 _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
                 _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
             }
+        }
 
+        #endregion
+
+        #region camera 6 Control
+        else if (cameraState == CameraState.camera6_DynamicPerspective_Free)
+        {
+            camera6_pos = new Vector3(camera6_pos.x + xValue * CAM6_XSENSITIVITY * Time.deltaTime * player.currentScale, 
+                                      camera6_pos.y + yValue * CAM6_YSENSITIVITY + Time.deltaTime * player.currentScale, 0);
+
+            camera6_pos.y = Mathf.Clamp(camera6_pos.y, CAM6_HEIGHTCLAMP_MIN, CAM6_HEIGHTCLAMP_MAX);
+
+            Quaternion rotatation = Quaternion.Euler(camera6_pos.y, camera6_pos.x , 0);
+
+            Vector3 desiredPos = player.cubeTransform.position - (rotatation * Vector3.forward * CAM6_DISTANCE * player.currentScale);
+
+            camera6_follow.position = Vector3.SmoothDamp(camera6_follow.position, desiredPos, ref currentVelocity, smoothDampTime);
+
+
+            /*if (player.cameraVector_Gamepad.normalized.magnitude > player.cameraVector_Mouse.normalized.magnitude)
+            {
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, -xValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
+            }
+            else
+            {
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
+                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, xValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
+            }
+
+            if(Vector3.Distance(camera6_target.position, player.cubeTransform.position) >= CAM6_DISTANCE)
+            {
+                camera6_follow.position = Vector3.Lerp(camera6_follow.position, player.cubeTransform.position, Time.deltaTime * player.currentScale);
+            }
+            camera6_follow.position = Vector3.Lerp(camera6_follow.position, camera6_target.position, 1f * Time.deltaTime * player.currentScale);*/
+
+            /*// Update the input values
+            xValue += Input.GetAxis("Horizontal") * sensitivity * Time.deltaTime;
+            yValue += Input.GetAxis("Vertical") * sensitivity * Time.deltaTime;
+
+            // Clamp the yValue to avoid flipping the camera upside down
+            yValue = Mathf.Clamp(yValue, -85f, 85f);
+
+            // Calculate the new position and rotation
+            Quaternion rotation = Quaternion.Euler(yValue, xValue, 0);
+            Vector3 desiredPosition = player.position - (rotation * Vector3.forward * distance);
+
+            // Smoothly transition to the new position
+            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, smoothSpeed);
+
+            // Apply the position and rotation to the camera
+            transform.position = smoothedPosition;
+            transform.LookAt(player.position);*/
         }
 
         #endregion
 
         #region transition
-        if(_transitioning)
+        if (_transitioning)
         {
             ScaleCamera();
         }
@@ -378,18 +519,32 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Turn Cameras On
-    public IEnumerator TurnCamera5On()
-    {
-        TurnOffAllCameras();
-        SetCameraState(CameraState.camera5_DynamicPerspective);
-        camera5_camera.Priority = CAMERA_ON;
-        player.vc_transform = camera5_camera.transform;
 
-        yield return null;
+    public void TurnCamera6On()
+    {
+
+        TurnOffAllCameras();
+        SetCameraState(CameraState.camera6_DynamicPerspective_Free);
+        camera6_camera.Priority = CAMERA_ON;
+        player.vc_transform = camera6_camera.transform;
+
+        mainCamera.orthographic = false;
     }
 
+    public void TurnCamera5On()
+    {
+        TurnOffAllCameras();
+        SetCameraState(CameraState.camera5_DynamicPerspective_Limited);
+        camera5_camera.Priority = CAMERA_ON;
+        player.vc_transform = camera5_camera.transform;
+    }
 
-    public IEnumerator TurnCamera4On()
+    public void TurnCamera4On()
+    {
+        TurnCamera4On_Coroutine();
+    }
+
+    public IEnumerator TurnCamera4On_Coroutine()
     {
         TurnOffAllCameras();
         SetCameraState(CameraState.camera4_PerspectiveMatchCut);
@@ -405,7 +560,7 @@ public class CameraController : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
-        StartCoroutine(TurnCamera5On());
+        TurnCamera5On();
     }
 
     public void TurnCamera3On()
@@ -502,6 +657,9 @@ public class CameraController : MonoBehaviour
         camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset.z = Mathf.Lerp(PERSPECTIVE_CAMERA_DISTANCE_SCALE * currentScale, PERSPECTIVE_CAMERA_DISTANCE_SCALE * nextScale, t);
         _minHeightClamp = Mathf.Lerp(MIN_HEIGHT * currentScale, MIN_HEIGHT * nextScale, t);
         _maxHeightClamp = Mathf.Lerp(MAX_HEIGHT * currentScale, MAX_HEIGHT * nextScale, t);
+
+        //camera 6
+        
 
         //TIMER
         timer += Time.deltaTime;
