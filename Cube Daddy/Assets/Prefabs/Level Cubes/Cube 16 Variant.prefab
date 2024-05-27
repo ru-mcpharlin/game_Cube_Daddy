@@ -80,12 +80,17 @@ PrefabInstance:
     - target: {fileID: 896902706168762457, guid: e54c01117b45c9a45a76dff700f04f9a,
         type: 3}
       propertyPath: m_Name
-      value: Cube16 Variant
+      value: Cube 16 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 896902706168762457, guid: e54c01117b45c9a45a76dff700f04f9a,
         type: 3}
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 4586920461645508071, guid: e54c01117b45c9a45a76dff700f04f9a,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ef04d804fd9a7940a0cb0c732c4e19a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e54c01117b45c9a45a76dff700f04f9a, type: 3}
