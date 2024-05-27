@@ -237,6 +237,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  FALL_MODULATOR: 4
   smallFall_Threshold: 2
   medFall_Threshold: 4
   isFallingToDeath: 0
@@ -244,34 +245,10 @@ MonoBehaviour:
   ROTATION_SPEED: 0
   onRollContinous:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1841606953749839822}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: PlayAnimation_CanMove
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RollContinous
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onRollStop:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1841606953749839822}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: PlayAnimation_CanMove
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RollStop
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onFall_small:
     m_PersistentCalls:
       m_Calls:
@@ -403,7 +380,7 @@ MonoBehaviour:
   debugRollType: 21
   rollLayerMask:
     serializedVersion: 2
-    m_Bits: 7339784
+    m_Bits: 7339912
   color_isCube: {r: 0, g: 1, b: 0, a: 1}
   color_noCube: {r: 1, g: 0, b: 0, a: 1}
   color_isMagneticCube: {r: 0, g: 0, b: 1, a: 1}

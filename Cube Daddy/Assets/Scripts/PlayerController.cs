@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float fallDistance;
     [SerializeField] float fallJourneyLength;
     [SerializeField] AnimationCurve fallCurve;
+    [SerializeField] float FALL_MODULATOR;
     [Space]
     [SerializeField] float smallFall_Threshold;
     [SerializeField] float medFall_Threshold;
@@ -291,13 +292,7 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
-        //fly movement
-        #region Fly Movement
-        if (movementType == MovementType.fly)
-        {
-            FlyMovement();
-        }
-        #endregion
+        
 
 
         //quit
@@ -307,6 +302,18 @@ public class PlayerController : MonoBehaviour
             Application.Quit();
         }
 
+        #endregion
+    }
+
+
+    public void FixedUpdate()
+    {
+        //fly movement
+        #region Fly Movement
+        if (movementType == MovementType.fly)
+        {
+            FlyMovement();
+        }
         #endregion
     }
     #endregion
@@ -707,7 +714,7 @@ public class PlayerController : MonoBehaviour
             isFallingToDeath = hit_fall.collider.gameObject.layer == respawnLayer;
 
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale * currentScale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale / FALL_MODULATOR, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
@@ -1154,13 +1161,13 @@ public class PlayerController : MonoBehaviour
         //if there is input
         if(inputVector.magnitude > 0)
         {
-            Vector3 force = vc_transform.right * inputVector.x + vc_transform.forward * inputVector.y;
-            force *= currentScale * FORCE_MODIFIER;
-
+            Vector3 force = vc_transform.forward * inputVector.y + vc_transform.right * inputVector.x;
+            force *= currentScale * FORCE_MODIFIER * rb.mass;
             rb.AddForce(force, ForceMode.Force);
         }
-        
-        //cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED * Time.deltaTime * rb.velocity.normalized.magnitude);
+
+        Debug.DrawRay(cubeTransform.position, rb.velocity.normalized, Color.red, 0.1f);
+        cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED);
     }
 
     #endregion
@@ -1226,9 +1233,12 @@ public class PlayerController : MonoBehaviour
         //set movement off
         canMove = false;
 
-        //turn on squashable cubes
-        squash.MakeCubesSquashable(cubes_index);
-
+        if(cubes_index > 0)
+        {
+            //turn on squashable cubes
+            squash.MakeCubesSquashable(cubes_index - 1);
+        }
+        
         //set cube transform to large cube transform
         cubeTransform = cubeDatas[cubes_index].transform;
 
