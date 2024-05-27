@@ -52,7 +52,7 @@ MonoBehaviour:
     type: 3}
   cameraVector_Mouse: {x: 0, y: 0}
   cameraVector_Gamepad: {x: 0, y: 0}
-  movementType: 0
+  movementType: 1
   rollType: 0
   canMove: 1
   isMoving: 0

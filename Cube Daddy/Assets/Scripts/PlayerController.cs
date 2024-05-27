@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Space]
-    [Header("MOVEMENT")]
+    [Header("ROLL MOVEMENT")]
     [SerializeField] public MovementType movementType;
     [SerializeField] public RollType rollType;
     [Header("Movement Bools")]
@@ -72,6 +72,12 @@ public class PlayerController : MonoBehaviour
 
     [Space]
     [Space]
+    [Header("FLY MOVEMENT")]
+    [SerializeField] public float FORCE_MODIFIER;
+    [SerializeField] public float ROTATION_SPEED;
+
+    [Space]
+    [Space]
     [Header("Animations")]
     [SerializeField] UnityEvent onRollContinous;
     [SerializeField] UnityEvent onRollStop;
@@ -111,8 +117,8 @@ public class PlayerController : MonoBehaviour
 
     //NOT SHOWN IN INSPECTOR
     [HideInInspector] CameraController cameraController;
-    [HideInInspector] public Transform vc_transform;
-    [HideInInspector] public Rigidbody rb;
+    [SerializeField] public Transform vc_transform;
+    [SerializeField] public Rigidbody rb;
     [HideInInspector] public SquashCubesScript squash;
     [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
     [HideInInspector] PressurePlate[] pressurePlates;
@@ -1139,7 +1145,23 @@ public class PlayerController : MonoBehaviour
     #region Fly Movement
     public void FlyMovement()
     {
+        //set the space variables, should not be done here
+        if(rb.isKinematic)
+        {
+            rb.isKinematic = false;
+            cubeDatas[cubes_index].SetTeleportParticleSystem(true);
+        }
+
+        //if there is input
+        if(inputVector.magnitude > 0)
+        {
+            Vector3 force = vc_transform.right * inputVector.x + vc_transform.forward * inputVector.y;
+            force *= currentScale * FORCE_MODIFIER;
+
+            rb.AddForce(force, ForceMode.Force);
+        }
         
+        //cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED * Time.deltaTime * rb.velocity.normalized.magnitude);
     }
 
     #endregion
@@ -1187,6 +1209,9 @@ public class PlayerController : MonoBehaviour
         //animation
         animationController = cubeDatas[cubes_index + 1].GetComponentInChildren<AnimationController>();
 
+        //rigid body
+        rb = cubeDatas[cubes_index + 1].GetComponent<Rigidbody>();
+
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
         {
@@ -1228,6 +1253,9 @@ public class PlayerController : MonoBehaviour
 
         //animation
         animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
+
+        //rigid body
+        rb = cubeDatas[cubes_index].GetComponent<Rigidbody>();
 
         //set can move
         canMove = true;
