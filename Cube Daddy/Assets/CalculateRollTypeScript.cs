@@ -8,6 +8,7 @@ public class CalculateRollTypeScript : MonoBehaviour
     [SerializeField] string tag_MagneticEnvironment;
 
     [SerializeField] bool debug;
+
     [SerializeField] PlayerController.RollType debugRollType;
     [Space]
     [SerializeField] public LayerMask rollLayerMask;
@@ -42,6 +43,8 @@ public class CalculateRollTypeScript : MonoBehaviour
     {
         player = GetComponent<PlayerController>();
     }
+
+
 
 
 
@@ -108,7 +111,11 @@ public class CalculateRollTypeScript : MonoBehaviour
         //right back 1
         bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale, rollLayerMask);
         bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale, rollLayerMask);
-
+        
+        if(debug)
+        {
+            Debug.Log("Shit broke");
+        }
 
         #endregion
 
