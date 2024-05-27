@@ -296,8 +296,10 @@ public class PlayerController : MonoBehaviour
 
         //fly movement
         #region Fly Movement
-        FlyMovement();
-
+        if (movementType == MovementType.fly)
+        {
+            FlyMovement();
+        }
         #endregion
 
 
