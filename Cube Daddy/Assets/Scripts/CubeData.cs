@@ -27,8 +27,6 @@ public class CubeData : MonoBehaviour
         em = teleportParticleSystem.GetComponent<ParticleSystem>().emission;
 
         SetTeleportParticleSystem(false);
-
-        GetComponent<Rigidbody>().Sleep();
     }
 
     private void OnTriggerEnter(Collider other)

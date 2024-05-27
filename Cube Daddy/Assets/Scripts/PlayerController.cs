@@ -291,13 +291,7 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
-        //fly movement
-        #region Fly Movement
-        if (movementType == MovementType.fly)
-        {
-            FlyMovement();
-        }
-        #endregion
+        
 
 
         //quit
@@ -307,6 +301,18 @@ public class PlayerController : MonoBehaviour
             Application.Quit();
         }
 
+        #endregion
+    }
+
+
+    public void FixedUpdate()
+    {
+        //fly movement
+        #region Fly Movement
+        if (movementType == MovementType.fly)
+        {
+            FlyMovement();
+        }
         #endregion
     }
     #endregion
@@ -1154,13 +1160,15 @@ public class PlayerController : MonoBehaviour
         //if there is input
         if(inputVector.magnitude > 0)
         {
-            Vector3 force = vc_transform.right * inputVector.x + vc_transform.forward * inputVector.y;
-            force *= currentScale * FORCE_MODIFIER;
+
+            Vector3 force = vc_transform.forward * inputVector.y + vc_transform.right * inputVector.x;
+            force *= currentScale * FORCE_MODIFIER * rb.mass;
 
             rb.AddForce(force, ForceMode.Force);
         }
-        
-        //cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED * Time.deltaTime * rb.velocity.normalized.magnitude);
+
+        Debug.DrawRay(cubeTransform.position, rb.velocity.normalized, Color.red, 0.1f);
+        cubeTransform.rotation = Quaternion.RotateTowards(cubeTransform.rotation, Quaternion.Euler(rb.velocity.normalized), ROTATION_SPEED);
     }
 
     #endregion

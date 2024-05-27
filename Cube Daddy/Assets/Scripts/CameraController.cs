@@ -96,8 +96,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] Transform cam6_follow;
     [SerializeField] float cam6_height;
     [Space]
-    [SerializeField] public float smoothDampTime;
-    [SerializeField] public float smoothDampVelocity;
+    [SerializeField] public float height_smoothDampTime;
+    [SerializeField] public float height_smoothDampVelocity;
+    [Space]
+    [SerializeField] public Vector3 pos_smoothDampVelocity;
+    [SerializeField] public float pos_smoothDampTime;
 
     [Space]
     [SerializeField] float CAM6_HEIGHTCLAMP_MAX;
@@ -410,13 +413,13 @@ public class CameraController : MonoBehaviour
 
             cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue;
 
-            cam6_height = Mathf.SmoothDamp(cam6_height, cam6_height + yValue, ref smoothDampVelocity, smoothDampTime);
+            cam6_height = Mathf.SmoothDamp(cam6_height, cam6_height + yValue, ref height_smoothDampVelocity, height_smoothDampTime);
 
             cam6_height = Mathf.Clamp(cam6_height, CAM6_HEIGHTCLAMP_MIN * player.currentScale, CAM6_HEIGHTCLAMP_MAX * player.currentScale);
 
             cam6_orbitalTransposer.m_FollowOffset.y = cam6_height;
 
-            cam6_follow.position = player.cubeTransform.position;
+            cam6_follow.position = Vector3.SmoothDamp(cam6_follow.position, player.cubeTransform.position, ref pos_smoothDampVelocity, pos_smoothDampTime);
             
 
             /*// Clamp the yValue to avoid flipping the camera upside down
