@@ -92,11 +92,12 @@ public class CameraController : MonoBehaviour
     [Space]
 
     [Header("Camera 6")]
-    [SerializeField] public Transform camera6_follow;
+    [SerializeField] CinemachineOrbitalTransposer cam6_orbitalTransposer;
+    [SerializeField] Transform cam6_follow;
+    [SerializeField] float cam6_height;
     [Space]
-    [SerializeField] public Vector3 camera6_pos;
-    [SerializeField] public Vector3 currentVelocity;
     [SerializeField] public float smoothDampTime;
+    [SerializeField] public float smoothDampVelocity;
 
     [Space]
     [SerializeField] float CAM6_HEIGHTCLAMP_MAX;
@@ -104,10 +105,7 @@ public class CameraController : MonoBehaviour
     [Space]
     [SerializeField] public float CAM6_SPEED_GAMEPAD;
     [SerializeField] public float CAM6_SPEED_MOUSE;
-    [SerializeField] public float CAM6_DISTANCE;
-    [Space]
-    [SerializeField] float CAM6_XSENSITIVITY;
-    [SerializeField] float CAM6_YSENSITIVITY;
+
 
     [Header("Index")]
     [SerializeField] int camera1_index;
@@ -176,6 +174,7 @@ public class CameraController : MonoBehaviour
 
                 case CameraState.camera6_DynamicPerspective_Free:
                     camera6_camera = vc;
+                    cam6_orbitalTransposer = camera6_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
                     break;
             }
         }
@@ -404,43 +403,23 @@ public class CameraController : MonoBehaviour
 
         #endregion
 
-        #region camera 6 Control
+        #region Camera 6 Control
+        //if in camera 6 state
         else if (cameraState == CameraState.camera6_DynamicPerspective_Free)
         {
-            camera6_pos = new Vector3(camera6_pos.x + xValue * CAM6_XSENSITIVITY * Time.deltaTime * player.currentScale, 
-                                      camera6_pos.y + yValue * CAM6_YSENSITIVITY + Time.deltaTime * player.currentScale, 0);
 
-            camera6_pos.y = Mathf.Clamp(camera6_pos.y, CAM6_HEIGHTCLAMP_MIN, CAM6_HEIGHTCLAMP_MAX);
+            cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue;
 
-            Quaternion rotatation = Quaternion.Euler(camera6_pos.y, camera6_pos.x , 0);
+            cam6_height = Mathf.SmoothDamp(cam6_height, cam6_height + yValue, ref smoothDampVelocity, smoothDampTime);
 
-            Vector3 desiredPos = player.cubeTransform.position - (rotatation * Vector3.forward * CAM6_DISTANCE * player.currentScale);
+            cam6_height = Mathf.Clamp(cam6_height, CAM6_HEIGHTCLAMP_MIN * player.currentScale, CAM6_HEIGHTCLAMP_MAX * player.currentScale);
 
-            camera6_follow.position = Vector3.SmoothDamp(camera6_follow.position, desiredPos, ref currentVelocity, smoothDampTime);
+            cam6_orbitalTransposer.m_FollowOffset.y = cam6_height;
 
+            cam6_follow.position = player.cubeTransform.position;
+            
 
-            /*if (player.cameraVector_Gamepad.normalized.magnitude > player.cameraVector_Mouse.normalized.magnitude)
-            {
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, -xValue * Time.deltaTime * CAM6_SPEED_GAMEPAD * player.currentScale);
-            }
-            else
-            {
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.right, yValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
-                camera6_target.RotateAround(player.cubeTransform.position, camera6_camera.transform.up, xValue * Time.deltaTime * CAM6_SPEED_MOUSE * player.currentScale);
-            }
-
-            if(Vector3.Distance(camera6_target.position, player.cubeTransform.position) >= CAM6_DISTANCE)
-            {
-                camera6_follow.position = Vector3.Lerp(camera6_follow.position, player.cubeTransform.position, Time.deltaTime * player.currentScale);
-            }
-            camera6_follow.position = Vector3.Lerp(camera6_follow.position, camera6_target.position, 1f * Time.deltaTime * player.currentScale);*/
-
-            /*// Update the input values
-            xValue += Input.GetAxis("Horizontal") * sensitivity * Time.deltaTime;
-            yValue += Input.GetAxis("Vertical") * sensitivity * Time.deltaTime;
-
-            // Clamp the yValue to avoid flipping the camera upside down
+            /*// Clamp the yValue to avoid flipping the camera upside down
             yValue = Mathf.Clamp(yValue, -85f, 85f);
 
             // Calculate the new position and rotation
