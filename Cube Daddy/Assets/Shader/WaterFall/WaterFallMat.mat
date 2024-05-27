@@ -44,9 +44,10 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Scene_Color_Distortion: 0.05
-    - _UV_Distortion_Strength: 0.5
+    - _UV_Distortion_Strength: 0.111
     m_Colors:
     - _Line_Color: {r: 0.6367924, g: 1, b: 0.9188482, a: 0}
+    - _Tiling: {r: 0.25, g: 0.25, b: 0, a: 0}
     - _Water_Color_1: {r: 0.03921569, g: 0.32156855, b: 0.30331668, a: 0}
     - _Water_Color_2: {r: 0.07058822, g: 0.58431375, b: 0.5722782, a: 0}
   m_BuildTextureStacks: []
