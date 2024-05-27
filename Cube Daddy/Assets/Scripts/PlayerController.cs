@@ -262,34 +262,31 @@ public class PlayerController : MonoBehaviour
 
         //roll movement
         #region Roll Movement
-        if (canMove)
+        if (canMove && movementType == MovementType.roll)
         {
-            if (movementType == MovementType.roll)
-            {
-                //if current moving or falling do nothing
-                if (isMoving) return;
-                if (isFalling) return;
+            //if current moving or falling do nothing
+            if (isMoving) return;
+            if (isFalling) return;
 
-                //forward
-                if (inputVector.y == 1)
-                {
-                    StartCoroutine(Roll(Vector3.forward));
-                }
-                //back
-                else if (inputVector.y == -1)
-                {
-                    StartCoroutine(Roll(Vector3.back));
-                }
-                //right
-                else if (inputVector.x == 1)
-                {
-                    StartCoroutine(Roll(Vector3.right));
-                }
-                //left
-                else if (inputVector.x == -1)
-                {
-                    StartCoroutine(Roll(Vector3.left));
-                }
+            //forward
+            if (inputVector.y == 1)
+            {
+                StartCoroutine(Roll(Vector3.forward));
+            }
+            //back
+            else if (inputVector.y == -1)
+            {
+                StartCoroutine(Roll(Vector3.back));
+            }
+            //right
+            else if (inputVector.x == 1)
+            {
+                StartCoroutine(Roll(Vector3.right));
+            }
+            //left
+            else if (inputVector.x == -1)
+            {
+                StartCoroutine(Roll(Vector3.left));
             }
         }
         #endregion
@@ -686,7 +683,7 @@ public class PlayerController : MonoBehaviour
 
         //fix round errors
         #region Round Errors
-        FixFloatingPointErrors();
+        //FixFloatingPointErrors();
         #endregion
 
         //falling behaviour
