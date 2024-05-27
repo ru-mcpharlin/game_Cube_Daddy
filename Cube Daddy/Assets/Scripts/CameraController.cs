@@ -146,7 +146,6 @@ public class CameraController : MonoBehaviour
         brain = GetComponentInChildren<CinemachineBrain>();
         cameras = GetComponentsInChildren<CinemachineVirtualCamera>();
         mainCamera = GetComponentInChildren<Camera>();
-
         cameraFollow = GetComponentInChildren<CameraFollow>();
         
 
@@ -420,21 +419,7 @@ public class CameraController : MonoBehaviour
             cam6_orbitalTransposer.m_FollowOffset.y = cam6_height;
 
             cam6_follow.position = Vector3.SmoothDamp(cam6_follow.position, player.cubeTransform.position, ref pos_smoothDampVelocity, pos_smoothDampTime);
-            
-
-            /*// Clamp the yValue to avoid flipping the camera upside down
-            yValue = Mathf.Clamp(yValue, -85f, 85f);
-
-            // Calculate the new position and rotation
-            Quaternion rotation = Quaternion.Euler(yValue, xValue, 0);
-            Vector3 desiredPosition = player.position - (rotation * Vector3.forward * distance);
-
-            // Smoothly transition to the new position
-            Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPosition, ref currentVelocity, smoothSpeed);
-
-            // Apply the position and rotation to the camera
-            transform.position = smoothedPosition;
-            transform.LookAt(player.position);*/
+           
         }
 
         #endregion

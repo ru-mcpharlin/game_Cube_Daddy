@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float fallDistance;
     [SerializeField] float fallJourneyLength;
     [SerializeField] AnimationCurve fallCurve;
+    [SerializeField] float FALL_MODULATOR;
     [Space]
     [SerializeField] float smallFall_Threshold;
     [SerializeField] float medFall_Threshold;
@@ -713,7 +714,7 @@ public class PlayerController : MonoBehaviour
             isFallingToDeath = hit_fall.collider.gameObject.layer == respawnLayer;
 
             //move cube down 
-            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale * currentScale, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale / FALL_MODULATOR, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
 
             //set falling to true
             isFalling = true;
@@ -1160,10 +1161,8 @@ public class PlayerController : MonoBehaviour
         //if there is input
         if(inputVector.magnitude > 0)
         {
-
             Vector3 force = vc_transform.forward * inputVector.y + vc_transform.right * inputVector.x;
             force *= currentScale * FORCE_MODIFIER * rb.mass;
-
             rb.AddForce(force, ForceMode.Force);
         }
 
