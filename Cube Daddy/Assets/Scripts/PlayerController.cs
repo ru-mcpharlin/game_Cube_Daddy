@@ -1226,9 +1226,12 @@ public class PlayerController : MonoBehaviour
         //set movement off
         canMove = false;
 
-        //turn on squashable cubes
-        squash.MakeCubesSquashable(cubes_index);
-
+        if(cubes_index > 0)
+        {
+            //turn on squashable cubes
+            squash.MakeCubesSquashable(cubes_index - 1);
+        }
+        
         //set cube transform to large cube transform
         cubeTransform = cubeDatas[cubes_index].transform;
 
