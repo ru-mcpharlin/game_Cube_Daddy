@@ -516,11 +516,14 @@ public class CameraController : MonoBehaviour
         SetCameraState(CameraState.camera5_DynamicPerspective_Limited);
         camera5_camera.Priority = CAMERA_ON;
         player.vc_transform = camera5_camera.transform;
+
+        mainCamera.orthographic = false;
     }
 
     public void TurnCamera4On()
     {
         TurnCamera4On_Coroutine();
+
     }
 
     public IEnumerator TurnCamera4On_Coroutine()
@@ -556,6 +559,7 @@ public class CameraController : MonoBehaviour
         TurnOffAllCameras();
         SetCameraState(CameraState.camera2_DynamicIsometric_Locked);
         camera2_camera.Priority = CAMERA_ON;
+        mainCamera.orthographic = true;
         player.vc_transform = camera2_camera.transform;
     }
 
@@ -564,6 +568,7 @@ public class CameraController : MonoBehaviour
         TurnOffAllCameras();
         SetCameraState(CameraState.camera1_StaticIsometric);
         camera1_cameras[camera1_index].Priority = CAMERA_ON;
+        mainCamera.orthographic = true;
         player.vc_transform = camera1_cameras[camera1_index].transform;
     }
 

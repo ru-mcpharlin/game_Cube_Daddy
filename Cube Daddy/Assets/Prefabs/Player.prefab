@@ -52,7 +52,7 @@ MonoBehaviour:
     type: 3}
   cameraVector_Mouse: {x: 0, y: 0}
   cameraVector_Gamepad: {x: 0, y: 0}
-  movementType: 1
+  movementType: 0
   rollType: 0
   canMove: 1
   isMoving: 0
@@ -240,6 +240,8 @@ MonoBehaviour:
   smallFall_Threshold: 2
   medFall_Threshold: 4
   isFallingToDeath: 0
+  FORCE_MODIFIER: 0
+  ROTATION_SPEED: 0
   onRollContinous:
     m_PersistentCalls:
       m_Calls:

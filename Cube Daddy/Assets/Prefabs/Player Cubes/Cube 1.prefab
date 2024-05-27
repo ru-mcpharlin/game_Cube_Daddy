@@ -127,26 +127,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6450155485966213419, guid: db7fd1566eedd79419209aff7c242dfb,
-        type: 3}
-      propertyPath: m_Drag
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6450155485966213419, guid: db7fd1566eedd79419209aff7c242dfb,
-        type: 3}
-      propertyPath: m_AngularDrag
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6450155485966213419, guid: db7fd1566eedd79419209aff7c242dfb,
-        type: 3}
-      propertyPath: m_Interpolate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6450155485966213419, guid: db7fd1566eedd79419209aff7c242dfb,
-        type: 3}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6800908076377121591, guid: db7fd1566eedd79419209aff7c242dfb,
         type: 3}
       propertyPath: m_RootOrder
