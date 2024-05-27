@@ -54,8 +54,8 @@ Material:
     - _Foam_cutoff: 1.58
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Ripple_Density: 0.77
-    - _Ripple_Slimness: 9
+    - _Ripple_Density: 0.62
+    - _Ripple_Slimness: 11.13
     - _Ripple_Speed: 1.56
     - _Wave_Scale: 1.4
     - _Wave_Speed: 0.1
