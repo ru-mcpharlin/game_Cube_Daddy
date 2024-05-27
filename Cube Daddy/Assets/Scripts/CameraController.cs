@@ -581,7 +581,6 @@ public class CameraController : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        cameraFollow._transitioning = true;
         _transitioning = true;
     }
 
@@ -612,8 +611,17 @@ public class CameraController : MonoBehaviour
         }
 
         //// CAMERA 2 ////
-        camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera1_cameras[camera1_index].m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
-        camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
+        if (camera1_cameras[camera1_index].Priority == 1)
+        {
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera1_cameras[camera1_index].m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
+        }
+        else
+        {
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera2_camera.m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
+        }
+        
 
         //// CAMERA 3 ////
         foreach (CinemachineVirtualCamera vc in camera3_cameras)
@@ -640,7 +648,6 @@ public class CameraController : MonoBehaviour
         //IF TIMER EXCEEDS MAX TIME END TRANSITION
         if (timer >= TRANSITION_MAX_TIME)
         {
-            cameraFollow._transitioning = false;
             _transitioning = false;
         }
 
