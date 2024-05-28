@@ -1600,6 +1600,7 @@ MonoBehaviour:
   unityEvent:
     m_PersistentCalls:
       m_Calls: []
+  distanceThreshold: 0.1
   hasBeenTriggered: 0
   targetPosition: {fileID: 5895325684793268439}
   needToHaveCollectedPellets: 0

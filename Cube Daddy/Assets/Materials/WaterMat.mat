@@ -54,14 +54,14 @@ Material:
     - _Foam_cutoff: 1.58
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Ripple_Density: 0.77
-    - _Ripple_Slimness: 9
+    - _Ripple_Density: 0.62
+    - _Ripple_Slimness: 11.13
     - _Ripple_Speed: 1.56
     - _Wave_Scale: 1.4
     - _Wave_Speed: 0.1
     m_Colors:
-    - _Base_Color: {r: 0.008721969, g: 0.26415092, b: 0.2481866, a: 0}
-    - _Fade_Color: {r: 0.4575472, g: 1, b: 0.82501525, a: 0}
+    - _Base_Color: {r: 0, g: 0.103773594, b: 0.09858492, a: 0}
+    - _Fade_Color: {r: 0, g: 0.4716981, b: 0.467258, a: 0}
     - _Fade_Range: {r: 30, g: 60, b: 0, a: 0}
     - _Foam_Color: {r: 1.584906, g: 1.584906, b: 1.584906, a: 1}
     - _Ripple_Color: {r: 0.3254717, g: 1, b: 0.8941916, a: 0}

@@ -7,6 +7,9 @@ public class PressurePlate : MonoBehaviour
 {
     [SerializeField] UnityEvent unityEvent;
     [Space]
+    [SerializeField] public float distanceThreshold;
+    [Space]
+
     [SerializeField] bool hasBeenTriggered;
     [SerializeField] Transform targetPosition;
     [Space]
@@ -35,7 +38,7 @@ public class PressurePlate : MonoBehaviour
 
 
 
-        if (playerPosition == targetPosition.position && 
+        if (Vector3.Distance(playerPosition, targetPosition.position) <= distanceThreshold * scale &&
             scale == transform.localScale.x &&
             !hasBeenTriggered)
         {

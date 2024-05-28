@@ -772,7 +772,7 @@ public class PlayerController : MonoBehaviour
                 cubeDatas[cubes_index + 1].canMerge)
             {
                 //merge cube
-                MergeCube();
+                MergeCube_method();
             }
         }
 
@@ -1187,8 +1187,13 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     #region Merge
 
+    public void MergeCube_method()
+    {
+        StartCoroutine(MergeCube());
+    }
+
     //merge cube
-    private void MergeCube()
+    private IEnumerator MergeCube()
     {
         //set movement off
         canMove = false;
@@ -1236,6 +1241,8 @@ public class PlayerController : MonoBehaviour
             cubes_index++;
         }
 
+        yield return null;
+
         //set can move
         canMove = true;
     }
@@ -1247,7 +1254,6 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator Demerge(Transform targetTransform)
     {
-        //Debug.DrawRay(cubeDatas[cubes_index].transform.position, targetTransform.position - cubeDatas[cubes_index].transform.position, Color.red, Mathf.Infinity);
 
         Vector3 demerge_direction = targetTransform.position - cubeDatas[cubes_index].transform.position;
 
