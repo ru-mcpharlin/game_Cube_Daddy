@@ -5629,6 +5629,7 @@ MonoBehaviour:
   player: {fileID: 0}
   squash: {fileID: 0}
   isCurrentCube: 0
+  canMerge: 1
   scale: 0
   missingPosition: {fileID: 3376135485765546382}
   incompleteMesh: {fileID: 1796675621788898125}
