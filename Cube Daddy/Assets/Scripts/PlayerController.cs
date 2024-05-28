@@ -738,7 +738,6 @@ public class PlayerController : MonoBehaviour
 
         while (isFalling)
         {
-            Debug.Log("Falling");
             yield return new WaitForEndOfFrame();
         }
         #endregion

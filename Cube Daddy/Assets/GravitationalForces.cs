@@ -38,7 +38,7 @@ public class GravitationalForces : MonoBehaviour
                 break;
             }
 
-            Debug.Log("Adding force to: " + i);
+            //Debug.Log("Adding force to: " + i);
             ApplyGravity(rbs[i], player_rb);
             ApplyGravity(player_rb, rbs[i]);
         }
