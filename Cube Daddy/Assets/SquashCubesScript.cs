@@ -147,6 +147,22 @@ public class SquashCubesScript : MonoBehaviour
         }
     }
 
+    public void MakeCubesHard(int index)
+    {
+        foreach (GameObject gameObject in listOfLayers[index])
+        {
+            if (gameObject != null)
+            {
+                if (gameObject.CompareTag(player.tag_Environment) || gameObject.CompareTag(player.tag_MagneticEnvironment))
+                {
+                    gameObject.GetComponent<BoxCollider>().isTrigger = false;
+                }
+            }
+        }
+    }
+
+
+
     public void CheckCube(Collider collider)
     {
         int currentLayerIndex = layerIndexs[player.cubes_index];

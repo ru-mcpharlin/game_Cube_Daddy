@@ -112,10 +112,7 @@ public class CalculateRollTypeScript : MonoBehaviour
         bool isCube_rightBack1 = Physics.Raycast(position, -Vector3.Cross(direction, Vector3.up), scale, rollLayerMask);
         bool isCube_rightBack1direction1 = Physics.Raycast(position + -Vector3.Cross(direction, Vector3.up) * scale, direction, scale, rollLayerMask);
         
-        if(debug)
-        {
-            Debug.Log("Shit broke");
-        }
+        
 
         #endregion
 
@@ -1067,6 +1064,11 @@ public class CalculateRollTypeScript : MonoBehaviour
         else
         {
             Debug.Log("Umm wtf");
+
+            if (debug)
+            {
+                Debug.Log("Shit broke");
+            }
             return PlayerController.RollType.stuck;
         }
 

@@ -9,6 +9,8 @@ using System;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
 using System.Linq;
+using static UnityEngine.Rendering.DebugUI;
+using DG.Tweening.Core.Enums;
 
 public class PlayerController : MonoBehaviour
 {
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
     [SerializeField] public bool isTeleporting;
+    [SerializeField] public bool isPopping;
     [Space]
     [SerializeField] bool isMagnetic;
     [SerializeField] public bool onMagneticCube;  
@@ -95,6 +98,15 @@ public class PlayerController : MonoBehaviour
     [Header("Teleport")]
     [SerializeField] float teleportDuration;
     [SerializeField] float teleportDelay;
+
+    [Space]
+    [Space]
+    [Header("Pop")]
+
+    [SerializeField] float pop_yValue;
+    [SerializeField] float popDuration;
+    [SerializeField] AnimationCurve popY_Curve;
+    [SerializeField] AnimationCurve popXZ_Curve;
 
 
     [Space]
@@ -756,7 +768,8 @@ public class PlayerController : MonoBehaviour
         if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count() - 1)
         {
             //if the distance between the current cube and the next cubes missing transform is less than or equal to the merge distance threshold
-            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale)
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale &&
+                cubeDatas[cubes_index + 1].canMerge)
             {
                 //merge cube
                 MergeCube();
@@ -1222,6 +1235,138 @@ public class PlayerController : MonoBehaviour
         {
             cubes_index++;
         }
+
+        //set can move
+        canMove = true;
+    }
+
+    public void Demerge_method(Transform targetPosition)
+    {
+        StartCoroutine(Demerge(targetPosition));
+    }
+
+    public IEnumerator Demerge(Transform targetTransform)
+    {
+        //Debug.DrawRay(cubeDatas[cubes_index].transform.position, targetTransform.position - cubeDatas[cubes_index].transform.position, Color.red, Mathf.Infinity);
+
+        Vector3 demerge_direction = targetTransform.position - cubeDatas[cubes_index].transform.position;
+
+        Quaternion cube_Direction = Quaternion.identity;
+
+        Vector3 roll_Direction = Vector3.zero;
+
+        if(Mathf.Abs(demerge_direction.x) > Mathf.Abs(demerge_direction.z))
+        {
+            if (demerge_direction.x > 0)
+            {
+                //Debug.Log("Direction 1");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 270f, 0));
+                roll_Direction = Vector3.left;
+            }
+            else
+            {
+                //Debug.Log("Direction 3");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 90f, 0));
+                roll_Direction = Vector3.right;
+            }
+        }
+        else
+        {
+            if (demerge_direction.z > 0)
+            {
+                //Debug.Log("Direction 4");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 180f, 0));
+                roll_Direction = Vector3.back;
+            }
+            else
+            {
+                //Debug.Log("Direction 2");
+                cube_Direction = Quaternion.identity;
+                roll_Direction = Vector3.forward;
+            }
+        }
+
+        //set movement off
+        canMove = false;
+
+        //////////////////////////// CURRENT CUBE ////////////////////////////
+
+        //reset transform
+        cubeDatas[cubes_index].transform.rotation = cube_Direction;
+
+        //set active = true incomplete meshes
+        cubeDatas[cubes_index].incompleteMesh.SetActive(true);
+
+        //set active = false complete meshes
+        cubeDatas[cubes_index].completeMesh.SetActive(false);
+
+        //set current small cubes parent to be large cubes transform
+        cubeDatas[cubes_index].isCurrentCube = false;
+
+        //set can merge to false
+        cubeDatas[cubes_index].canMerge = false;
+
+        //////////////////////////// smaller CUBE ////////////////////////////
+        //set cube transform to large cube transform
+        cubeTransform = cubeDatas[cubes_index - 1].transform;
+
+        //set scale
+        currentScale = cubeDatas[cubes_index - 1].scale;
+
+        //set position of smaller cube
+        cubeDatas[cubes_index - 1].transform.position = cubeDatas[cubes_index].missingPosition.position;
+
+        //reset rotation
+        cubeDatas[cubes_index - 1].transform.rotation = Quaternion.identity;
+
+        //set active = false incomplete meshes
+        cubeDatas[cubes_index - 1].incompleteMesh.SetActive(false);
+
+        //set active = true complete meshes
+        cubeDatas[cubes_index - 1].completeMesh.SetActive(true);
+
+        //turn it on
+        cubeDatas[cubes_index - 1].gameObject.SetActive(true);
+
+        //set next current cube in cube data
+        cubeDatas[cubes_index - 1].isCurrentCube = true;
+
+
+        //////////////////////////// Camera ////////////////////////////
+        //update camera size
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index - 1].scale));
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index - 1].transform;
+
+        //animation
+        animationController = cubeDatas[cubes_index - 1].GetComponentInChildren<AnimationController>();
+
+        //rigid body
+        rb = cubeDatas[cubes_index - 1].GetComponent<Rigidbody>();
+
+        //turn on squashable cubes
+        squash.MakeCubesHard(cubes_index - 1);
+
+        //merge events
+        cubeDatas[cubes_index - 1].mergeEvents.Invoke();
+
+        //increment index
+        if (cubes_index > 0)
+        {
+            cubes_index--;
+        }
+
+        //do colour stuff
+
+        //Debug.DrawRay(cubeTransform.position, roll_Direction, Color.blue, Mathf.Infinity);
+
+        yield return new WaitForSeconds(0.1f);
+
+        //take a step
+        StartCoroutine(Roll(roll_Direction));
+
+        yield return null;
 
         //set can move
         canMove = true;

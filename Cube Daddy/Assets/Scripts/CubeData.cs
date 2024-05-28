@@ -9,6 +9,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] SquashCubesScript squash;
     [Space]
     [SerializeField] public bool isCurrentCube;
+    [SerializeField] public bool canMerge;
     [SerializeField] public float scale;
     [Space]
     [SerializeField] public Transform missingPosition;
