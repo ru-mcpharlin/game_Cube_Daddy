@@ -1679,7 +1679,7 @@ public class PlayerController : MonoBehaviour
         cubeDatas[cubes_index + 1].isCurrentCube = true;
 
         //update camera size
-        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index + 1].scale));
+        StartCoroutine(cameraController.StartCameraTransition(cubeDatas[cubes_index].scale, cubeDatas[cubes_index + 1].scale));
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
@@ -1798,7 +1798,7 @@ public class PlayerController : MonoBehaviour
 
         //////////////////////////// Camera ////////////////////////////
         //update camera size
-        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index - 1].scale));
+        StartCoroutine(cameraController.StartCameraTransition(cubeDatas[cubes_index].scale, cubeDatas[cubes_index - 1].scale));
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index - 1].transform;
@@ -1863,7 +1863,7 @@ public class PlayerController : MonoBehaviour
         cubeDatas[cubes_index].isCurrentCube = true;
 
         //update camera size
-        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index].scale));
+        StartCoroutine(cameraController.StartCameraTransition(cubeDatas[cubes_index].scale, cubeDatas[cubes_index].scale));
 
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
