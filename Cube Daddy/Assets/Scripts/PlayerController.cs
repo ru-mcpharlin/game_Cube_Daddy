@@ -9,6 +9,8 @@ using System;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
 using System.Linq;
+using static UnityEngine.Rendering.DebugUI;
+using DG.Tweening.Core.Enums;
 
 public class PlayerController : MonoBehaviour
 {
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool isMoving;
     [SerializeField] public bool isFalling;
     [SerializeField] public bool isTeleporting;
+    [SerializeField] public bool isPopping;
     [Space]
     [SerializeField] bool isMagnetic;
     [SerializeField] public bool onMagneticCube;  
@@ -95,6 +98,15 @@ public class PlayerController : MonoBehaviour
     [Header("Teleport")]
     [SerializeField] float teleportDuration;
     [SerializeField] float teleportDelay;
+
+    [Space]
+    [Space]
+    [Header("Pop")]
+
+    [SerializeField] float pop_yValue;
+    [SerializeField] float popDuration;
+    [SerializeField] AnimationCurve popY_Curve;
+    [SerializeField] AnimationCurve popXZ_Curve;
 
 
     [Space]
@@ -738,7 +750,6 @@ public class PlayerController : MonoBehaviour
 
         while (isFalling)
         {
-            Debug.Log("Falling");
             yield return new WaitForEndOfFrame();
         }
         #endregion
@@ -757,10 +768,469 @@ public class PlayerController : MonoBehaviour
         if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count() - 1)
         {
             //if the distance between the current cube and the next cubes missing transform is less than or equal to the merge distance threshold
-            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale)
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale &&
+                cubeDatas[cubes_index + 1].canMerge)
             {
                 //merge cube
-                MergeCube();
+                MergeCube_method();
+            }
+        }
+
+        #endregion
+
+        //last valid move transform
+        #region Respawn
+        if (Physics.Raycast(cubeTransform.position, Vector3.down, out RaycastHit hit_down, currentScale) && hit_down.collider.gameObject.layer != respawnLayer)
+        {
+            lastValidPosition = cubeTransform.position;
+        }
+        #endregion
+
+        Debug.Log("End movement");
+        //set isMoving to false
+        EndRoll();
+
+        #endregion
+    }
+
+    //roll with no relative direction
+    IEnumerator Roll_noRelativeDirection(Vector3 direction)
+    {
+        //figure out roll type
+        rollType = calculateRollTypeScript.CalculateRollType(cubeTransform.position, direction, currentScale);
+        if (debugMovement) calculateRollTypeScript.DebugMovemet(rollType, cubeTransform.position, direction, currentScale);
+
+        //is moving = true
+        isMoving = true;
+        onMagneticCube = CheckIfOnMagneticCube();
+
+        //set the roll type information
+        #region Roll Type
+        //get roll information
+        switch (rollType)
+        {
+            #region flat
+            //stuck
+            case RollType.stuck:
+                isMoving = false;
+                yield break;
+
+            //bonk
+            case RollType.bonk_flat:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                break;
+
+            //head bonk
+            case RollType.bonk_head:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //flat
+            case RollType.flat:
+                remainingAngle = 90f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                break;
+
+            #endregion
+
+            #region Step
+
+            #region Step Up
+            //step up
+            case RollType.step_Up:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                break;
+
+            //step up bonk 1
+            case RollType.bonk_stepUp1:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step up bonk 2
+            case RollType.bonk_stepUp2:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step up bonk 3
+            case RollType.bonk_stepUp3:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                direction = -direction;
+                break;
+
+            #endregion
+
+            #region Step Down
+            //step down
+            case RollType.step_Down:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                break;
+
+            //step down bonk 1
+            case RollType.bonk_stepDown1:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step down bonk 2
+            case RollType.bonk_stepDown2:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step down bonk 3
+            case RollType.bonk_stepDown3:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                direction = -direction;
+                break;
+
+            #endregion
+
+            #region Step Left
+            //step left
+            case RollType.step_Left:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //step left bonk 1
+            case RollType.bonk_stepLeft1:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //step left bonk 2
+            case RollType.bonk_stepLeft2:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //step left bonk 2
+            case RollType.bonk_stepLeft3:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            #endregion
+
+            #region Step Right
+            //step right
+            case RollType.step_Right:
+                remainingAngle = 180f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //step right bonk 1
+            case RollType.bonk_stepRight1:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step right bonk 2
+            case RollType.bonk_stepRight2:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                direction = -direction;
+                break;
+
+            //step right bonk 3
+            case RollType.bonk_stepRight3:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                direction = -direction;
+                break;
+
+            #endregion
+
+            #endregion
+
+            #region Climb
+
+            #region Climb Up
+            //climb up
+            case RollType.climb_Up:
+                remainingAngle = 90f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                break;
+
+            //climb up bonk flat
+            case RollType.bonk_climbUp_flat:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                break;
+
+            //climb up bonk head
+            case RollType.bonk_climbUp_head:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.up * currentScale / 2;
+                direction = -direction;
+                break;
+
+            #endregion
+
+            #region Climb Down
+            //climb down
+            case RollType.climb_Down:
+                remainingAngle = 90f;
+                rotationAnchor = cubeTransform.position + -direction * currentScale / 2 + Vector3.down * currentScale / 2;
+                break;
+
+            #endregion
+
+            #region Climb Left
+            //climb left
+            case RollType.climb_Left:
+                remainingAngle = 90f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //climb left bonk flat
+            case RollType.bonk_climbLeft_flat:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //climb left bonk head
+            case RollType.bonk_climbLeft_head:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + -Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            #endregion
+
+            #region Climb Right
+            //climb right
+            case RollType.climb_Right:
+                remainingAngle = 90f;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //climb right bonk flat
+            case RollType.bonk_climbRight_flat:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position - direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+            //climb right bonk flat
+            case RollType.bonk_climbRight_head:
+                remainingAngle = bonkAngle;
+                rotationAnchor = cubeTransform.position + direction * currentScale / 2 + Vector3.Cross(direction, Vector3.up) * currentScale / 2;
+                break;
+
+                #endregion
+
+                #endregion
+        }
+        #endregion
+
+        //execute roll rotation
+        #region Rotation
+        //////////////////////////////////////////////////////////////////////////////
+
+        //find roll axis
+        //LEFT
+        if (rollType == RollType.climb_Left ||
+            rollType == RollType.step_Left ||
+            rollType == RollType.bonk_climbLeft_flat)
+        {
+            rotationAxis = Vector3.up;
+        }
+        else if (rollType == RollType.bonk_climbLeft_head)
+        {
+            rotationAxis = Vector3.down;
+        }
+        else if (rollType == RollType.bonk_stepLeft1 ||
+                rollType == RollType.bonk_stepLeft2 ||
+                rollType == RollType.bonk_stepLeft3)
+        {
+            rotationAxis = Vector3.down;
+        }
+
+        //RIGHT
+        else if (rollType == RollType.climb_Right ||
+                 rollType == RollType.step_Right ||
+                 rollType == RollType.bonk_climbRight_flat)
+        {
+            rotationAxis = Vector3.down;
+        }
+        else if (rollType == RollType.bonk_climbRight_head)
+        {
+            rotationAxis = Vector3.up;
+        }
+        else if (rollType == RollType.bonk_stepRight1 ||
+                rollType == RollType.bonk_stepRight2 ||
+                rollType == RollType.bonk_stepRight3)
+        {
+            rotationAxis = Vector3.up;
+        }
+
+        //NORMAL
+        else
+        {
+            rotationAxis = Vector3.Cross(Vector3.up, direction);
+        }
+        //reset timer
+        float timer = 0;
+
+        //while there is still angle to go
+        while (remainingAngle > 0)
+        {
+            float rotationAngle;
+            //calculate rotation angle
+            //uses min so that it goes exactly to the angle specified
+            //bonk flat
+            if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbUp_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
+            {
+                rotationAngle = Mathf.Min(bonkCurve.Evaluate(timer) * bonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            //head bonk
+            else if (rollType == RollType.bonk_head || rollType == RollType.bonk_climbUp_head || rollType == RollType.bonk_climbLeft_head || rollType == RollType.bonk_climbRight_head)
+            {
+                rotationAngle = Mathf.Min(headBonkCurve.Evaluate(timer) * headBonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            //bonk step 1
+            else if (rollType == RollType.bonk_stepUp1 || rollType == RollType.bonk_stepDown1 || rollType == RollType.bonk_stepLeft1 || rollType == RollType.bonk_stepRight1)
+            {
+                rotationAngle = Mathf.Min(step1BonkCurve.Evaluate(timer) * step1BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            //bonk step 2
+            else if (rollType == RollType.bonk_stepUp2 || rollType == RollType.bonk_stepDown2 || rollType == RollType.bonk_stepLeft2 || rollType == RollType.bonk_stepRight2)
+            {
+                rotationAngle = Mathf.Min(step2BonkCurve.Evaluate(timer) * step2BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            //bonk step 3
+            else if (rollType == RollType.bonk_stepUp3 || rollType == RollType.bonk_stepDown3 || rollType == RollType.bonk_stepLeft3 || rollType == RollType.bonk_stepRight3)
+            {
+                rotationAngle = Mathf.Min(step3BonkCurve.Evaluate(timer) * step3BonkSpeed * Time.deltaTime, remainingAngle);
+            }
+            //normal
+            else
+            {
+                rotationAngle = Mathf.Min(rollCurve.Evaluate(timer) * rollSpeed * Time.deltaTime, remainingAngle);
+            }
+
+            //rotation
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, rotationAngle);
+
+            //decrement remaing angle by the amount rotated
+            remainingAngle -= rotationAngle;
+
+            //increment timer
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (rollType == RollType.bonk_flat || rollType == RollType.bonk_climbUp_flat || rollType == RollType.bonk_climbLeft_flat || rollType == RollType.bonk_climbRight_flat)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+        else if (rollType == RollType.bonk_head || rollType == RollType.bonk_climbUp_head || rollType == RollType.bonk_climbLeft_head || rollType == RollType.bonk_climbRight_head)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+        else if (rollType == RollType.bonk_stepUp1 || rollType == RollType.bonk_stepDown1 || rollType == RollType.bonk_stepLeft1 || rollType == RollType.bonk_stepRight1)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+        else if (rollType == RollType.bonk_stepUp2 || rollType == RollType.bonk_stepDown2 || rollType == RollType.bonk_stepLeft2 || rollType == RollType.bonk_stepRight2)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+        else if (rollType == RollType.bonk_stepUp3 || rollType == RollType.bonk_stepDown3 || rollType == RollType.bonk_stepLeft3 || rollType == RollType.bonk_stepRight3)
+        {
+            cubeTransform.RotateAround(rotationAnchor, rotationAxis, -bonkAngle);
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////
+        #endregion
+
+        //fix round errors
+        #region Round Errors
+        //FixFloatingPointErrors();
+        #endregion
+
+        //falling behaviour
+        #region Fall
+        //fall
+        //if there is nothing below at the end of a move
+        if (!Physics.Raycast(cubeTransform.position, Vector3.down, currentScale, calculateRollTypeScript.rollLayerMask) && !CheckIfOnMagneticCube())
+        {
+            canMove = false;
+
+            //draw a debug ray down
+            //Debug.DrawRay(cubeTransform.position, Vector3.down * Mathf.Infinity, Color.white, scale);
+
+            //raycast straight down
+            Physics.Raycast(cubeTransform.position + Vector3.down * currentScale / 2, Vector3.down, out RaycastHit hit_fall, Mathf.Infinity, calculateRollTypeScript.rollLayerMask);
+
+            //get distance
+            fallDistance = hit_fall.distance;
+
+            //falling to death check
+            isFallingToDeath = hit_fall.collider.gameObject.layer == respawnLayer;
+
+            //move cube down 
+            Tween.Position(cubeTransform, cubeTransform.position + Vector3.down * fallDistance, fallDistance / currentScale / FALL_MODULATOR, 0, fallCurve, Tween.LoopType.None, HandleStartFallTween, HandleEndFallTween);
+
+            //set falling to true
+            isFalling = true;
+        }
+        else
+        {
+            //call animations
+            #region Call Animations
+            //roll continous
+            if (inputVector.magnitude != 0f)
+            {
+                onRollContinous.Invoke();
+            }
+            //roll stop
+            else
+            {
+                onRollStop.Invoke();
+            }
+            #endregion
+        }
+
+        while (isFalling)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        #endregion
+
+        //final checks to end movement
+        #region end movement
+
+        //pressure plates
+        CheckAllPressurePlates();
+
+        //check if on magnetic cube
+        onMagneticCube = CheckIfOnMagneticCube();
+
+        //check that cube hasnt been completed
+        #region check completed cube
+        if (cubeDatas.Count() > 0 && cubes_index < cubeDatas.Count() - 1)
+        {
+            //if the distance between the current cube and the next cubes missing transform is less than or equal to the merge distance threshold
+            if (Vector3.Distance(cubeDatas[cubes_index].transform.position, cubeDatas[cubes_index + 1].missingPosition.position) <= mergeDistanceThreshold * currentScale &&
+                cubeDatas[cubes_index + 1].canMerge)
+            {
+                //merge cube
+                MergeCube_method();
             }
         }
 
@@ -1175,8 +1645,13 @@ public class PlayerController : MonoBehaviour
     //**********************************************************************************************************//
     #region Merge
 
+    public void MergeCube_method()
+    {
+        StartCoroutine(MergeCube());
+    }
+
     //merge cube
-    private void MergeCube()
+    private IEnumerator MergeCube()
     {
         //set movement off
         canMove = false;
@@ -1223,6 +1698,139 @@ public class PlayerController : MonoBehaviour
         {
             cubes_index++;
         }
+
+        yield return null;
+
+        //set can move
+        canMove = true;
+    }
+
+    public void Demerge_method(Transform targetPosition)
+    {
+        StartCoroutine(Demerge(targetPosition));
+    }
+
+    public IEnumerator Demerge(Transform targetTransform)
+    {
+
+        Vector3 demerge_direction = targetTransform.position - cubeDatas[cubes_index].transform.position;
+
+        Quaternion cube_Direction = Quaternion.identity;
+
+        Vector3 roll_Direction = Vector3.zero;
+
+        if(Mathf.Abs(demerge_direction.x) > Mathf.Abs(demerge_direction.z))
+        {
+            if (demerge_direction.x > 0)
+            {
+                //Debug.Log("Direction 1");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 270f, 0));
+                roll_Direction = Vector3.right;
+            }
+            else
+            {
+                //Debug.Log("Direction 3");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 90f, 0));
+                roll_Direction = Vector3.left;
+            }
+        }
+        else
+        {
+            if (demerge_direction.z > 0)
+            {
+                //Debug.Log("Direction 4");
+                cube_Direction = Quaternion.Euler(new Vector3(0, 180f, 0));
+                roll_Direction = Vector3.forward;
+            }
+            else
+            {
+                //Debug.Log("Direction 2");
+                cube_Direction = Quaternion.identity;
+                roll_Direction = Vector3.back;
+            }
+        }
+
+        //set movement off
+        canMove = false;
+
+        //////////////////////////// CURRENT CUBE ////////////////////////////
+
+        //reset transform
+        cubeDatas[cubes_index].transform.rotation = cube_Direction;
+
+        //set active = true incomplete meshes
+        cubeDatas[cubes_index].incompleteMesh.SetActive(true);
+
+        //set active = false complete meshes
+        cubeDatas[cubes_index].completeMesh.SetActive(false);
+
+        //set current small cubes parent to be large cubes transform
+        cubeDatas[cubes_index].isCurrentCube = false;
+
+        //set can merge to false
+        cubeDatas[cubes_index].canMerge = false;
+
+        //////////////////////////// smaller CUBE ////////////////////////////
+        //set cube transform to large cube transform
+        cubeTransform = cubeDatas[cubes_index - 1].transform;
+
+        //set scale
+        currentScale = cubeDatas[cubes_index - 1].scale;
+
+        //set position of smaller cube
+        cubeDatas[cubes_index - 1].transform.position = cubeDatas[cubes_index].missingPosition.position;
+
+        //reset rotation
+        cubeDatas[cubes_index - 1].transform.rotation = Quaternion.identity;
+
+        //set active = false incomplete meshes
+        cubeDatas[cubes_index - 1].incompleteMesh.SetActive(false);
+
+        //set active = true complete meshes
+        cubeDatas[cubes_index - 1].completeMesh.SetActive(true);
+
+        //turn it on
+        cubeDatas[cubes_index - 1].gameObject.SetActive(true);
+
+        //set next current cube in cube data
+        cubeDatas[cubes_index - 1].isCurrentCube = true;
+
+
+        //////////////////////////// Camera ////////////////////////////
+        //update camera size
+        StartCoroutine(cameraController.StartCameraScale(cubeDatas[cubes_index].scale, cubeDatas[cubes_index - 1].scale));
+
+        //update camera follow transform
+        cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index - 1].transform;
+
+        //animation
+        animationController = cubeDatas[cubes_index - 1].GetComponentInChildren<AnimationController>();
+
+        //rigid body
+        rb = cubeDatas[cubes_index - 1].GetComponent<Rigidbody>();
+
+        //turn on squashable cubes
+        squash.MakeCubesHard(cubes_index - 1);
+
+        //merge events
+        cubeDatas[cubes_index - 1].mergeEvents.Invoke();
+
+        //increment index
+        if (cubes_index > 0)
+        {
+            cubes_index--;
+        }
+
+        //do colour stuff
+
+        //Debug.DrawRay(cubeTransform.position, roll_Direction, Color.blue, Mathf.Infinity);
+
+        yield return new WaitForSeconds(0.1f);
+
+        //take a step
+        StartCoroutine(Roll_noRelativeDirection(roll_Direction));
+
+        yield return null;
 
         //set can move
         canMove = true;

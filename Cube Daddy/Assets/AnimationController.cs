@@ -35,6 +35,9 @@ public class AnimationController : MonoBehaviour
 
         player.canMove = false;
 
+        //set cube rotation to identitiy
+        player.cubeDatas[player.cubes_index].gameObject.transform.rotation = Quaternion.identity;
+
         SetPositionAtBase();
         
         ParentPlayerCube(true);

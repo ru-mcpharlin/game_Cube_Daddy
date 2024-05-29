@@ -16,14 +16,13 @@ public class CameraController : MonoBehaviour
     ////***********************************************//
     #region Variables
     [Header("Player Input")]
+    [SerializeField] public InputMode inputMode;
     [Space]
     [SerializeField] public float yValue;
-    [SerializeField] public float ySpeed;
     [SerializeField] public float yThreshold_mouse;
     [SerializeField] public float yThreshold_gamepad;
     [Space]
     [SerializeField] public float xValue;
-    [SerializeField] public float xSpeed;
     [SerializeField] public float xThreshold_mouse;
     [SerializeField] public float xThreshold_gamepad;
 
@@ -86,6 +85,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float _minHeightClamp;
     [SerializeField] public float _maxHeightClamp;
     [Space]
+    [SerializeField] public float _cam5_targetHeight;
+    [SerializeField] public float _cam5_height;
+    [SerializeField] public float _cam5_velocity;
+    [SerializeField] public float _cam5_smoothDampDuration;
+    [Space]
     [SerializeField] public float _cam5_gamepadSpeed;
     [SerializeField] public float _cam5_mouseSpeed;
 
@@ -106,8 +110,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] float CAM6_HEIGHTCLAMP_MAX;
     [SerializeField] float CAM6_HEIGHTCLAMP_MIN;
     [Space]
-    [SerializeField] public float CAM6_SPEED_GAMEPAD;
-    [SerializeField] public float CAM6_SPEED_MOUSE;
+    [SerializeField] public float CAM6_X_SENSITIVITY_GAMEPAD;
+    [SerializeField] public float CAM6_Y_SENSITIVITY_GAMEPAD;
+    [SerializeField] public float CAM6_X_SENSITIVITY_MOUSE;
+    [SerializeField] public float CAM6_Y_SENSITIVITY_MOUSE;
 
 
     [Header("Index")]
@@ -135,6 +141,12 @@ public class CameraController : MonoBehaviour
     public void SetCameraState(CameraState inputState)
     {
         cameraState = inputState;
+    }
+
+    public enum InputMode
+    {
+        Mouse,
+        Gamepad
     }
     #endregion
 
@@ -355,14 +367,23 @@ public class CameraController : MonoBehaviour
             xValue = 0;
         }
 
+
+
+        if(Mathf.Abs(player.cameraVector_Mouse.magnitude) > yThreshold_mouse)
+        {
+            inputMode = InputMode.Mouse;
+        }
+        if(Mathf.Abs(player.cameraVector_Gamepad.x) > yThreshold_gamepad)
+        {
+            inputMode = InputMode.Gamepad;
+        }
+
         #endregion
 
 
         #region Camera 3 Control
         if (cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
         {
-            if (Mathf.Abs(player.cameraVector_Gamepad.x) >= camera3_gamepadThreshold)
-            {
                 if (player.cameraVector_Gamepad.x > 0)
                 {
                     DecreaseCamera3Index();
@@ -371,18 +392,6 @@ public class CameraController : MonoBehaviour
                 {
                     IncreaseCamera3Index();
                 }
-            }
-            else if (Mathf.Abs(player.cameraVector_Mouse.x) >= camera3_mouseThreshold)
-            {
-                if (player.cameraVector_Mouse.x > 0)
-                {
-                    DecreaseCamera3Index();
-                }
-                else
-                {
-                    IncreaseCamera3Index();
-                }
-            }
         }
 
 
@@ -393,14 +402,11 @@ public class CameraController : MonoBehaviour
         if (cameraState == CameraState.camera5_DynamicPerspective_Limited)
         {
             //x axis
-            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * _cam5_mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * _cam5_gamepadSpeed * Time.deltaTime;
+            _5orbitalTransposer.m_XAxis.m_InputAxisValue += xValue;
 
             //y axis
-            if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
-            {
-                _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
-                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
-            }
+
+
         }
 
         #endregion
@@ -409,17 +415,29 @@ public class CameraController : MonoBehaviour
         //if in camera 6 state
         else if (cameraState == CameraState.camera6_DynamicPerspective_Free)
         {
+            //mouse
+            if(inputMode == InputMode.Mouse)
+            {
+                cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM6_X_SENSITIVITY_MOUSE;
 
-            cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue;
+                cam6_height = cam6_height + yValue * CAM6_Y_SENSITIVITY_MOUSE;
+            }
+            //gamepad
+            else if(inputMode == InputMode.Gamepad)
+            {
+                cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM6_X_SENSITIVITY_GAMEPAD;
 
-            cam6_height = Mathf.SmoothDamp(cam6_height, cam6_height + yValue, ref height_smoothDampVelocity, height_smoothDampTime);
+                cam6_height = cam6_height + yValue * CAM6_Y_SENSITIVITY_GAMEPAD;
+            }
 
+            //height
+            cam6_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam6_orbitalTransposer.m_FollowOffset.y, cam6_height, ref height_smoothDampVelocity, height_smoothDampTime);
+
+            //clamp the height
             cam6_height = Mathf.Clamp(cam6_height, CAM6_HEIGHTCLAMP_MIN * player.currentScale, CAM6_HEIGHTCLAMP_MAX * player.currentScale);
 
-            cam6_orbitalTransposer.m_FollowOffset.y = cam6_height;
-
+            //smooth damp the position
             cam6_follow.position = Vector3.SmoothDamp(cam6_follow.position, player.cubeTransform.position, ref pos_smoothDampVelocity, pos_smoothDampTime);
-           
         }
 
         #endregion
