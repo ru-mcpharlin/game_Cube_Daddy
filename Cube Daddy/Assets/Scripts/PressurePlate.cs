@@ -66,7 +66,14 @@ public class PressurePlate : MonoBehaviour
     IEnumerator ActivatePressurePad()
     {
         hasCollectedPellets = true;
-        GameObject.Instantiate(activateVFX, new(transform.position.x, transform.position.y + 0.5f, transform.position.z), Quaternion.Euler(new(-90, 0, 0)));
+        GameObject vfx = Instantiate(activateVFX, new(transform.position.x, transform.position.y + 0.5f, transform.position.z), Quaternion.Euler(new(-90, 0, 0)));
+        ParticleSystem[] emmiters = vfx.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem emmit in emmiters)
+        {
+            emmit.transform.localScale = transform.localScale;
+        }
+        
+        vfx.transform.localScale = transform.localScale;
         yield return new WaitForSeconds(0.5f);
         buttonRenderer.material = activatedMaterial;
     }
