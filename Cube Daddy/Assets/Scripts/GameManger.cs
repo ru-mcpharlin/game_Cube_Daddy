@@ -80,16 +80,16 @@ public class GameManger : MonoBehaviour
 
         yield return new WaitUntil(() => cameraController.brain.ActiveBlend == null);
 
-        Debug.Log("before scene load line");
+        //Debug.Log("before scene load line");
 
         LoadScene(spaceSceneIndex);
 
-        Debug.Log("After scene load line");
+        //Debug.Log("After scene load line");
 
         // Wait until the scene is loaded
         yield return new WaitUntil(() => SceneManager.GetActiveScene().buildIndex == spaceSceneIndex);
 
-        Debug.Log("Scene loaded");
+        //Debug.Log("Scene loaded");
 
         // Start the white-out effect
         Pixelplacement.Tween.Color(whiteOut, _transparent, whiteOutDuration_out, 0f, whiteOutCurve_OUT);
