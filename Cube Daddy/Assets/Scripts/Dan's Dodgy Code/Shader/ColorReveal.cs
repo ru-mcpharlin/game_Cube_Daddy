@@ -5,8 +5,9 @@ using Pixelplacement;
 
 public class ColorReveal : MonoBehaviour
 {
-    public Material mat;
+    public Material revealMat, completeMat;
     public AnimationCurve tweenCurve;
+    public Renderer fullCube;
 
     // Update is called once per frame
     void Update()
@@ -19,7 +20,12 @@ public class ColorReveal : MonoBehaviour
 
     public void RevealColor()
     {
-        Debug.Log("Revealing");
-        Tween.ShaderFloat(mat, "_Reveal_Amount", 1, 1, 0, tweenCurve);
+        Tween.ShaderFloat(revealMat, "_Reveal_Amount", 1, 1, 0, tweenCurve, Tween.LoopType.None, null, FinishReveal);
+    }
+
+    private void FinishReveal()
+    {
+        fullCube.materials[0] = completeMat;
+        Tween.ShaderFloat(revealMat, "_Reveal_Amount", 0, 0.1f, 0, tweenCurve);
     }
 }

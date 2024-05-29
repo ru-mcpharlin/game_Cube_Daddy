@@ -12,9 +12,11 @@ public class Pellet : MonoBehaviour
     private float delay = 0.2f;
     private float animDuration = 0.75f;
     private float animRepeatDelay = 1.75f;
+    private Vector3 scale;
 
     private void Start()
     {
+        scale = transform.parent.localScale;
         float wait = orderInGroup * delay;
         Invoke("StartAnimation", wait);
     }
@@ -36,7 +38,11 @@ public class Pellet : MonoBehaviour
 
     private void CollectPellet()
     {
-        Instantiate(collectVFX, transform.position, Quaternion.Euler(-90, 0, 0));
+        GameObject vfx = Instantiate(collectVFX, transform.position, Quaternion.Euler(-90, 0, 0));
+        vfx.transform.localScale = scale;
+        var part = vfx.GetComponent<ParticleSystem>();
+        var main = part.main;
+        main.gravityModifier = scale.x * 5f;
         Destroy(transform.parent.gameObject);
     }
 }
