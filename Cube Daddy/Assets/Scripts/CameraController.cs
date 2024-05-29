@@ -19,12 +19,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] public InputMode inputMode;
     [Space]
     [SerializeField] public float yValue;
-    [SerializeField] public float ySpeed;
     [SerializeField] public float yThreshold_mouse;
     [SerializeField] public float yThreshold_gamepad;
     [Space]
     [SerializeField] public float xValue;
-    [SerializeField] public float xSpeed;
     [SerializeField] public float xThreshold_mouse;
     [SerializeField] public float xThreshold_gamepad;
 
@@ -86,6 +84,11 @@ public class CameraController : MonoBehaviour
     [Space]
     [SerializeField] public float _minHeightClamp;
     [SerializeField] public float _maxHeightClamp;
+    [Space]
+    [SerializeField] public float _cam5_targetHeight;
+    [SerializeField] public float _cam5_height;
+    [SerializeField] public float _cam5_velocity;
+    [SerializeField] public float _cam5_smoothDampDuration;
     [Space]
     [SerializeField] public float _cam5_gamepadSpeed;
     [SerializeField] public float _cam5_mouseSpeed;
@@ -381,8 +384,6 @@ public class CameraController : MonoBehaviour
         #region Camera 3 Control
         if (cameraState == CameraController.CameraState.camera3_DynamicIsometric_Unlocked)
         {
-            if (Mathf.Abs(player.cameraVector_Gamepad.x) >= camera3_gamepadThreshold)
-            {
                 if (player.cameraVector_Gamepad.x > 0)
                 {
                     DecreaseCamera3Index();
@@ -391,18 +392,6 @@ public class CameraController : MonoBehaviour
                 {
                     IncreaseCamera3Index();
                 }
-            }
-            else if (Mathf.Abs(player.cameraVector_Mouse.x) >= camera3_mouseThreshold)
-            {
-                if (player.cameraVector_Mouse.x > 0)
-                {
-                    DecreaseCamera3Index();
-                }
-                else
-                {
-                    IncreaseCamera3Index();
-                }
-            }
         }
 
 
@@ -413,14 +402,11 @@ public class CameraController : MonoBehaviour
         if (cameraState == CameraState.camera5_DynamicPerspective_Limited)
         {
             //x axis
-            _5orbitalTransposer.m_XAxis.m_InputAxisValue = player.cameraVector_Mouse.x * _cam5_mouseSpeed * Time.deltaTime + player.cameraVector_Gamepad.x * _cam5_gamepadSpeed * Time.deltaTime;
+            _5orbitalTransposer.m_XAxis.m_InputAxisValue += xValue;
 
             //y axis
-            if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
-            {
-                _5orbitalTransposer.m_FollowOffset.y += yValue * Time.deltaTime * ySpeed;
-                _5orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_5orbitalTransposer.m_FollowOffset.y, _minHeightClamp, _maxHeightClamp);
-            }
+
+
         }
 
         #endregion
