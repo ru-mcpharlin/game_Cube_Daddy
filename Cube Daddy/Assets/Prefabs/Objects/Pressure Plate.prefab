@@ -247,7 +247,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 17
+  m_VersionIndex: 23
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1341,7 +1341,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 577
+  m_VersionIndex: 583
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1394,7 +1394,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cb3f07514ff2cf47938a19500aa811b, type: 2}
+  - {fileID: 2100000, guid: aa4ed6e9d92a996498346b92f614a2d5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1518,12 +1518,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unityEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FormingPlatform, Assembly-CSharp
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   distanceThreshold: 0.1
   hasBeenTriggered: 0
   targetPosition: {fileID: 5895325684793268439}
-  needToHaveCollectedPellets: 0
+  needToHaveCollectedPellets: 1
   hasCollectedPellets: 0
-  pellets: []
+  pellets:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   button: {fileID: 5895325683961750426}
   triggeredButtonPosition: {fileID: 5895325685440890848}
+  activateVFX: {fileID: 7960314171709731973, guid: 00f3881ed2828384987aa42420ce7f77,
+    type: 3}
+  activatedMaterial: {fileID: 2100000, guid: 6337cadd11cd5fa4d815eec30569abbf, type: 2}
+  buttonRenderer: {fileID: 5895325683961750431}

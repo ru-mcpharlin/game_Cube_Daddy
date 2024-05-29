@@ -13,7 +13,7 @@ public class ColorReveal : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            RevealColor();
+            //RevealColor();
         }
     }
 
