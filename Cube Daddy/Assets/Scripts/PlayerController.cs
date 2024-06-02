@@ -1928,4 +1928,18 @@ public class PlayerController : MonoBehaviour
 
 
     #endregion
+
+    //**********************************************************************************************************//
+    #region Star
+
+    public void StarMerge(Transform starTransform)
+    {
+        cubeTransform = starTransform;
+        rb = cubeTransform.GetComponent<Rigidbody>();
+    }
+
+
+    #endregion
+
+
 }

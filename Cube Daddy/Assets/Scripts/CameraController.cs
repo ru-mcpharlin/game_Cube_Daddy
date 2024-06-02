@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] List<CinemachineVirtualCamera> camera3_cameras;
     [SerializeField] CinemachineVirtualCamera camera4_camera;
     [SerializeField] CinemachineVirtualCamera camera5_camera;
-    [SerializeField] CinemachineVirtualCamera camera6_camera;
+    [SerializeField] List<CinemachineVirtualCamera> camera6_cameras;
     [SerializeField] CinemachineVirtualCamera camera7_camera;
     [Space]
     [SerializeField] CinemachineVirtualCamera transitionCamera_LandtoSpace;
@@ -123,6 +123,8 @@ public class CameraController : MonoBehaviour
     [Space]
     [Header("Camera 6")]
     #region camera 6 variables
+    [SerializeField] int cam6_index;
+    [Space]
     [SerializeField] CinemachineOrbitalTransposer cam6_orbitalTransposer;
     [SerializeField] Transform cam6_follow;
     [SerializeField] float cam6_height;
@@ -219,8 +221,7 @@ public class CameraController : MonoBehaviour
                     break;
 
                 case CameraState.camera6_DynamicPerspective_Free:
-                    camera6_camera = vc;
-                    cam6_orbitalTransposer = camera6_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    camera6_cameras.Add(vc);
                     break;
 
                 case CameraState.transitionCamera_landToSpace:
@@ -578,16 +579,31 @@ public class CameraController : MonoBehaviour
     }
     #endregion
 
+    //CAMERA 6
+    #region Camera 6
+
+    public void SetCamera6Index(int inputIndex)
+    {
+        cam6_index = inputIndex;
+        TurnCamera6On();
+    }
+
+
+    #endregion
+
     //TURN CAMERAS ON
     #region Turn Cameras On
+
 
     public void TurnCamera6On()
     {
 
         TurnOffAllCameras();
         SetCameraState(CameraState.camera6_DynamicPerspective_Free);
-        camera6_camera.Priority = CAMERA_ON;
-        player.vc_transform = camera6_camera.transform;
+        camera6_cameras[cam6_index].Priority = CAMERA_ON;
+
+        cam6_orbitalTransposer = camera6_cameras[cam6_index].GetCinemachineComponent<CinemachineOrbitalTransposer>();
+        player.vc_transform = camera6_cameras[cam6_index].transform;
 
         mainCamera.orthographic = false;
     }
@@ -738,7 +754,8 @@ public class CameraController : MonoBehaviour
         _cam5_minHeight = Mathf.Lerp(CAM5_MIN_HEIGHT_UNSCALED * currentScale, CAM5_MIN_HEIGHT_UNSCALED * nextScale, t);
         _cam5_maxHeight = Mathf.Lerp(CAM5_MAX_HEIGHT_UNSCALED * currentScale, CAM5_MAX_HEIGHT_UNSCALED * nextScale, t);
 
-        //camera 6
+        //CAMERA 6
+
         
 
         //TIMER
