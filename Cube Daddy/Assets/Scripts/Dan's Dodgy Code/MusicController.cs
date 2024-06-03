@@ -31,6 +31,22 @@ public class MusicController : MonoBehaviour
     public AudioSource demergeSource;
     public float DEMERGE_VOLUME;
 
+    private void Update()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            AddLayer_Land();
+        }
+    }
+
+    private void OnEnable()
+    {
+        musicLayers_land = GetComponentsInChildren<AudioSource>();
+        foreach(AudioSource track in musicLayers_land)
+        {
+            track.volume = 0;
+        }
+    }
     public void AddLayer_Land()
     {
         if(activeTrack_Land < musicLayers_land.Length)
