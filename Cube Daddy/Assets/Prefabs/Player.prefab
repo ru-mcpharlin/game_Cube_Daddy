@@ -58,6 +58,7 @@ MonoBehaviour:
   isMoving: 0
   isFalling: 0
   isTeleporting: 0
+  isPopping: 0
   isMagnetic: 0
   onMagneticCube: 0
   rollSpeed: 3000
@@ -245,10 +246,34 @@ MonoBehaviour:
   ROTATION_SPEED: 0
   onRollContinous:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onRollStop:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onFall_small:
     m_PersistentCalls:
       m_Calls:
@@ -262,6 +287,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: LandSmall
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   onFall_med:
@@ -279,6 +316,18 @@ MonoBehaviour:
           m_StringArgument: LandMed
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onFall_large:
     m_PersistentCalls:
       m_Calls:
@@ -292,6 +341,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: LandLarge
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   event_teleportStart:
@@ -324,8 +385,70 @@ MonoBehaviour:
           m_StringArgument: TeleportEnd
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: MusicController, Assembly-CSharp
+        m_MethodName: PlayRollSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   teleportDuration: 1
   teleportDelay: 0.45
+  pop_yValue: 0
+  popDuration: 1
+  popY_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -3.132137
+      outSlope: -3.132137
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.19277608
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  popXZ_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   cubeDatas: []
   currentScale: 1
   cubeTransform: {fileID: 0}
@@ -338,7 +461,6 @@ MonoBehaviour:
   rb: {fileID: 0}
   squash: {fileID: 0}
   calculateRollTypeScript: {fileID: 0}
-  animationController: {fileID: 0}
   tag_Environment: Environment
   tag_MagneticEnvironment: Magnetic Environment
   tag_player: Player
@@ -377,7 +499,7 @@ MonoBehaviour:
   player: {fileID: 0}
   tag_MagneticEnvironment: Magnetic Environment
   debug: 0
-  debugRollType: 21
+  debugRollType: 23
   rollLayerMask:
     serializedVersion: 2
     m_Bits: 7339912
@@ -407,7 +529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68934293ac716ac4eb7379110ea2d2e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DISTANCE_THRESHOLD: 0.8
+  DISTANCE_THRESHOLD: 0.7
   destroyCubeVFX: {fileID: 4880471255732539234, guid: c9b899436e3f5d245af7b0589bb6c92b,
     type: 3}
   player: {fileID: 0}
