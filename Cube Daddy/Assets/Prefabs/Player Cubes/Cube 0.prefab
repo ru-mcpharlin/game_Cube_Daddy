@@ -5629,6 +5629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   squash: {fileID: 0}
+  animationController: {fileID: 0}
   isCurrentCube: 0
   canMerge: 1
   scale: 0

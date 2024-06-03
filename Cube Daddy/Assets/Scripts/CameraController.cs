@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
@@ -95,6 +96,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] int camera3_index;
     [SerializeField] public float CAM3_COOLDOWN_MAX;
     [SerializeField] public float cam3_coolDownTimer;
+    [SerializeField] public bool hasTurnedCamera3;
+    [SerializeField] public UnityEvent hasTurnedCamera3_Event;
     #endregion
 
     [Space]
@@ -388,7 +391,6 @@ public class CameraController : MonoBehaviour
 
     #endregion
 
-
     //DEBUGGING
     #region debugging
     private void Camera_Debug()
@@ -556,6 +558,12 @@ public class CameraController : MonoBehaviour
                 TurnCamera3On();
                 cam3_coolDownTimer = CAM3_COOLDOWN_MAX;
             }
+
+            if(!hasTurnedCamera3)
+            {
+                hasTurnedCamera3 = true;
+                hasTurnedCamera3_Event.Invoke();
+            }
         }
     }
 
@@ -574,6 +582,12 @@ public class CameraController : MonoBehaviour
                 camera3_index--;
                 TurnCamera3On();
                 cam3_coolDownTimer = CAM3_COOLDOWN_MAX;
+            }
+
+            if (!hasTurnedCamera3)
+            {
+                hasTurnedCamera3 = true;
+                hasTurnedCamera3_Event.Invoke();
             }
         }
     }
