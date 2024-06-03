@@ -74,5 +74,5 @@ Material:
     - _Distance_Color: {r: 0.23300104, g: 0.6415094, b: 0.23432855, a: 0}
     - _Distance_Range: {r: 0, g: 0, b: 0, a: 0}
     - _Edge_Color: {r: 1, g: 0.56078434, b: 0.56078434, a: 0}
-    - _Position: {r: 0.49999934, g: 0.49999982, b: 54.413723, a: 0}
+    - _Position: {r: -0.01150322, g: -0.4965575, b: 11.685727, a: 0}
   m_BuildTextureStacks: []
