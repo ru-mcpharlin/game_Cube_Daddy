@@ -1691,7 +1691,14 @@ public class PlayerController : MonoBehaviour
         rb = cubeDatas[cubes_index + 1].GetComponent<Rigidbody>();
 
         //merge events
-        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
+        
+        for(int i = 0; i < cubeDatas[cubes_index + 1].mergeEvents.Length; i++)
+        {
+            cubeDatas[cubes_index + 1].mergeEvents[i].Invoke();
+
+            yield return new WaitUntil(() => cubeDatas[cubes_index + 1].mergeEvents[i].IsUnityNull());
+        }
+        
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
@@ -1813,7 +1820,7 @@ public class PlayerController : MonoBehaviour
         squash.MakeCubesHard(cubes_index - 1);
 
         //merge events
-        cubeDatas[cubes_index - 1].mergeEvents.Invoke();
+        //cubeDatas[cubes_index - 1].mergeEvents.Invoke();
 
         //increment index
         if (cubes_index > 0)
