@@ -8,6 +8,7 @@ public class TitleCube : MonoBehaviour
 {
     public int orderInTitle;
     public AnimationCurve ActivateTween, TwistTween, BounceTween;
+    public bool isPlayerCube;
 
     private Vector3 initialRotation;
 
@@ -32,4 +33,5 @@ public class TitleCube : MonoBehaviour
         Tween.LocalRotation(transform, rot, 0.4f, 1.5f, TwistTween);
         Tween.Position(transform, pos, 0.4f, 1.5f, BounceTween);
     }
+
 }

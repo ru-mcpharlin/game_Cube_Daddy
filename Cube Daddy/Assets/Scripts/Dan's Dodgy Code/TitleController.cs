@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using Pixelplacement;
+using Cinemachine;
 
 public class TitleController : MonoBehaviour
 {
@@ -11,6 +13,11 @@ public class TitleController : MonoBehaviour
     public PlayerController controller;
     public Transform startPosition;
     public AnimationCurve fallTween;
+    public float fallTime;
+    public CinemachineVirtualCamera titleCam, fallCam;
+    public UnityEvent fallEvent;
+    private TitleCube playerCube;
+    private bool fallen;
 
     IEnumerator CubeIn()
     {
@@ -24,12 +31,16 @@ public class TitleController : MonoBehaviour
                 {
                     cube.Activate();
                 }
+
+                if (cube.isPlayerCube)
+                {
+                    playerCube = cube;
+                }
             }
             yield return new WaitForSeconds(0.05f);
         }
         yield return new WaitForSeconds(2);
-        controller.PlayAnimation_CannotMove("Merge");
-        Tween.LocalPosition(transform, startPosition.position, 4, 0, fallTween);
+        //controller.PlayAnimation_CannotMove("Merge");
         
     }
 
@@ -45,9 +56,29 @@ public class TitleController : MonoBehaviour
         
     }
 
-    private void CupeUp()
+    private void Fall()
     {
-        StartCoroutine(CubeIn());
+        Tween.Position(playerCube.transform, startPosition.position, fallTime, 0, fallTween, Tween.LoopType.None, null, FinishFall);
+        fallEvent.Invoke();
+        //fallCam.Priority = 1;
+        //titleCam.Priority = 0;
+        fallen = true;
+    }
+
+    private void FinishFall()
+    {
+        playerCube.transform.position = startPosition.position;
+    }
+
+    private void Update()
+    {
+        if (Input.anyKey)
+        {
+            if (!fallen)
+            {
+                Fall();
+            }
+        }
     }
 
 }
