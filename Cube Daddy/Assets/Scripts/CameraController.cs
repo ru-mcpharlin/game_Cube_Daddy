@@ -41,6 +41,8 @@ public class CameraController : MonoBehaviour
     #region transition variables
     [Space]
     [SerializeField] public bool isTransitioning;
+    //[SerializeField] 
+    [Space]
     [SerializeField] public float currentScale;
     [SerializeField] public float nextScale;
     [Space]
@@ -73,8 +75,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] List<CinemachineVirtualCamera> camera3_cameras;
     [SerializeField] CinemachineVirtualCamera camera4_camera;
     [SerializeField] CinemachineVirtualCamera camera5_camera;
-    [SerializeField] CinemachineVirtualCamera camera6_camera;
+    [SerializeField] List<CinemachineVirtualCamera> camera6_cameras;
     [SerializeField] CinemachineVirtualCamera camera7_camera;
+    [Space]
+    [SerializeField] CinemachineVirtualCamera transitionCamera_LandtoSpace;
     #endregion
 
     [Space]
@@ -103,8 +107,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] public float _cam5_velocity;
     [SerializeField] public float _cam5_smoothDampDuration;
     [Space]
-    [SerializeField] public float CAM5_MIN_HEIGHT;
-    [SerializeField] public float CAM5_MAX_HEIGHT;
+    [SerializeField] public float _cam5_minHeight;
+    [SerializeField] public float _cam5_maxHeight;
+    [Space]
+    [SerializeField] public float CAM5_MIN_HEIGHT_UNSCALED;
+    [SerializeField] public float CAM5_MAX_HEIGHT_UNSCALED;
     [Space]
     [SerializeField] public float CAM5_X_SENSITIVITY_GAMEPAD;
     [SerializeField] public float CAM5_Y_SENSITIVITY_GAMEPAD;
@@ -116,6 +123,8 @@ public class CameraController : MonoBehaviour
     [Space]
     [Header("Camera 6")]
     #region camera 6 variables
+    [SerializeField] int cam6_index;
+    [Space]
     [SerializeField] CinemachineOrbitalTransposer cam6_orbitalTransposer;
     [SerializeField] Transform cam6_follow;
     [SerializeField] float cam6_height;
@@ -141,7 +150,7 @@ public class CameraController : MonoBehaviour
     [HideInInspector] static int CAMERA_ON = 1;
 
     [HideInInspector] PlayerController player;
-    [HideInInspector] CinemachineBrain brain;
+    [HideInInspector] public CinemachineBrain brain;
     [HideInInspector] Camera mainCamera;
     [HideInInspector] public CameraFollow cameraFollow;
     #endregion
@@ -158,7 +167,8 @@ public class CameraController : MonoBehaviour
         camera4_PerspectiveMatchCut,
         camera5_DynamicPerspective_Limited,
         camera6_DynamicPerspective_Free,
-        camera7_BlackHole
+        camera7_BlackHole,
+        transitionCamera_landToSpace
     }
 
     public void SetCameraState(CameraState inputState)
@@ -211,8 +221,11 @@ public class CameraController : MonoBehaviour
                     break;
 
                 case CameraState.camera6_DynamicPerspective_Free:
-                    camera6_camera = vc;
-                    cam6_orbitalTransposer = camera6_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>();
+                    camera6_cameras.Add(vc);
+                    break;
+
+                case CameraState.transitionCamera_landToSpace:
+                    transitionCamera_LandtoSpace = vc;
                     break;
             }
         }
@@ -315,17 +328,28 @@ public class CameraController : MonoBehaviour
 
                 //y axis
                 _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_MOUSE * player.currentScale;
-                _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, CAM5_MIN_HEIGHT, CAM5_MAX_HEIGHT);
+                _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
+                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_minHeight, _cam5_maxHeight);
             }
 
+            else if(inputMode == InputMode.Gamepad)
+            {
+                //x axis
+                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue += xValue * CAM5_X_SENSITIVITY_GAMEPAD;
 
+                //y axis
+                _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_GAMEPAD * player.currentScale;
+                _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
+                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
+                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
+            }
         }
 
         #endregion
-
+         
         //CAMERA 6
         #region Camera 6 Control
         //if in camera 6 state
@@ -555,16 +579,31 @@ public class CameraController : MonoBehaviour
     }
     #endregion
 
+    //CAMERA 6
+    #region Camera 6
+
+    public void SetCamera6Index(int inputIndex)
+    {
+        cam6_index = inputIndex;
+        TurnCamera6On();
+    }
+
+
+    #endregion
+
     //TURN CAMERAS ON
     #region Turn Cameras On
+
 
     public void TurnCamera6On()
     {
 
         TurnOffAllCameras();
         SetCameraState(CameraState.camera6_DynamicPerspective_Free);
-        camera6_camera.Priority = CAMERA_ON;
-        player.vc_transform = camera6_camera.transform;
+        camera6_cameras[cam6_index].Priority = CAMERA_ON;
+
+        cam6_orbitalTransposer = camera6_cameras[cam6_index].GetCinemachineComponent<CinemachineOrbitalTransposer>();
+        player.vc_transform = camera6_cameras[cam6_index].transform;
 
         mainCamera.orthographic = false;
     }
@@ -639,6 +678,14 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void TurnOnTransitionCamera_LandtoSpace()
+    {
+        transitionCamera_LandtoSpace.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_XAxis.Value = camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_XAxis.Value;
+        TurnOffAllCameras();
+
+        transitionCamera_LandtoSpace.Priority = CAMERA_ON;
+    }
+
 
     #endregion
 
@@ -704,10 +751,11 @@ public class CameraController : MonoBehaviour
         //CAMERA 5
         //scale * -5 orbital transposer Z follow offset
         camera5_camera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_FollowOffset.z = Mathf.Lerp(PERSPECTIVE_CAMERA_DISTANCE_SCALE * currentScale, PERSPECTIVE_CAMERA_DISTANCE_SCALE * nextScale, t);
-        CAM5_MIN_HEIGHT = Mathf.Lerp(CAM5_MIN_HEIGHT, CAM5_MIN_HEIGHT / currentScale * nextScale, t);
-        CAM5_MAX_HEIGHT = Mathf.Lerp(CAM5_MAX_HEIGHT, CAM5_MAX_HEIGHT / currentScale * nextScale, t);
+        _cam5_minHeight = Mathf.Lerp(CAM5_MIN_HEIGHT_UNSCALED * currentScale, CAM5_MIN_HEIGHT_UNSCALED * nextScale, t);
+        _cam5_maxHeight = Mathf.Lerp(CAM5_MAX_HEIGHT_UNSCALED * currentScale, CAM5_MAX_HEIGHT_UNSCALED * nextScale, t);
 
-        //camera 6
+        //CAMERA 6
+
         
 
         //TIMER

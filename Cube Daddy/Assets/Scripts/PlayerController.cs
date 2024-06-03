@@ -1684,14 +1684,14 @@ public class PlayerController : MonoBehaviour
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
 
-        //merge events
-        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
-
         //animation
         animationController = cubeDatas[cubes_index + 1].GetComponentInChildren<AnimationController>();
 
         //rigid body
         rb = cubeDatas[cubes_index + 1].GetComponent<Rigidbody>();
+
+        //merge events
+        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
 
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
@@ -1928,4 +1928,18 @@ public class PlayerController : MonoBehaviour
 
 
     #endregion
+
+    //**********************************************************************************************************//
+    #region Star
+
+    public void StarMerge(Transform starTransform)
+    {
+        cubeTransform = starTransform;
+        rb = cubeTransform.GetComponent<Rigidbody>();
+    }
+
+
+    #endregion
+
+
 }

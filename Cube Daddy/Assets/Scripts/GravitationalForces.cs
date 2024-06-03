@@ -56,7 +56,7 @@ public class GravitationalForces : MonoBehaviour
         }
 
         // Calculate gravitational force magnitude
-        float forceMagnitude = G * rb_current.mass * rb_target.mass / (distance * distance);
+        float forceMagnitude = G * rb_current.mass * rb_target.mass / distance;
 
 
         // Apply force to the other rigidbody

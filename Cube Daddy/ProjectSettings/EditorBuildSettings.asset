@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Optimisation test screen.unity
-    guid: c79cc0e218ee58c488f7630ea51887b6
+    path: Assets/Scenes/Playground.unity
+    guid: 0c4434dccf66d9c4a803b0020c7c37c1
+  - enabled: 1
+    path: Assets/Scenes/Space Movement.unity
+    guid: 734afc60c7f0d284bb013e10770d72a7
   m_configObjects: {}
