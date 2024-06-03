@@ -189,13 +189,17 @@ MonoBehaviour:
   camera3_index: 0
   CAM3_COOLDOWN_MAX: 1
   cam3_coolDownTimer: 0
+  hasTurnedCamera3: 0
+  hasTurnedCamera3_Event:
+    m_PersistentCalls:
+      m_Calls: []
   cam5_orbitalTransposer: {fileID: 0}
   _cam5_targetHeight: 0
   _cam5_velocity: 0
   _cam5_smoothDampDuration: 0.5
   _cam5_minHeight: 0
   _cam5_maxHeight: 0
-  CAM5_MIN_HEIGHT_UNSCALED: 1
+  CAM5_MIN_HEIGHT_UNSCALED: 0
   CAM5_MAX_HEIGHT_UNSCALED: 7.5
   CAM5_X_SENSITIVITY_GAMEPAD: 1
   CAM5_Y_SENSITIVITY_GAMEPAD: 1
@@ -294,6 +298,7 @@ GameObject:
   - component: {fileID: 7933024884448404860}
   - component: {fileID: 1902815130524219497}
   - component: {fileID: 7308940308802153161}
+  - component: {fileID: 215305472}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: Untagged
@@ -308,8 +313,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481426358855152436}
-  m_LocalRotation: {x: -0.054122716, y: 0.9181111, z: -0.36876166, w: -0.1347501}
-  m_LocalPosition: {x: 11.30046, y: 37.668194, z: 37.6682}
+  m_LocalRotation: {x: -0.05412272, y: 0.9181111, z: -0.36876166, w: -0.1347501}
+  m_LocalPosition: {x: -0.23485668, y: 16.917143, z: 18.197144}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -343,7 +348,7 @@ Camera:
   far clip plane: 3999.945
   field of view: 60
   orthographic: 0
-  orthographic size: 19.99973
+  orthographic size: 5
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -426,6 +431,14 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!81 &215305472
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481426358855152436}
+  m_Enabled: 1
 --- !u!1 &1575777309658614814
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   currentCubeTransform: {fileID: 0}
-  speed: 1
+  speed: 0.5
   velocity1: {x: 0, y: 0, z: 0}
 --- !u!1 &6748381881617521059
 GameObject:
@@ -1954,42 +1967,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6966904062513968277}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7099980891443332751 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 155190937076920858, guid: f28779e1596d8ac4ab902e1f03903add,
-    type: 3}
-  m_PrefabInstance: {fileID: 6966904062513968277}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1199036831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7099980891443332751}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CollideAgainst:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IgnoreTag: 
-  m_TransparentLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_MinimumDistanceFromTarget: 0.1
-  m_AvoidObstacles: 1
-  m_DistanceLimit: 0
-  m_MinimumOcclusionTime: 0
-  m_CameraRadius: 0.1
-  m_Strategy: 2
-  m_MaximumEffort: 4
-  m_SmoothingTime: 0
-  m_Damping: 5
-  m_DampingWhenOccluded: 5
-  m_OptimalTargetDistance: 0
 --- !u!1001 &7118274739976189666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2040,7 +2017,7 @@ PrefabInstance:
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.23485668
+      value: -0.23485678
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
@@ -2050,17 +2027,17 @@ PrefabInstance:
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.197144
+      value: 18.197145
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.1347501
+      value: -0.13475011
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.05412272
+      value: -0.05412273
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}

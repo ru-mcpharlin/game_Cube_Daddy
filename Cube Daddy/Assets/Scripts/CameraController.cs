@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
     [Space]
     [SerializeField] public float yValue;
     [SerializeField] public float yThreshold_mouse;
-    [SerializeField] public float yThreshold_gamepad;
+    [SerializeField] public float threshold_gamepad;
     [Space]
     [SerializeField] public float xValue;
     [SerializeField] public float xThreshold_mouse;
@@ -308,11 +308,11 @@ public class CameraController : MonoBehaviour
                 cam3_coolDownTimer -= Time.deltaTime;
             }
 
-            if (xValue >= 0.99f)
+            if (xValue >= threshold_gamepad)
             {
                 DecreaseCamera3Index();
             }
-            else if (xValue <= -0.99f)
+            else if (xValue <= -threshold_gamepad)
             {
                 IncreaseCamera3Index();
             }
@@ -497,7 +497,7 @@ public class CameraController : MonoBehaviour
     #region Player Input
     private void GetPlayerInput()
     {
-        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
+        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= threshold_gamepad)
         {
             yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
             yValue = Mathf.Clamp(yValue, -1, 1);
@@ -523,7 +523,7 @@ public class CameraController : MonoBehaviour
         {
             inputMode = InputMode.Mouse;
         }
-        if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > yThreshold_gamepad)
+        if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > threshold_gamepad)
         {
             inputMode = InputMode.Gamepad;
         }
@@ -743,12 +743,12 @@ public class CameraController : MonoBehaviour
         //// CAMERA 2 ////
         if (camera1_cameras[camera1_index].Priority == 1)
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera1_cameras[camera1_index].m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         else
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera2_camera.m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         
