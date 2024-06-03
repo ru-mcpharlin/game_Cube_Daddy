@@ -308,11 +308,11 @@ public class CameraController : MonoBehaviour
                 cam3_coolDownTimer -= Time.deltaTime;
             }
 
-            if (xValue == 1)
+            if (xValue >= 0.99f)
             {
                 DecreaseCamera3Index();
             }
-            else if (xValue == -1)
+            else if (xValue <= -0.99f)
             {
                 IncreaseCamera3Index();
             }
@@ -523,7 +523,7 @@ public class CameraController : MonoBehaviour
         {
             inputMode = InputMode.Mouse;
         }
-        if (Mathf.Abs(player.cameraVector_Gamepad.x) > yThreshold_gamepad)
+        if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > yThreshold_gamepad)
         {
             inputMode = InputMode.Gamepad;
         }
