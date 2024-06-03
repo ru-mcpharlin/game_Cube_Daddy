@@ -34,13 +34,13 @@ public class PPGlobalControl : MonoBehaviour
         //volumes[newVolumeIndex].weight = 1;
         volumes[newVolumeIndex].priority = 1;
 
-        volumes[newVolumeIndex].weight = 1;
-        volumes[currentVolumeIndex].weight = 0;
+        //volumes[newVolumeIndex].weight = 1;
+        //volumes[currentVolumeIndex].weight = 0;
 
-        //Tween.Value(0f, 1f, WeightChangeUpdate, blendDuration, 0f, blendTween, Tween.LoopType.None, null , WeightChangeComplete);
+        Tween.Value(0f, 1f, WeightChangeUpdate, blendDuration, 0f, blendTween, Tween.LoopType.None, null , WeightChangeComplete);
 
-        currentVolumeIndex = newVolumeIndex;
-        newVolumeIndex = -1;
+        //currentVolumeIndex = newVolumeIndex;
+        //newVolumeIndex = -1;
     }
 
     private void WeightChangeUpdate(float weight)
