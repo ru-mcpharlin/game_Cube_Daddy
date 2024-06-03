@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5895325683961750424}
   m_Layer: 21
   m_Name: PP Button
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,8 +32,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5895325685719154363}
-  m_RootOrder: 2
+  m_Father: {fileID: 5895325685104604741}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5895325683961750429
 MonoBehaviour:
@@ -247,7 +247,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -341,7 +341,7 @@ GameObject:
   - component: {fileID: 5895325684793268439}
   m_Layer: 21
   m_Name: Target Position
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -375,9 +375,9 @@ GameObject:
   - component: {fileID: 5895325685104604762}
   - component: {fileID: 5895325685104604763}
   - component: {fileID: 4101653691207115649}
-  m_Layer: 21
+  m_Layer: 8
   m_Name: PP Holder
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -393,7 +393,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5895325683961750428}
   m_Father: {fileID: 5895325685719154363}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1341,7 +1342,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 583
+  m_VersionIndex: 586
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1448,7 +1449,7 @@ GameObject:
   - component: {fileID: 5895325685440890848}
   m_Layer: 21
   m_Name: Button Triggered Position
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1466,7 +1467,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5895325685719154363}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5895325685719154341
 GameObject:
@@ -1480,7 +1481,7 @@ GameObject:
   - component: {fileID: 5895325685719154340}
   m_Layer: 21
   m_Name: Pressure Plate
-  m_TagString: Untagged
+  m_TagString: Environment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1499,7 +1500,6 @@ Transform:
   m_Children:
   - {fileID: 5895325684793268439}
   - {fileID: 5895325685104604741}
-  - {fileID: 5895325683961750428}
   - {fileID: 5895325685440890848}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1520,8 +1520,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: FormingPlatform, Assembly-CSharp
-        m_MethodName: Activate
+        m_TargetAssemblyTypeName: GameManger, Assembly-CSharp
+        m_MethodName: StartTransition_Land_To_Space
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

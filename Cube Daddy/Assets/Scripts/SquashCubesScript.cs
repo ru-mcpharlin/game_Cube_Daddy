@@ -9,7 +9,7 @@ public class SquashCubesScript : MonoBehaviour
     #region Variables
     [Space]
     [SerializeField] float DISTANCE_THRESHOLD;
-    [SerializeField] ParticleSystem destroyCubeVFX;
+    [SerializeField] ParticleSystem[] destroyCubeVFX;
     [Space]
     [Header("Components and Scripts")]
     [SerializeField] public PlayerController player;
@@ -175,7 +175,8 @@ public class SquashCubesScript : MonoBehaviour
             distance <= DISTANCE_THRESHOLD * player.currentScale)
         {
             Destroy(collider.gameObject);
-            Instantiate(destroyCubeVFX, collider.transform.position, Quaternion.identity, null);
+
+            Instantiate(destroyCubeVFX[colliderLayer - layerIndexs[0]], collider.transform.position, Quaternion.identity, null);
         }
     }        
 }

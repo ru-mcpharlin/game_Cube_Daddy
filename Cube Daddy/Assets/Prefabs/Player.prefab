@@ -530,8 +530,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DISTANCE_THRESHOLD: 0.7
-  destroyCubeVFX: {fileID: 4880471255732539234, guid: c9b899436e3f5d245af7b0589bb6c92b,
-    type: 3}
+  destroyCubeVFX:
+  - {fileID: 8119652281606267039, guid: 847113a55437ac74cb71aa362910b106, type: 3}
+  - {fileID: 428681581210658434, guid: dca65cf69d5a90045b48511764935209, type: 3}
+  - {fileID: 8237009538985972846, guid: aa949ce4430a2cb4aa3149fa2a947ae0, type: 3}
+  - {fileID: 5498679438470668717, guid: c15030ad0120a164fafef9e8b28d7ddc, type: 3}
+  - {fileID: 7197123078019064710, guid: 03449a89228450d43873d0f3267e7211, type: 3}
+  - {fileID: 5356038269704144402, guid: 9b4eedfbbfb77a04996e1d6872bb1d2d, type: 3}
+  - {fileID: 7121587529138422529, guid: 51826468cf6fb9e44bcdb544deb40017, type: 3}
+  - {fileID: 2489976034523870290, guid: d800d0346e8acdf499f567469ca00c92, type: 3}
+  - {fileID: 5942046939652794215, guid: 2168436c6566c984d9fa51313278ccc8, type: 3}
+  - {fileID: 8947755734399506446, guid: 797ca5ff4a570b649812e61dcf25c9b8, type: 3}
   player: {fileID: 0}
   allLayers: []
   layer1: []

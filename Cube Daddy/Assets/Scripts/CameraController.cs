@@ -327,27 +327,25 @@ public class CameraController : MonoBehaviour
             if(inputMode == InputMode.Mouse)
             {
                 //x axis
-                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue += xValue * CAM5_X_SENSITIVITY_MOUSE;
+                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_MOUSE;
 
                 //y axis
                 _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_MOUSE * player.currentScale;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
-                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_minHeight, _cam5_maxHeight);
             }
 
             else if(inputMode == InputMode.Gamepad)
             {
                 //x axis
-                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue += xValue * CAM5_X_SENSITIVITY_GAMEPAD;
+                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_GAMEPAD;
 
                 //y axis
                 _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_GAMEPAD * player.currentScale;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
-                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
             }
         }
 
