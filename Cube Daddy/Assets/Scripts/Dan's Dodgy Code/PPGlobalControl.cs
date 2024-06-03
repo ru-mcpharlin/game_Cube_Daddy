@@ -46,7 +46,7 @@ public class PPGlobalControl : MonoBehaviour
     private void WeightChangeUpdate(float weight)
     {
         volumes[newVolumeIndex].weight = weight;
-        volumes[currentVolumeIndex].weight = 1 - weight;          
+        volumes[currentVolumeIndex].weight = 0; // 1 - weight;          
     }
 
     private void WeightChangeComplete()
