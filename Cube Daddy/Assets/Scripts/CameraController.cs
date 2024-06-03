@@ -308,11 +308,11 @@ public class CameraController : MonoBehaviour
                 cam3_coolDownTimer -= Time.deltaTime;
             }
 
-            if (xValue >= threshold_gamepad)
+            if (xValue >= 0.9f)
             {
                 DecreaseCamera3Index();
             }
-            else if (xValue <= -threshold_gamepad)
+            if (xValue <= -0.9f)
             {
                 IncreaseCamera3Index();
             }
