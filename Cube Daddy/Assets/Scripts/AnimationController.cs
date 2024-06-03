@@ -23,6 +23,7 @@ public class AnimationController : MonoBehaviour
     {
         if (!isAnimating)
         {
+            Debug.Log("Where am I?");
             StartCoroutine(PlayAnimation_cannotMove_Coroutine(animationTrigger));
         }
     }
