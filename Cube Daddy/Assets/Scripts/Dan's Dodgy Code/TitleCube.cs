@@ -16,10 +16,10 @@ public class TitleCube : MonoBehaviour
         transform.localScale = Vector3.zero;
         initialRotation = transform.rotation.ToEuler();
         transform.rotation = Quaternion.Euler(new(transform.rotation.x, transform.rotation.y - 180, transform.rotation.z));
-        Invoke("Activate", orderInTitle * 0.12f);
+        //Invoke("Activate", orderInTitle * 0.12f);
     }
 
-    private void Activate()
+    public void Activate()
     {
         Tween.LocalScale(transform, Vector3.one, 0.75f, 0, ActivateTween);
         Tween.LocalRotation(transform, initialRotation, 0.75f, 0, ActivateTween, Tween.LoopType.None, null, Twist);
