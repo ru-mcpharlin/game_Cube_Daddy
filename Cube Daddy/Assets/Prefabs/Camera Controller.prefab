@@ -134,7 +134,7 @@ MonoBehaviour:
   inputMode: 0
   yValue: 0
   yThreshold_mouse: 10
-  yThreshold_gamepad: 0.75
+  threshold_gamepad: 0.75
   xValue: 0
   xThreshold_mouse: 10
   xThreshold_gamepad: 0.75
@@ -196,15 +196,15 @@ MonoBehaviour:
   cam5_orbitalTransposer: {fileID: 0}
   _cam5_targetHeight: 0
   _cam5_velocity: 0
-  _cam5_smoothDampDuration: 0.5
+  _cam5_smoothDampDuration: 0.25
   _cam5_minHeight: 0
   _cam5_maxHeight: 0
   CAM5_MIN_HEIGHT_UNSCALED: 0
   CAM5_MAX_HEIGHT_UNSCALED: 7.5
-  CAM5_X_SENSITIVITY_GAMEPAD: 1
-  CAM5_Y_SENSITIVITY_GAMEPAD: 1
+  CAM5_X_SENSITIVITY_GAMEPAD: 0.5
+  CAM5_Y_SENSITIVITY_GAMEPAD: 0.05
   CAM5_X_SENSITIVITY_MOUSE: 1
-  CAM5_Y_SENSITIVITY_MOUSE: 0.125
+  CAM5_Y_SENSITIVITY_MOUSE: 0.25
   cam6_index: 0
   cam6_orbitalTransposer: {fileID: 0}
   cam6_follow: {fileID: 3762209199121955200}
@@ -313,8 +313,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481426358855152436}
-  m_LocalRotation: {x: -0.05412272, y: 0.9181111, z: -0.36876166, w: -0.1347501}
-  m_LocalPosition: {x: -0.23485668, y: 16.917143, z: 18.197144}
+  m_LocalRotation: {x: -0.05412273, y: 0.9181111, z: -0.36876166, w: -0.13475011}
+  m_LocalPosition: {x: -0.23485678, y: 16.917143, z: 18.197145}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1326,7 +1326,7 @@ PrefabInstance:
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.23485668
+      value: -0.23485678
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
@@ -1336,17 +1336,17 @@ PrefabInstance:
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.197144
+      value: 18.197145
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.1347501
+      value: -0.13475011
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.05412272
+      value: -0.05412273
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190853, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
@@ -1669,7 +1669,7 @@ PrefabInstance:
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.8631502
+      value: 1.8631501
       objectReference: {fileID: 0}
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
@@ -1689,7 +1689,7 @@ PrefabInstance:
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.054122716
+      value: -0.05412272
       objectReference: {fileID: 0}
     - target: {fileID: 5573469876620849617, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
@@ -1945,9 +1945,9 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse X
+    m_InputAxisName: 
     m_InputAxisValue: 0
-    m_InvertInput: 1
+    m_InvertInput: 0
     m_MinValue: -180
     m_MaxValue: 180
     m_Wrap: 1
@@ -2194,17 +2194,17 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -37.6682
+      value: -37.66821
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 37.668194
+      value: 37.6682
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.300463
+      value: 11.30047
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -2214,12 +2214,12 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.22248326
+      value: 0.22248332
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7444853
+      value: 0.7444854
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
