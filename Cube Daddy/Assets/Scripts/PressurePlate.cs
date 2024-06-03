@@ -19,24 +19,29 @@ public class PressurePlate : MonoBehaviour
     [Space]
     [SerializeField] GameObject button;
     [SerializeField] Transform triggeredButtonPosition;
+    [Space]
+    [SerializeField] GameObject activateVFX;
+    [SerializeField] Material activatedMaterial;
+    [SerializeField] Renderer buttonRenderer;
 
     public void CheckIfTriggered(Vector3 playerPosition, float scale)
     {
-        int index = 0;
-        foreach(GameObject pellet in pellets)
+        if (!hasCollectedPellets)
         {
-            if(pellet != null)
+            int index = 0;
+            foreach (GameObject pellet in pellets)
             {
-                index++;
+                if (pellet != null)
+                {
+                    index++;
+                }
             }
-        }    
 
-        if(index == 0)
-        {
-            hasCollectedPellets = true;
+            if (index == 0)
+            {
+                StartCoroutine(ActivatePressurePad());
+            }
         }
-
-
 
         if (Vector3.Distance(playerPosition, targetPosition.position) <= distanceThreshold * scale &&
             scale == transform.localScale.x &&
@@ -56,6 +61,21 @@ public class PressurePlate : MonoBehaviour
 
             
         }
+    }
+
+    IEnumerator ActivatePressurePad()
+    {
+        hasCollectedPellets = true;
+        GameObject vfx = Instantiate(activateVFX, new(transform.position.x, transform.position.y + 0.5f, transform.position.z), Quaternion.Euler(new(-90, 0, 0)));
+        ParticleSystem[] emmiters = vfx.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem emmit in emmiters)
+        {
+            emmit.transform.localScale = transform.localScale;
+        }
+        
+        vfx.transform.localScale = transform.localScale;
+        yield return new WaitForSeconds(0.5f);
+        buttonRenderer.material = activatedMaterial;
     }
 
     private void TriggerPressurePad()

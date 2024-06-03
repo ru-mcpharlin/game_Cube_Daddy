@@ -18,7 +18,7 @@ public class CubeData : MonoBehaviour
     [SerializeField] public GameObject teleportParticleSystem;
     [SerializeField] public ParticleSystem.EmissionModule em;
     [Space]
-    [SerializeField] public UnityEvent mergeEvents;
+    [SerializeField] public UnityEvent[] mergeEvents;
     
 
     private void Awake()
