@@ -743,12 +743,12 @@ public class CameraController : MonoBehaviour
         //// CAMERA 2 ////
         if (camera1_cameras[camera1_index].Priority == 1)
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera1_cameras[camera1_index].m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         else
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera2_camera.m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         
