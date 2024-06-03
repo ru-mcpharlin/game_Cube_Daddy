@@ -51,7 +51,7 @@ Material:
     m_Colors:
     - _Foam_Color: {r: 0.514151, g: 1, b: 0.92136884, a: 0}
     - _Line_Color: {r: 0.6367924, g: 1, b: 0.9188482, a: 0}
-    - _Tiling: {r: 0.1, g: 0.2, b: 0, a: 0}
+    - _Tiling: {r: 0.1, g: 0.6, b: 0, a: 0}
     - _Water_Color_1: {r: 0.003114995, g: 0.6603774, b: 0.65490013, a: 0}
     - _Water_Color_2: {r: 0, g: 0.2735849, b: 0.26306242, a: 0}
   m_BuildTextureStacks: []

@@ -5,26 +5,82 @@ using Pixelplacement;
 
 public class MusicController : MonoBehaviour
 {
-    public AudioSource[] layer;
-    public float[] volume;
-    private int activeTrack;
-    public AnimationCurve fadeIn;
-    public float fadeinDuration;
+    [Header("Music Land")]
+    public AudioSource[] musicLayers_land;
+    public float[] musicVolumes_Land;
+    private int activeTrack_Land;
+    public AnimationCurve fadeIn_Land;
+    public float fadeinDuration_Land;
 
-    public void AddLayer()
-    {
-        if(activeTrack < layer.Length)
-        {
-            Tween.Volume(layer[activeTrack], volume[activeTrack], fadeinDuration, 0, fadeIn);
-            activeTrack++;
-        }
-    }
+    [Header("SFX")]
+    [Header("Wind")]
+    public AudioSource wind;
+    float windVolume;
+    [Space]
+    [Header("Roll")]
+    public AudioSource roll_Source;
+    public AudioClip[] roll_Clips;
+    public float ROLL_VOLUME_MIN;
+    public float ROLL_VOLUME_MAX;
+    public float ROLL_PITCH_MIN;
+    public float ROLL_PITCH_MAX;
+    [Header("Merge")]
+    public AudioSource mergeSource;
+    public float MERGE_VOLUME;
+    [Header("DeMerge")]
+    public AudioSource demergeSource;
+    public float DEMERGE_VOLUME;
 
-    private void LateUpdate()
+    private void Update()
     {
         if (Input.GetKeyDown("space"))
         {
-            AddLayer();
+            AddLayer_Land();
         }
+    }
+
+    private void OnEnable()
+    {
+        musicLayers_land = GetComponentsInChildren<AudioSource>();
+        foreach(AudioSource track in musicLayers_land)
+        {
+            track.volume = 0;
+        }
+    }
+    public void AddLayer_Land()
+    {
+        if(activeTrack_Land < musicLayers_land.Length)
+        {
+            Tween.Volume(musicLayers_land[activeTrack_Land], musicVolumes_Land[activeTrack_Land], fadeinDuration_Land, 0, fadeIn_Land);
+            activeTrack_Land++;
+        }
+    }
+
+    public void RemoveAllLayers()
+    {
+        foreach(AudioSource _musicLayer in musicLayers_land)
+        {
+            Tween.Volume(musicLayers_land[activeTrack_Land], 0, fadeinDuration_Land, 0, fadeIn_Land);
+            activeTrack_Land--;
+        }
+    }
+
+    public void PlayRollSFX()
+    {
+        roll_Source.volume = Random.Range(ROLL_VOLUME_MIN, ROLL_VOLUME_MAX);
+        roll_Source.pitch = Random.Range(ROLL_PITCH_MIN, ROLL_PITCH_MAX);
+        roll_Source.PlayOneShot(roll_Clips[Random.Range(0, roll_Clips.Length-1)]);
+    }
+
+    public void PlayMergeSFX()
+    {
+        mergeSource.volume = MERGE_VOLUME;
+        mergeSource.PlayOneShot(mergeSource.clip);
+    }
+
+    public void PlayDemergeSFX()
+    {
+        demergeSource.volume = DEMERGE_VOLUME;
+        demergeSource.PlayOneShot(demergeSource.clip);
     }
 }

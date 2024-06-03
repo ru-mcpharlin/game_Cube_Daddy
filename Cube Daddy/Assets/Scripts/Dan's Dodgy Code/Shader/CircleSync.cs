@@ -33,6 +33,9 @@ public class CircleSync : MonoBehaviour
             size = 0;
         }
 
+        // Debugging down under here
+        size = cutoutSize;
+
         var view = cam.WorldToViewportPoint(transform.position);
 
         foreach (Material mat in wallMaterials)

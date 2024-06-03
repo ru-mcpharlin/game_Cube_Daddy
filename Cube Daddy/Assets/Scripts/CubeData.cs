@@ -7,6 +7,7 @@ public class CubeData : MonoBehaviour
 {
     [SerializeField] PlayerController player;
     [SerializeField] SquashCubesScript squash;
+    [SerializeField] public AnimationController animationController;
     [Space]
     [SerializeField] public bool isCurrentCube;
     [SerializeField] public bool canMerge;
@@ -25,6 +26,7 @@ public class CubeData : MonoBehaviour
     {
         squash = FindObjectOfType<SquashCubesScript>();
         player = FindObjectOfType<PlayerController>();
+        animationController = GetComponentInChildren<AnimationController>();
         em = teleportParticleSystem.GetComponent<ParticleSystem>().emission;
 
         SetTeleportParticleSystem(false);

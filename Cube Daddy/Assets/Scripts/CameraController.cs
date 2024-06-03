@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
@@ -23,7 +24,7 @@ public class CameraController : MonoBehaviour
     [Space]
     [SerializeField] public float yValue;
     [SerializeField] public float yThreshold_mouse;
-    [SerializeField] public float yThreshold_gamepad;
+    [SerializeField] public float threshold_gamepad;
     [Space]
     [SerializeField] public float xValue;
     [SerializeField] public float xThreshold_mouse;
@@ -95,6 +96,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] int camera3_index;
     [SerializeField] public float CAM3_COOLDOWN_MAX;
     [SerializeField] public float cam3_coolDownTimer;
+    [SerializeField] public bool hasTurnedCamera3;
+    [SerializeField] public UnityEvent hasTurnedCamera3_Event;
     #endregion
 
     [Space]
@@ -305,11 +308,11 @@ public class CameraController : MonoBehaviour
                 cam3_coolDownTimer -= Time.deltaTime;
             }
 
-            if (xValue == 1)
+            if (xValue >= 0.9f)
             {
                 DecreaseCamera3Index();
             }
-            else if (xValue == -1)
+            if (xValue <= -0.9f)
             {
                 IncreaseCamera3Index();
             }
@@ -324,27 +327,25 @@ public class CameraController : MonoBehaviour
             if(inputMode == InputMode.Mouse)
             {
                 //x axis
-                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue += xValue * CAM5_X_SENSITIVITY_MOUSE;
+                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_MOUSE;
 
                 //y axis
                 _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_MOUSE * player.currentScale;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
-                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_minHeight, _cam5_maxHeight);
             }
 
             else if(inputMode == InputMode.Gamepad)
             {
                 //x axis
-                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue += xValue * CAM5_X_SENSITIVITY_GAMEPAD;
+                cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_GAMEPAD;
 
                 //y axis
                 _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_GAMEPAD * player.currentScale;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
-                cam5_orbitalTransposer.m_FollowOffset.y = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
             }
         }
 
@@ -387,7 +388,6 @@ public class CameraController : MonoBehaviour
     }
 
     #endregion
-
 
     //DEBUGGING
     #region debugging
@@ -495,7 +495,7 @@ public class CameraController : MonoBehaviour
     #region Player Input
     private void GetPlayerInput()
     {
-        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= yThreshold_gamepad)
+        if (Mathf.Abs(player.cameraVector_Mouse.y) >= yThreshold_mouse || Mathf.Abs(player.cameraVector_Gamepad.y) >= threshold_gamepad)
         {
             yValue = player.cameraVector_Mouse.y + player.cameraVector_Gamepad.y;
             yValue = Mathf.Clamp(yValue, -1, 1);
@@ -521,7 +521,7 @@ public class CameraController : MonoBehaviour
         {
             inputMode = InputMode.Mouse;
         }
-        if (Mathf.Abs(player.cameraVector_Gamepad.x) > yThreshold_gamepad)
+        if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > threshold_gamepad)
         {
             inputMode = InputMode.Gamepad;
         }
@@ -556,6 +556,12 @@ public class CameraController : MonoBehaviour
                 TurnCamera3On();
                 cam3_coolDownTimer = CAM3_COOLDOWN_MAX;
             }
+
+            if(!hasTurnedCamera3)
+            {
+                hasTurnedCamera3 = true;
+                hasTurnedCamera3_Event.Invoke();
+            }
         }
     }
 
@@ -574,6 +580,12 @@ public class CameraController : MonoBehaviour
                 camera3_index--;
                 TurnCamera3On();
                 cam3_coolDownTimer = CAM3_COOLDOWN_MAX;
+            }
+
+            if (!hasTurnedCamera3)
+            {
+                hasTurnedCamera3 = true;
+                hasTurnedCamera3_Event.Invoke();
             }
         }
     }
@@ -729,12 +741,12 @@ public class CameraController : MonoBehaviour
         //// CAMERA 2 ////
         if (camera1_cameras[camera1_index].Priority == 1)
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera1_cameras[camera1_index].m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         else
         {
-            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(camera2_camera.m_Lens.OrthographicSize, LENS_ORTHO_SIZE_SCALE * nextScale, t);
+            camera2_camera.m_Lens.OrthographicSize = Mathf.Lerp(LENS_ORTHO_SIZE_SCALE * currentScale, LENS_ORTHO_SIZE_SCALE * nextScale, t);
             camera2_camera.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = Mathf.Lerp(ISO_CAMERA_DISTANCE_SCALE * currentScale, ISO_CAMERA_DISTANCE_SCALE * nextScale, t);
         }
         

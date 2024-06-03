@@ -26,33 +26,31 @@ public class PPGlobalControl : MonoBehaviour
 
     public void ActivateVolume(int volumeIndex)
     {
-        Debug.Log("Volume Change");
         newVolumeIndex = volumeIndex;
         foreach (Volume vol in volumes)
         {
-            vol.priority = 0;
+            //vol.priority = 0;
         }
-        volumes[newVolumeIndex].weight = 1;
+        //volumes[newVolumeIndex].weight = 1;
         volumes[newVolumeIndex].priority = 1;
 
-        //Tween.Value(0f, 1f, WeightChangeUpdate, blendDuration, 0f, blendTween, Tween.LoopType.None, null , WeightChangeComplete);
+        //volumes[newVolumeIndex].weight = 1;
+        //volumes[currentVolumeIndex].weight = 0;
+
+        Tween.Value(0f, 1f, WeightChangeUpdate, blendDuration, 0f, blendTween, Tween.LoopType.None, null , WeightChangeComplete);
+
+        //currentVolumeIndex = newVolumeIndex;
+        //newVolumeIndex = -1;
     }
 
     private void WeightChangeUpdate(float weight)
     {
         volumes[newVolumeIndex].weight = weight;
-        /*
-        if (currentVolumeIndex != -1)
-        {
-            volumes[currentVolumeIndex].weight = 1 - weight;
-        }
-        */
-        
+        volumes[currentVolumeIndex].weight = 0; // 1 - weight;          
     }
 
     private void WeightChangeComplete()
     {
-        volumes[currentVolumeIndex].priority = 0;
         currentVolumeIndex = newVolumeIndex;
         newVolumeIndex = -1;
     }
