@@ -21,11 +21,11 @@ public class GameManger : MonoBehaviour
     [SerializeField] Color _white;
     [Space]
     [SerializeField] float blendLength;
-    [SerializeField] float whiteOutDuration_in;
+    [SerializeField] float whiteOutDuration_in, fastWhiteOutDuration_in;
     [SerializeField] AnimationCurve whiteOutCurve_IN;
     [SerializeField] AnimationCurve whiteOutCurve_OUT;
     [Space]
-    [SerializeField] float whiteOutDuration_out;
+    [SerializeField] float whiteOutDuration_out, fastWhiteOutDuration_out;
 
     [Space]
     [Space]
@@ -94,4 +94,16 @@ public class GameManger : MonoBehaviour
         // Start the white-out effect
         Pixelplacement.Tween.Color(whiteOut, _transparent, whiteOutDuration_out, 0f, whiteOutCurve_OUT);
     }
+
+    public void FastFadeWhiteIn(float fadeOutDelay)
+    {
+        Pixelplacement.Tween.Color(whiteOut, _white, fastWhiteOutDuration_in, 0f, whiteOutCurve_IN);
+        Invoke("FastFadeWhiteOut", fadeOutDelay);
+    }
+
+    public void FastFadeWhiteOut()
+    {
+        Pixelplacement.Tween.Color(whiteOut, _transparent, fastWhiteOutDuration_out, 0f, whiteOutCurve_IN);
+    }
+
 }

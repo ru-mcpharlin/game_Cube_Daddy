@@ -59,10 +59,16 @@ public class TitleController : MonoBehaviour
     private void Fall()
     {
         Tween.Position(playerCube.transform, startPosition.position, fallTime, 0, fallTween, Tween.LoopType.None, null, FinishFall);
-        fallEvent.Invoke();
+
+        Invoke("FallPart2", 1f);
         //fallCam.Priority = 1;
         //titleCam.Priority = 0;
         fallen = true;
+    }
+
+    private void FallPart2()
+    {
+        fallEvent.Invoke();
     }
 
     private void FinishFall()
