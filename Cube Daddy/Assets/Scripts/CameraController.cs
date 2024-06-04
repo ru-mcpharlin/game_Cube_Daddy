@@ -331,7 +331,7 @@ public class CameraController : MonoBehaviour
                 cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_MOUSE;
 
                 //y axis
-                _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_MOUSE * player.currentScale;
+                _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_MOUSE * player.currentScale * Time.deltaTime;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
@@ -343,7 +343,7 @@ public class CameraController : MonoBehaviour
                 cam5_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM5_X_SENSITIVITY_GAMEPAD;
 
                 //y axis
-                _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_GAMEPAD * player.currentScale;
+                _cam5_targetHeight += yValue * CAM5_Y_SENSITIVITY_GAMEPAD * player.currentScale * Time.deltaTime;
                 _cam5_targetHeight = Mathf.Clamp(_cam5_targetHeight, _cam5_minHeight, _cam5_maxHeight);
 
                 cam5_orbitalTransposer.m_FollowOffset.y = Mathf.SmoothDamp(cam5_orbitalTransposer.m_FollowOffset.y, _cam5_targetHeight, ref _cam5_velocity, _cam5_smoothDampDuration);
@@ -362,14 +362,14 @@ public class CameraController : MonoBehaviour
             {
                 cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM6_X_SENSITIVITY_MOUSE;
 
-                cam6_height = cam6_height + yValue * CAM6_Y_SENSITIVITY_MOUSE;
+                cam6_height += yValue * CAM6_Y_SENSITIVITY_MOUSE * Time.deltaTime;
             }
             //gamepad
             else if (inputMode == InputMode.Gamepad)
             {
                 cam6_orbitalTransposer.m_XAxis.m_InputAxisValue = xValue * CAM6_X_SENSITIVITY_GAMEPAD;
 
-                cam6_height = cam6_height + yValue * CAM6_Y_SENSITIVITY_GAMEPAD;
+                cam6_height += yValue * CAM6_Y_SENSITIVITY_GAMEPAD * Time.deltaTime;
             }
 
             //height
@@ -522,7 +522,11 @@ public class CameraController : MonoBehaviour
         {
             inputMode = InputMode.Mouse;
         }
+<<<<<<< Updated upstream
         if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > threshold_gamepad)
+=======
+        if (Mathf.Abs(player.cameraVector_Gamepad.magnitude) > yThreshold_gamepad)
+>>>>>>> Stashed changes
         {
             inputMode = InputMode.Gamepad;
         }
