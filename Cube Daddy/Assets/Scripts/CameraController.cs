@@ -171,7 +171,8 @@ public class CameraController : MonoBehaviour
         camera5_DynamicPerspective_Limited,
         camera6_DynamicPerspective_Free,
         camera7_BlackHole,
-        transitionCamera_landToSpace
+        transitionCamera_landToSpace,
+        camera0_TitleIsometric
     }
 
     public void SetCameraState(CameraState inputState)
