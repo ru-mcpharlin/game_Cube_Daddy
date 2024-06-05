@@ -135,7 +135,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public SquashCubesScript squash;
     [HideInInspector] public CalculateRollTypeScript calculateRollTypeScript;
     [HideInInspector] PressurePlate[] pressurePlates;
-    [SerializeField] public AnimationController animationController;
 
     [Space]
     [Header("Tags")]
@@ -226,9 +225,6 @@ public class PlayerController : MonoBehaviour
 
         //camera controller
         cameraController = FindObjectOfType<CameraController>();
-
-        //animation controller
-        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
 
         //set scale
         currentScale = cubeDatas[cubes_index].scale;
@@ -1684,20 +1680,17 @@ public class PlayerController : MonoBehaviour
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index + 1].transform;
 
-        //merge events
-        cubeDatas[cubes_index + 1].mergeEvents.Invoke();
-
-        //animation
-        animationController = cubeDatas[cubes_index + 1].GetComponentInChildren<AnimationController>();
-
         //rigid body
         rb = cubeDatas[cubes_index + 1].GetComponent<Rigidbody>();
-
+       
         //increment index
         if (cubes_index < cubeDatas.Length - 1)
         {
             cubes_index++;
         }
+
+        //merge events
+        cubeDatas[cubes_index].mergeEvents.Invoke();
 
         yield return null;
 
@@ -1803,9 +1796,6 @@ public class PlayerController : MonoBehaviour
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index - 1].transform;
 
-        //animation
-        animationController = cubeDatas[cubes_index - 1].GetComponentInChildren<AnimationController>();
-
         //rigid body
         rb = cubeDatas[cubes_index - 1].GetComponent<Rigidbody>();
 
@@ -1813,7 +1803,7 @@ public class PlayerController : MonoBehaviour
         squash.MakeCubesHard(cubes_index - 1);
 
         //merge events
-        cubeDatas[cubes_index - 1].mergeEvents.Invoke();
+        //cubeDatas[cubes_index - 1].mergeEvents.Invoke();
 
         //increment index
         if (cubes_index > 0)
@@ -1868,9 +1858,6 @@ public class PlayerController : MonoBehaviour
         //update camera follow transform
         cameraController.cameraFollow.currentCubeTransform = cubeDatas[cubes_index].transform;
 
-        //animation
-        animationController = cubeDatas[cubes_index].GetComponentInChildren<AnimationController>();
-
         //rigid body
         rb = cubeDatas[cubes_index].GetComponent<Rigidbody>();
 
@@ -1918,14 +1905,28 @@ public class PlayerController : MonoBehaviour
 
     public void PlayAnimation_CannotMove(string animationTrigger)
     {
-        animationController.PlayAnimation_cannotMove_Method(animationTrigger);
+        cubeDatas[cubes_index].animationController.PlayAnimation_cannotMove_Method(animationTrigger);
     }
 
     public void PlayAnimation_CanMove(string animationTrigger)
     {
-        animationController.PlayAnimation_canMove_Method(animationTrigger);
+        cubeDatas[cubes_index].animationController.PlayAnimation_canMove_Method(animationTrigger);
     }
 
 
     #endregion
+
+    //**********************************************************************************************************//
+    #region Star
+
+    public void StarMerge(Transform starTransform)
+    {
+        cubeTransform = starTransform;
+        rb = cubeTransform.GetComponent<Rigidbody>();
+    }
+
+
+    #endregion
+
+
 }

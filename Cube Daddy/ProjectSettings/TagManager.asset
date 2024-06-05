@@ -7,6 +7,8 @@ TagManager:
   - Environment
   - Magnetic Environment
   - Current Cube
+  - Star
+  - Black Hole
   layers:
   - Default
   - TransparentFX
