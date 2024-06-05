@@ -29,7 +29,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 638686701425149478}
+<<<<<<< Updated upstream
   m_RootOrder: 26
+=======
+  m_RootOrder: 21
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &311691249967615963
 GameObject:
@@ -200,6 +204,7 @@ MonoBehaviour:
   cam5_orbitalTransposer: {fileID: 0}
   _cam5_targetHeight: 0
   _cam5_velocity: 0
+<<<<<<< Updated upstream
   _cam5_smoothDampDuration: 0.25
   _cam5_minHeight: 0
   _cam5_maxHeight: 0
@@ -210,6 +215,17 @@ MonoBehaviour:
   CAM5_X_SENSITIVITY_MOUSE: 1
   CAM5_Y_SENSITIVITY_MOUSE: 0.25
   cam6_index: 0
+=======
+  _cam5_smoothDampDuration: 0.1
+  _cam5_minHeight: 0
+  _cam5_maxHeight: 0
+  CAM5_MIN_HEIGHT_UNSCALED: 0
+  CAM5_MAX_HEIGHT_UNSCALED: 7
+  CAM5_X_SENSITIVITY_GAMEPAD: 0.5
+  CAM5_Y_SENSITIVITY_GAMEPAD: 5
+  CAM5_X_SENSITIVITY_MOUSE: 1.75
+  CAM5_Y_SENSITIVITY_MOUSE: 15
+>>>>>>> Stashed changes
   cam6_orbitalTransposer: {fileID: 0}
   cam6_follow: {fileID: 3762209199121955200}
   cam6_height: 0
@@ -219,10 +235,14 @@ MonoBehaviour:
   cam6_pos_smoothDampTime: 0
   CAM6_HEIGHTCLAMP_MAX: 10
   CAM6_HEIGHTCLAMP_MIN: -10
-  CAM6_X_SENSITIVITY_GAMEPAD: 1
-  CAM6_Y_SENSITIVITY_GAMEPAD: 0.25
+  CAM6_X_SENSITIVITY_GAMEPAD: 0.25
+  CAM6_Y_SENSITIVITY_GAMEPAD: 10
   CAM6_X_SENSITIVITY_MOUSE: 1
+<<<<<<< Updated upstream
   CAM6_Y_SENSITIVITY_MOUSE: 0.25
+=======
+  CAM6_Y_SENSITIVITY_MOUSE: 50
+>>>>>>> Stashed changes
   brain: {fileID: 0}
   cameraFollow: {fileID: 0}
 --- !u!1 &691398485674473921
@@ -379,8 +399,13 @@ Camera:
     y: 0
     width: 1
     height: 1
+<<<<<<< Updated upstream
   near clip plane: 1.199984
   far clip plane: 3999.945
+=======
+  near clip plane: 0.3000001
+  far clip plane: 1000
+>>>>>>> Stashed changes
   field of view: 60
   orthographic: 0
   orthographic size: 11.86
@@ -843,7 +868,11 @@ PrefabInstance:
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_RootOrder
+<<<<<<< Updated upstream
       value: 27
+=======
+      value: 22
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -913,12 +942,20 @@ PrefabInstance:
     - target: {fileID: 155190937076920853, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_Lens.FarClipPlane
+<<<<<<< Updated upstream
       value: 3999.945
+=======
+      value: 1000
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920853, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920853, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -1035,7 +1072,11 @@ PrefabInstance:
     - target: {fileID: 3322530590763185362, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
       propertyPath: m_LocalPosition.y
+<<<<<<< Updated upstream
       value: 1.9852209
+=======
+      value: 2.749473
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 3322530590763185362, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
@@ -1045,12 +1086,20 @@ PrefabInstance:
     - target: {fileID: 3322530590763185362, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
       propertyPath: m_LocalRotation.w
+<<<<<<< Updated upstream
       value: 0.7875003
+=======
+      value: 0.78749967
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 3322530590763185362, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
       propertyPath: m_LocalRotation.x
+<<<<<<< Updated upstream
       value: -0.61631423
+=======
+      value: -0.61631507
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 3322530590763185362, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
@@ -1100,7 +1149,11 @@ PrefabInstance:
     - target: {fileID: 3322530590763185363, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 3322530590763185363, guid: 927662477b8bac843a4f84f4e3b46781,
         type: 3}
@@ -1139,7 +1192,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 2
+<<<<<<< Updated upstream
   m_FollowOffset: {x: 0, y: 1.985221, z: -10}
+=======
+  m_FollowOffset: {x: 0, y: 2.749473, z: -10}
+>>>>>>> Stashed changes
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1161,6 +1218,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
+<<<<<<< Updated upstream
     m_MaxSpeed: 100
     m_AccelTime: 0.5
     m_DecelTime: 0.5
@@ -1356,6 +1414,9 @@ MonoBehaviour:
     Value: 0
     m_SpeedMode: 0
     m_MaxSpeed: 100
+=======
+    m_MaxSpeed: 300
+>>>>>>> Stashed changes
     m_AccelTime: 0.5
     m_DecelTime: 0.5
     m_InputAxisName: 
@@ -1374,6 +1435,18 @@ MonoBehaviour:
   m_LegacyHeightOffset: 3.4028235e+38
   m_LegacyHeadingBias: 3.4028235e+38
   m_HeadingIsSlave: 0
+--- !u!114 &1657806912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3391124666508528110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8b78ac948f05a46a6d8339a503172b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1964128572976311686
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1409,7 +1482,11 @@ PrefabInstance:
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
@@ -1758,12 +1835,20 @@ PrefabInstance:
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.OrthographicSize
+<<<<<<< Updated upstream
       value: 19.99973
+=======
+      value: 5.000002
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -1778,7 +1863,11 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< Updated upstream
       value: 11.30046
+=======
+      value: 5.075144
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -1793,7 +1882,7 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.1347501
+      value: -0.13475011
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -1929,7 +2018,11 @@ PrefabInstance:
     - target: {fileID: 5573469876620849616, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 5573469876620849616, guid: ed0e13168a704a7439df3cd8308dae4e,
         type: 3}
@@ -2262,22 +2355,38 @@ PrefabInstance:
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalPosition.y
+<<<<<<< Updated upstream
       value: 4.453392
+=======
+      value: 1.393856
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalPosition.z
+<<<<<<< Updated upstream
       value: -19.99973
+=======
+      value: -5.000002
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalRotation.w
+<<<<<<< Updated upstream
       value: 0.9940055
+=======
+      value: 0.99077517
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_LocalRotation.x
+<<<<<<< Updated upstream
       value: 0.10933007
+=======
+      value: 0.13551615
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920852, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -2327,7 +2436,11 @@ PrefabInstance:
     - target: {fileID: 155190937076920853, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 155190937076920853, guid: f28779e1596d8ac4ab902e1f03903add,
         type: 3}
@@ -2372,7 +2485,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
+<<<<<<< Updated upstream
   m_FollowOffset: {x: 0, y: 4.453392, z: -19.99973}
+=======
+  m_FollowOffset: {x: 0, y: 1.393856, z: -5.000002}
+>>>>>>> Stashed changes
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2454,7 +2571,11 @@ PrefabInstance:
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
@@ -2626,12 +2747,20 @@ PrefabInstance:
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.OrthographicSize
+<<<<<<< Updated upstream
       value: 19.99973
+=======
+      value: 5.000002
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -2797,12 +2926,20 @@ PrefabInstance:
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.OrthographicSize
+<<<<<<< Updated upstream
       value: 19.99973
+=======
+      value: 5.000002
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -2968,12 +3105,20 @@ PrefabInstance:
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_Lens.OrthographicSize
+<<<<<<< Updated upstream
       value: 19.99973
+=======
+      value: 5.000002
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853392, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -2988,7 +3133,11 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< Updated upstream
       value: 37.668198
+=======
+      value: 16.917143
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -2998,7 +3147,11 @@ PrefabInstance:
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
       propertyPath: m_LocalPosition.z
+<<<<<<< Updated upstream
       value: -11.300467
+=======
+      value: -5.0751457
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 6602707747592853393, guid: 081baeee6f436c5459396862bd521faa,
         type: 3}
@@ -3129,7 +3282,11 @@ PrefabInstance:
     - target: {fileID: 639383477801443032, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
       propertyPath: m_LocalPosition.x
+<<<<<<< Updated upstream
       value: 11.300465
+=======
+      value: 5.075145
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 639383477801443032, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
@@ -3144,12 +3301,20 @@ PrefabInstance:
     - target: {fileID: 639383477801443032, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
       propertyPath: m_LocalRotation.w
+<<<<<<< Updated upstream
       value: -0.13475014
+=======
+      value: -0.13475013
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 639383477801443032, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
       propertyPath: m_LocalRotation.x
+<<<<<<< Updated upstream
       value: -0.05412273
+=======
+      value: -0.054122724
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 639383477801443032, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
@@ -3199,7 +3364,11 @@ PrefabInstance:
     - target: {fileID: 639383477801443033, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 639383477801443033, guid: db07614a2e644ec42a6a027dc7a415a0,
         type: 3}
@@ -3330,7 +3499,11 @@ PrefabInstance:
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
       propertyPath: m_Lens.NearClipPlane
+<<<<<<< Updated upstream
       value: 1.199984
+=======
+      value: 0.3000001
+>>>>>>> Stashed changes
       objectReference: {fileID: 0}
     - target: {fileID: 4945828865549190852, guid: 35ef4d49ea6aacb438c362e08fb14905,
         type: 3}
