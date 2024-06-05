@@ -8,6 +8,7 @@ using Cinemachine;
 
 public class TitleController : MonoBehaviour
 {
+    public bool titleSequence;
     public TitleCube[] cubes;
     public int maxIndex;
     public PlayerController controller;
@@ -47,13 +48,21 @@ public class TitleController : MonoBehaviour
 
     private void OnEnable()
     {
-        StartCoroutine(CubeIn());
+        if (titleSequence)
+        {
+            StartCoroutine(CubeIn());
+        }
+        
     }
 
     private void Awake()
     {
-        controller = FindObjectOfType<PlayerController>();
-        controller.canMove = false;
+        if (titleSequence) 
+        {
+            controller = FindObjectOfType<PlayerController>();
+            controller.canMove = false;
+        }
+
         
     }
 
@@ -97,7 +106,7 @@ public class TitleController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.anyKey)
+        if (titleSequence && Input.anyKey)
         {
             if (!fallen)
             {

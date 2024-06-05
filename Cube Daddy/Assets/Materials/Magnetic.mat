@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8095765060371235199
+--- !u!114 &-106041189725366217
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CutOutMat
-  m_Shader: {fileID: -6465566751694194690, guid: 0be044523ed9e50428339f37f44e6940,
+  m_Name: Magnetic
+  m_Shader: {fileID: -6465566751694194690, guid: f739085ecfd4674448ff74671a05e1c6,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -34,12 +34,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _Texture2DAsset_1a3af1eb37a74ca0a9477913b33e649f_Out_0:
-        m_Texture: {fileID: 2800000, guid: b86330db9caf25c4daf13245b1f8937f, type: 3}
+    - _noiseTexture:
+        m_Texture: {fileID: 2800000, guid: 9725119b99c8d824aadd2538717972d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_34f5efa208c54d0f8f5c8071e5355e9d_Out_0:
-        m_Texture: {fileID: 2800000, guid: 9725119b99c8d824aadd2538717972d9, type: 3}
+    - _normalTexture:
+        m_Texture: {fileID: 2800000, guid: b86330db9caf25c4daf13245b1f8937f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -56,23 +56,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Edge1: 0.256
-    - _Edge2: 0.44
-    - _Edge_Intensity: -68.85
-    - _Noise_Intensity: 0.533
-    - _Normal_Intensity: 0.102
-    - _Opacity: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Size: 1.26
-    - _Smoothnes: 0.5
-    - _Tiling: 1
+    - _noiseBlend: 0.463
+    - _noiseTiling: 5
+    - _normalStrength: 0
+    - _smoothness: 1
     m_Colors:
-    - _Color: {r: 1, g: 0.5896226, b: 0.5896226, a: 0}
-    - _Color_1: {r: 1, g: 0.75, b: 0.9242995, a: 0}
-    - _Color_2: {r: 0.21314652, g: 0, b: 0.2924528, a: 0}
-    - _Distance_Color: {r: 0.23300104, g: 0.6415094, b: 0.23432855, a: 0}
-    - _Distance_Range: {r: 0, g: 0, b: 0, a: 0}
-    - _Edge_Color: {r: 1, g: 0.56078434, b: 0.56078434, a: 0}
-    - _Position: {r: 0.49999273, g: 0.5000114, b: 334.4447, a: 0}
+    - _color1: {r: 1, g: 0.19215685, b: 0.3239987, a: 0}
+    - _color2: {r: 0.3207547, g: 0.022694904, b: 0.2685801, a: 0}
+    - _fadeDistance: {r: 15, g: 24, b: 0, a: 0}
   m_BuildTextureStacks: []
