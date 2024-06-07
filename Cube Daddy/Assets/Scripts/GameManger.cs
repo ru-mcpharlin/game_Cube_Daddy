@@ -44,7 +44,6 @@ public class GameManger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -56,6 +55,28 @@ public class GameManger : MonoBehaviour
     public void LoadScene(int index)
     {
         SceneManager.LoadScene(index);
+    }
+
+    public void EndGame()
+    {
+        StartCoroutine(EndGame_forrealsies());
+    }
+
+    public IEnumerator EndGame_forrealsies()
+    {
+        player.canMove = false;
+
+        cameraController.TurnOnTransitionCamera_LandtoSpace();
+
+        yield return new WaitUntil(() => cameraController.brain.ActiveBlend != null);
+
+        // Get the length of the current blend as a float
+        blendLength = cameraController.brain.ActiveBlend.Duration;
+
+        // Start the white-out effect
+        Pixelplacement.Tween.Color(whiteOut, Color.black, blendLength, 0f, whiteOutCurve_IN);
+
+        yield return new WaitUntil(() => cameraController.brain.ActiveBlend == null);
     }
 
     public void StartTransition_Land_To_Space()

@@ -22,6 +22,10 @@ public class PPGlobalControl : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        ActivateVolume(0);
+    }
 
 
     public void ActivateVolume(int volumeIndex)

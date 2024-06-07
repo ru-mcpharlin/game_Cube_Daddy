@@ -8,7 +8,7 @@ public class MusicController : MonoBehaviour
     [Header("Music Land")]
     public AudioSource[] musicLayers_land;
     public float[] musicVolumes_Land;
-    private int activeTrack_Land;
+    [SerializeField] private int activeTrack_Land;
     public AnimationCurve fadeIn_Land;
     public float fadeinDuration_Land;
 
@@ -41,15 +41,12 @@ public class MusicController : MonoBehaviour
 
     private void OnEnable()
     {
-        musicLayers_land = GetComponentsInChildren<AudioSource>();
-        foreach(AudioSource track in musicLayers_land)
-        {
-            track.volume = 0;
-        }
+        AddLayer_Land();
+
     }
     public void AddLayer_Land()
     {
-        if(activeTrack_Land < musicLayers_land.Length)
+        if(activeTrack_Land < musicLayers_land.Length-1)
         {
             Tween.Volume(musicLayers_land[activeTrack_Land], musicVolumes_Land[activeTrack_Land], fadeinDuration_Land, 0, fadeIn_Land);
             activeTrack_Land++;
