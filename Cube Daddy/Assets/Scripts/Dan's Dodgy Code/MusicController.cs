@@ -35,13 +35,13 @@ public class MusicController : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            AddLayer_Land();
+            //AddLayer_Land();
         }
     }
 
     private void OnEnable()
     {
-        AddLayer_Land();
+        //AddLayer_Land();
 
     }
     public void AddLayer_Land()
